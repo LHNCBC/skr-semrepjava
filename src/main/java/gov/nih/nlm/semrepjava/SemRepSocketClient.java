@@ -36,8 +36,9 @@ public class SemRepSocketClient {
 	public static void main(String args[]) throws IOException {
 		try {
 			int port = Integer.parseInt(args[1]);
+			String fileName = args[2];
 			SemRepSocketClient client = new SemRepSocketClient();
-			String inputText = new String(Files.readAllBytes(Paths.get("/export/home/pengz3/eclipse-workspace/semrepjava/test document.txt")));
+			String inputText = new String(Files.readAllBytes(Paths.get(fileName)));
 			System.out.println(inputText);
 			Socket s = new Socket(args[0], port);
 			String answer = client.queryServer(s, inputText);
