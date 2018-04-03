@@ -1,1 +1,1 @@
-java -jar metamapliteclient.jar document.txt
+java -jar metamapliteclient.jar $1
