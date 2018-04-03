@@ -18,7 +18,6 @@ import gov.nih.nlm.nls.ner.MetaMapLite;
 public class MetaMapLiteServer {
 	
 	public static void main(String[] args) throws IOException, ClassNotFoundException, InstantiationException, NoSuchMethodException, IllegalAccessException {
-		 int port = Integer.parseInt(args[0]);
 		 
 		 File configFile = new File("semrepjava.properties");
 		 if( configFile.exists() && !configFile.isDirectory()) {
@@ -30,6 +29,8 @@ public class MetaMapLiteServer {
 		 }
 		 
 		 MetaMapLite metaMapLiteInst = new MetaMapLite(System.getProperties());
+		 
+		 int port = Integer.parseInt(System.getProperty("server.port", "12345"));
 			
 		 ServerSocket serverSocket = new ServerSocket(port); 
 

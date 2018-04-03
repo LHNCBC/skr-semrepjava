@@ -2,12 +2,15 @@ package gov.nih.nlm.ner.metamap;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Properties;
 
 public class MetaMapLiteClient {
 	private String queryServer(Socket socket,String input) {
@@ -34,20 +37,25 @@ public class MetaMapLiteClient {
 	
 	  
 	public static void main(String args[]) throws IOException {
-		try {
-			//server name: indsrv2
-			//server port #: 12345
-			int port = Integer.parseInt(args[1]); 
-			String fileName = args[2];
-			MetaMapLiteClient client = new MetaMapLiteClient();
-			String inputText = new String(Files.readAllBytes(Paths.get(fileName)));
-			System.out.println(inputText);
-			Socket s = new Socket(args[0], port);
-			String answer = client.queryServer(s, inputText);
-			//System.out.println(answer);
-		} catch(Exception e) {
-			e.printStackTrace();
+		
+		File configFile = new File("semrepjava.properties");
+		if( configFile.exists() && !configFile.isDirectory()) {
+			FileReader reader = new FileReader(configFile);
+			Properties props = new Properties(System.getProperties());
+			props.load(reader);
+			System.setProperties(props);
 		}
+		
+		int serverPort = Integer.parseInt(System.getProperty("server.port", "12345"));
+		String serverName = System.getProperty("server.name", "indsrv2");
+		String fileName = args[0];
+		MetaMapLiteClient client = new MetaMapLiteClient();
+		String inputText = new String(Files.readAllBytes(Paths.get(fileName)));
+		System.out.println(inputText);
+		Socket s = new Socket(serverName, serverPort);
+		String answer = client.queryServer(s, inputText);
+		//System.out.println(answer);
+		
    }
 }
 
