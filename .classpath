@@ -22,8 +22,6 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="/export/home/pengz3/Desktop/apache-opennlp-1.8.4/lib/opennlp-tools-1.8.4.jar"/>
-	<classpathentry kind="src" path="/metamaplite-master"/>
 	<classpathentry kind="lib" path="/export/home/pengz3/.m2/repository/bioc/bioc/1.0.1/bioc-1.0.1.jar">
 		<attributes>
 			<attribute name="maven.pomderived" value="true"/>
