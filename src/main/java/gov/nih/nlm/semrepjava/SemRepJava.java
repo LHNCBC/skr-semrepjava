@@ -1,9 +1,12 @@
 package gov.nih.nlm.semrepjava;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -65,7 +68,6 @@ public class SemRepJava
     	Word w;
     	WordLexeme wl;
     	for (int i = 0; i < tokens.length; i++) {
-    		System.out.println(tokens[i] + "\t" + tags[i]);
     		if(lemmas[i].equals("O")) {
     			wl = new WordLexeme(tokens[i], tags[i]);
     		}else {
@@ -103,15 +105,18 @@ public class SemRepJava
 		return doc;
 	}
 	
-	public static Properties setOptionProps(String[] args) throws FileNotFoundException, IOException {
+	public static Properties getOptionProps(String[] args) throws FileNotFoundException, IOException {
+		if (args.length < 2) {
+			System.out.println("Usage: semrepjava --inputpath={in_path} --outputpath={out_path}.");
+			System.exit(2);
+		}
 		Properties optionProps = new Properties();
-		String configFilename;
 		int i = 0;
 		while( i < args.length) {
 			if (args[i].substring(0, 2).equals("--")) {
 				String[] fields = args[i].split("=");
 				if(fields[0].equals("--configfile")) {
-					configFilename = fields[1];
+					String configFilename = fields[1];
 					File f = new File(configFilename);
 					if( f.exists() && !f.isDirectory())
 						optionProps.load(new FileReader(new File(configFilename)));
@@ -123,6 +128,14 @@ public class SemRepJava
 				      optionProps.setProperty ("index.dir.name",fields[1]);
 			    } else if (fields[0].equals("--modelsdir")) {
 			      optionProps.setProperty ("opennlp.models.dir",fields[1]);
+			    } else if (fields[0].equals("--inputformat")) {
+			    	optionProps.setProperty("inputformat", fields[1]);
+			    } else if (fields[0].equals("--outputformat")) {
+			    	optionProps.setProperty("outputformat", fields[1]);
+			    } else if (fields[0].equals("--inputpath")) {
+			    	optionProps.setProperty("inputpath", fields[1]);
+			    } else if (fields[0].equals("--outputpath")) {
+			    	optionProps.setProperty("outputpath", fields[1]);
 			    }
 			}
 			i++;
@@ -130,30 +143,32 @@ public class SemRepJava
 		return optionProps;
 	}
 	
-	public static Properties setDefaultProps() throws FileNotFoundException, IOException {
-		Properties  props = new Properties(System.getProperties());
+	public static Properties getProps(String[] args) throws FileNotFoundException, IOException {
+		Properties  defaultProps = new Properties(System.getProperties());
 		String configFilename = "semrepjava.properties";
 		File configFile = new File(configFilename);
 		if( configFile.exists() && !configFile.isDirectory()) {
-			 props.load(new FileReader(configFile));
+			 defaultProps.load(new FileReader(configFile));
 		}
-		return props;
+		Properties optionProps = getOptionProps(args);
+		defaultProps.putAll(optionProps);
+		return defaultProps;
 	}
 	
-	public static void printChunkedDocument(Document doc) {
+	public static void generateChunkOutput(Document doc, String outPath) throws IOException {
 		List<Sentence> sentList = doc.getSentences();
 		Sentence s;
 		List<Word> wordList;
 		String chunkerTag;
 		ChunkedWord cw;
 		String[] fields;
-		StringBuilder sb;
+		StringBuilder sb = new StringBuilder();
 		boolean newChunk = true;
 		for(int i = 0; i < sentList.size(); i++) {
 			s = sentList.get(i);
 			wordList = s.getWords();
-			System.out.println(s.getText());
-			sb = new StringBuilder();
+			sb.append(s.getText());
+			sb.append("\n");
 			for(int j = 0; j < wordList.size(); j++) {
 				cw = (ChunkedWord) wordList.get(j);
 				chunkerTag = cw.getChunkerTag();
@@ -172,30 +187,52 @@ public class SemRepJava
 				}
 			}
 			sb.append("]");
-			newChunk = true;
-			System.out.println(sb);
-			System.out.println();
+			sb.append("\n");
+			sb.append("\n");
+			newChunk = true;	
 		}
+		BufferedWriter writer = new BufferedWriter(new FileWriter(outPath + "/" + doc.getId() + ".ann2"));
+		writer.write(sb.toString());
+		writer.close();
+	}
+	
+	public static void processFromDirectory(String inPath, String outPath) throws IOException {
+		File[] files = new File(inPath).listFiles();
+		for (int i = 0; i < files.length; i++) {
+			String filename = files[i].getName();
+			String[] fields = filename.split("\\.");
+			if(fields[1].equals("txt")) {
+				BufferedReader br = new BufferedReader(new FileReader(files[i]));
+			    long fileLen = files[i].length();
+			    char[] buf = new char[(int)fileLen];
+			    br.read(buf,0, (int)fileLen);
+			    br.close();
+			    String text = new String(buf);
+			    Document doc = processingFromText(fields[0], text);
+			    generateChunkOutput(doc, outPath);
+			}
+				
+		}
+		
 	}
 	
     public static void main( String[] args ) throws Exception
     {
-    	Properties  defaultProps = setDefaultProps();
-    	if(args.length > 1) {
-    		Properties optionProps = setOptionProps(args);
-    		defaultProps.putAll(optionProps);
-    	}
-    	System.setProperties(defaultProps);
+    	System.setProperties(getProps(args));
     	
     	//String filename = args[1];
     	//for test
-    	String filename = "document.txt";
+//    	String filename = "document.txt";
+//    	
+//    	String inputText = FreeText.loadFile(filename);
+//    	
+//    	Document doc = processingFromText(filename, inputText);
+//    	
+//    	printChunkedDocument(doc);
     	
-    	String inputText = FreeText.loadFile(filename);
+    	if(System.getProperty("inputformat").equalsIgnoreCase("directory")){
+    		processFromDirectory(System.getProperty("inputpath"), System.getProperty("outputpath"));
+    	}
     	
-    	Document doc = processingFromText(filename, inputText);
-    	
-    	printChunkedDocument(doc);
-
     }
 }
