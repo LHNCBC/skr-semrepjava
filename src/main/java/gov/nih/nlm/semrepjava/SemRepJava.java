@@ -136,6 +136,8 @@ public class SemRepJava
 			    	optionProps.setProperty("inputpath", fields[1]);
 			    } else if (fields[0].equals("--outputpath")) {
 			    	optionProps.setProperty("outputpath", fields[1]);
+			    } else if (fields[0].equals("--inputtextformat")) {
+			    	optionProps.setProperty("inputtextformat", fields[1]);
 			    }
 			}
 			i++;
@@ -155,7 +157,9 @@ public class SemRepJava
 		return defaultProps;
 	}
 	
-	public static void generateChunkOutput(Document doc, String outPath) throws IOException {
+	public static void generateChunkOutput(Document doc) throws IOException {
+		String outPath = System.getProperty("outputpath");
+		String inputFormat = System.getProperty("inputformat");
 		List<Sentence> sentList = doc.getSentences();
 		Sentence s;
 		List<Word> wordList;
@@ -191,47 +195,76 @@ public class SemRepJava
 			sb.append("\n");
 			newChunk = true;	
 		}
-		BufferedWriter writer = new BufferedWriter(new FileWriter(outPath + "/" + doc.getId() + ".ann2"));
-		writer.write(sb.toString());
-		writer.close();
+		if(inputFormat.equalsIgnoreCase("dir")) {
+			File dir = new File(outPath);
+			if(!dir.isDirectory()) {
+				dir.mkdirs();
+			}
+			BufferedWriter writer = new BufferedWriter(new FileWriter(outPath + "/" + doc.getId() + ".ann2"));
+			writer.write(sb.toString());
+			writer.close();
+		}else if (inputFormat.equalsIgnoreCase("singlefile")) {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(outPath + ".ann2", true));
+			writer.write(sb.toString());
+			writer.close();
+		}
 	}
 	
-	public static void processFromDirectory(String inPath, String outPath) throws IOException {
+	public static void processFromDirectory(String inPath) throws IOException {
 		File[] files = new File(inPath).listFiles();
-		for (int i = 0; i < files.length; i++) {
-			String filename = files[i].getName();
-			String[] fields = filename.split("\\.");
-			if(fields[1].equals("txt")) {
-				BufferedReader br = new BufferedReader(new FileReader(files[i]));
-			    long fileLen = files[i].length();
-			    char[] buf = new char[(int)fileLen];
-			    br.read(buf,0, (int)fileLen);
-			    br.close();
-			    String text = new String(buf);
-			    Document doc = processingFromText(fields[0], text);
-			    generateChunkOutput(doc, outPath);
+		String inputTextFormat = System.getProperty("inputtextformat");
+		if (inputTextFormat.equalsIgnoreCase("plaintext")) {
+			for (int i = 0; i < files.length; i++) {
+				String filename = files[i].getName();
+				String[] fields = filename.split("\\.");
+				if(fields[1].equals("txt")) {
+					BufferedReader br = new BufferedReader(new FileReader(files[i]));
+				    long fileLen = files[i].length();
+				    char[] buf = new char[(int)fileLen];
+				    br.read(buf,0, (int)fileLen);
+				    br.close();
+				    String text = new String(buf);
+				    Document doc = processingFromText(fields[0], text);
+				    generateChunkOutput(doc);
+				}
 			}
-				
 		}
 		
+	}
+	
+	public static void processFromSingleFile(String inPath) throws IOException {
+		String inputTextFormat = System.getProperty("inputtextformat");
+		BufferedReader br = new BufferedReader(new FileReader(inPath));
+		if (inputTextFormat.equalsIgnoreCase("plaintext")) {
+			int count = 0;
+			String line;
+			StringBuilder sb = new StringBuilder();
+			do {
+				line = br.readLine();
+				if( line == null || line.trim().length() == 0) {
+					count++;
+					Document doc = processingFromText(Integer.toString(count),sb.toString().trim());
+					sb = new StringBuilder();
+					generateChunkOutput(doc);
+				}else {
+					sb.append(line.trim() + " ");
+				}
+			} while(line != null);
+			br.close();
+		}
 	}
 	
     public static void main( String[] args ) throws Exception
     {
     	System.setProperties(getProps(args));
     	
-    	//String filename = args[1];
-    	//for test
-//    	String filename = "document.txt";
-//    	
-//    	String inputText = FreeText.loadFile(filename);
-//    	
-//    	Document doc = processingFromText(filename, inputText);
-//    	
-//    	printChunkedDocument(doc);
+    	String inputFormat = System.getProperty("inputformat");
+    	String inPath = System.getProperty("inputpath");
     	
-    	if(System.getProperty("inputformat").equalsIgnoreCase("directory")){
-    		processFromDirectory(System.getProperty("inputpath"), System.getProperty("outputpath"));
+    	if(inputFormat.equalsIgnoreCase("dir")) {
+    		processFromDirectory(inPath);	
+    	}else if(inputFormat.equalsIgnoreCase("singlefile")) {
+    		processFromSingleFile(inPath);
     	}
     	
     }
