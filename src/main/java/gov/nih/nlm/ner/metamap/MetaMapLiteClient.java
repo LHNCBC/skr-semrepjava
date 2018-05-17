@@ -8,37 +8,57 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Properties;
 
-public class MetaMapLiteClient {
+import gov.nih.nlm.ling.core.Document;
+import gov.nih.nlm.ling.core.SpanList;
+import gov.nih.nlm.ling.process.TermAnnotator;
+import gov.nih.nlm.ling.sem.Concept;
+import gov.nih.nlm.ling.sem.Ontology;
+
+public class MetaMapLiteClient implements TermAnnotator{
 	
-	public static Map<String,String> setOutputExtensionMap(){
-		Map<String,String> outputExtensionMap = new HashMap<String,String>();
-	    outputExtensionMap.put("bioc",".bioc");
-	    outputExtensionMap.put("brat",".ann");
-	    outputExtensionMap.put("mmi",".mmi");
-	    outputExtensionMap.put("cdi",".cdi");
-	    outputExtensionMap.put("cuilist",".cuis");
-	    return outputExtensionMap;
+	private int serverPort;
+	private String serverName;
+	
+	private Socket setEnvironment(Properties props) {
+		this.serverPort = Integer.parseInt(props.getProperty("server.port", "12345"));
+		this.serverName = props.getProperty("server.name", "indsrv2");
+		try {
+			return new Socket(this.serverName, this.serverPort);
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	private String queryServer(Socket socket,String input) {
-		 StringBuilder sb = new StringBuilder();  
+		StringBuilder sb = new StringBuilder();  
 		try {
 			// write text to the socket
 			DataInputStream bis = new DataInputStream(socket.getInputStream());
-        	BufferedReader br = new BufferedReader(new InputStreamReader(bis));
+			BufferedReader br = new BufferedReader(new InputStreamReader(bis));
     	 	PrintWriter bw = new PrintWriter(socket.getOutputStream(), true);
         	bw.println(input);
         	bw.flush();
-        	String line;
-        	while ((line = br.readLine()) != null) {
-        		System.out.println(line);
-        	}
+        	String line = br.readLine();
+        	do {
+        		//System.out.println(line);
+        		sb.append(line);
+        		line = br.readLine();
+        	}while(line != null);
         	bis.close();
         	br.close();
 
@@ -48,82 +68,48 @@ public class MetaMapLiteClient {
 	      return sb.toString();
 	}
 	
-	  
-	public static void main(String args[]) throws IOException {
+	public void annotate(Document document, Properties props, Map<SpanList, LinkedHashSet<Ontology>> annotations) {
 		
-		Properties  optionProps = new Properties(System.getProperties());
-		Map<String,String> outputExtensionMap = setOutputExtensionMap();
-		String configFilename = "semrepjava.properties";
-		String inputFilename = null;
-		if(args.length > 0) {
-			
-			int i = 0;
-			while( i < args.length) {
-				if (args[i].substring(0, 2).equals("--")) {
-					String[] fields = args[i].split("=");
-					if(fields[0].equals("--configfile")) {
-						configFilename = fields[1];
-					}else if (fields[0].equals("--inputformat")) {
-						optionProps.setProperty("metamaplite.document.inputtype", fields[1]);
-					}else if (fields[0].equals("--freetext")) {
-						optionProps.setProperty("metamaplite.document.inputtype", "freetext");
-					}else if (fields[0].equals("--bioc") || 
-						       fields[0].equals("--cdi") || 
-						       fields[0].equals("--bc") || 
-						       fields[0].equals("--bcevaluate")) {
-					      optionProps.setProperty("metamaplite.outputformat","bioc");
-					      optionProps.setProperty("metamaplite.outputextension",
-									       (outputExtensionMap.containsKey("cdi") ?
-										outputExtensionMap.get("cdi") :
-										".ann"));
-					}else if (fields[0].equals("--brat") || 
-						       fields[0].equals("--BRAT")) {
-					      optionProps.setProperty("metamaplite.outputformat","brat");
-					      optionProps.setProperty("metamaplite.outputextension",
-									       (outputExtensionMap.containsKey("brat") ?
-										outputExtensionMap.get("brat") :
-										".ann"));
-					}else if (fields[0].equals("--mmi") || 
-						       fields[0].equals("--mmilike")) {
-					      optionProps.setProperty("metamaplite.outputformat","mmi");
-					      optionProps.setProperty("metamaplite.outputextension",
-									       (outputExtensionMap.containsKey("mmi") ?
-										outputExtensionMap.get("mmi") :
-										".mmi"));
-					}else if (fields[0].equals("--indexdir")) {
-					      optionProps.setProperty ("index.dir.name",fields[1]);
-				    } else if (fields[0].equals("--modelsdir")) {
-				      optionProps.setProperty ("opennlp.models.dir",fields[1]);
-				    }
+		Socket s = setEnvironment(props);
+		String inputText = document.getText();
+		String answer = s == null ? null : queryServer(s, inputText);
+		if (answer != null) {
+			String[] entities = answer.split(";;");
+			String[] fields;
+			String id;
+			String name;
+			Concept concept;
+			int start;
+			int length;
+			SpanList sl;
+			LinkedHashSet<String> semTypes;
+			LinkedHashSet<Ontology> onts;
+			for(int i = 0; i < entities.length; i++) {
+				onts = new LinkedHashSet<Ontology>();
+				fields = entities[i].split(",,");
+				if (fields.length < 5) {
+					System.out.println("Error parsing server back string.");
+					System.exit(3);
 				}
-				i++;
+				start = Integer.parseInt(fields[0]);
+				length = Integer.parseInt(fields[1]);
+				sl = new SpanList(start, start+length);
+				int cursorIndex = 2;
+				do {
+					id = fields[cursorIndex];
+					name = fields[cursorIndex + 1];
+					semTypes = new LinkedHashSet<String>(Arrays.asList(fields[cursorIndex + 2].split("::")));
+					concept = new Concept(id,name,semTypes,"metamaplite");
+					cursorIndex += 3;
+					onts.add(concept);
+				}while(cursorIndex < fields.length && !fields[cursorIndex].isEmpty());
+				annotations.put(sl, onts);
 			}
-			inputFilename = args[i];
-		}
-		
-		File inputFile = new File(inputFilename);
-		if(!inputFile.exists()) {
-			System.out.println("Input file path is invalid or not provided.");
-			System.exit(1);
+			System.out.println("Parse succeed.");
 		}else {
-			Properties finalProps = new Properties();
-			File configFile = new File(configFilename);
-			if( configFile.exists() && !configFile.isDirectory()) {
-				 finalProps.load(new FileReader(configFile));
-			}
-			finalProps.putAll(optionProps);
-			System.setProperties(finalProps);
-			
-			int serverPort = Integer.parseInt(System.getProperty("server.port", "12345"));
-			String serverName = System.getProperty("server.name", "indsrv2");
-			MetaMapLiteClient client = new MetaMapLiteClient();
-			String inputText = new String(Files.readAllBytes(Paths.get(inputFilename)));
-			System.out.println(inputText);
-			Socket s = new Socket(serverName, serverPort);
-			String answer = client.queryServer(s, inputText);
-			//System.out.println(answer);
+			System.out.println("failed to create socket");
 		}
 		
-   }
+	}
 }
 
