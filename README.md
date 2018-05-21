@@ -3,7 +3,11 @@
 Semantic Knowledge Representation project in Lister Hill Center for National Institute of Health.
 
 # Usage
-Server is already up running.
-To test metamaplite client, just run the mml_client.sh file.
-For example:
-	sh mml_client.sh
+java SemRepJava [OPTIONS]
+
+Please specify the following options:
+
+--inputformat=? (either "dir" or "singlefile")
+--inputtextformat=? (either "plaintext" or "medline")
+--inputpath=? (the input directory path or single file path)
+--outputpath=? (the output directory name or a file name)
