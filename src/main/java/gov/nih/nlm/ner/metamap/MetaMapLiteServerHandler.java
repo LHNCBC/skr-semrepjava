@@ -46,7 +46,9 @@ public class MetaMapLiteServerHandler extends Thread {
 					ConceptInfo ci = ev.getConceptInfo();
 					int setSize = ci.getSemanticTypeSet().size();
 					sb.append(ci.getCUI() + ",," + 
-							ci.getPreferredName() + ",," +  
+							ci.getPreferredName() + ",," + 
+							ev.getConceptString() + ",," +
+							ev.getScore() + ",," +
 							String.join("::", ci.getSemanticTypeSet().toArray(new String[setSize])) + ",,");
 				}
 				sb.append(";;"); 

@@ -1,1 +1,1 @@
-java -jar metamapliteclient.jar $1
+java -jar metamapliteclient.jar

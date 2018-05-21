@@ -2,17 +2,12 @@ package gov.nih.nlm.ner.metamap;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Properties;
@@ -20,8 +15,8 @@ import java.util.Properties;
 import gov.nih.nlm.ling.core.Document;
 import gov.nih.nlm.ling.core.SpanList;
 import gov.nih.nlm.ling.process.TermAnnotator;
-import gov.nih.nlm.ling.sem.Concept;
 import gov.nih.nlm.ling.sem.Ontology;
+import gov.nih.nlm.semrepjava.core.UMLSConcept;
 
 public class MetaMapLiteClient implements TermAnnotator{
 	
@@ -78,7 +73,9 @@ public class MetaMapLiteClient implements TermAnnotator{
 			String[] fields;
 			String id;
 			String name;
-			Concept concept;
+			UMLSConcept concept;
+			String conceptString;
+			double score;
 			int start;
 			int length;
 			SpanList sl;
@@ -98,9 +95,11 @@ public class MetaMapLiteClient implements TermAnnotator{
 				do {
 					id = fields[cursorIndex];
 					name = fields[cursorIndex + 1];
-					semTypes = new LinkedHashSet<String>(Arrays.asList(fields[cursorIndex + 2].split("::")));
-					concept = new Concept(id,name,semTypes,"metamaplite");
-					cursorIndex += 3;
+					conceptString = fields[cursorIndex + 2];
+					score = Double.parseDouble(fields[cursorIndex + 3]);
+					semTypes = new LinkedHashSet<String>(Arrays.asList(fields[cursorIndex + 4].split("::")));
+					concept = new UMLSConcept(id,name,semTypes,"metamaplite",conceptString,score);
+					cursorIndex += 5;
 					onts.add(concept);
 				}while(cursorIndex < fields.length && !fields[cursorIndex].isEmpty());
 				annotations.put(sl, onts);
