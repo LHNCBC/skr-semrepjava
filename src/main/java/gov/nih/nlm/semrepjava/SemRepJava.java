@@ -12,8 +12,8 @@ import java.util.Properties;
 
 import gov.nih.nlm.ling.core.Document;
 import gov.nih.nlm.ling.core.Sentence;
-import gov.nih.nlm.ling.core.Word;
-import gov.nih.nlm.semrepjava.core.ChunkedWord;
+import gov.nih.nlm.semrepjava.core.Chunk;
+import gov.nih.nlm.semrepjava.core.ChunkedSentence;
 import gov.nih.nlm.semrepjava.core.MedLineDocument;
 import gov.nih.nlm.semrepjava.utils.MedLineParser;
 import gov.nih.nlm.semrepjava.utils.OpennlpUtils;
@@ -83,39 +83,15 @@ public class SemRepJava
 		String outPath = System.getProperty("outputpath");
 		String inputFormat = System.getProperty("inputformat");
 		List<Sentence> sentList = doc.getSentences();
-		Sentence s;
-		List<Word> wordList;
-		String chunkerTag;
-		ChunkedWord cw;
-		String[] fields;
 		StringBuilder sb = new StringBuilder();
-		boolean newChunk = true;
 		for(int i = 0; i < sentList.size(); i++) {
-			s = sentList.get(i);
-			wordList = s.getWords();
-			sb.append(s.getText());
-			sb.append("\n");
-			for(int j = 0; j < wordList.size(); j++) {
-				cw = (ChunkedWord) wordList.get(j);
-				chunkerTag = cw.getChunkerTag();
-				fields = chunkerTag.split("-");
-				if(fields[0].equals("B")) {
-					if (newChunk) {
-						sb.append("[ " + cw.getText() + " (" + cw.getPos() + ", " + cw.getLemma() + ") ");
-						newChunk = false;
-					}else {
-						sb.append("]");
-						sb.append("\n");
-						sb.append("[ " + cw.getText() + " (" + cw.getPos() + ", " + cw.getLemma() + ") ");
-					}
-				}else if(fields[0].equals("I")) {
-					sb.append(cw.getText() + " (" + cw.getPos() + ", " + cw.getLemma() + ") ");
-				}
+			ChunkedSentence cs = (ChunkedSentence)sentList.get(i);
+			sb.append(cs.getText() + "\n");
+			List<Chunk> chunkList = cs.getChunks();
+			for(int j = 0; j < chunkList.size(); j++) {
+				sb.append(chunkList.get(j).toString() + "\n");
 			}
-			sb.append("]");
 			sb.append("\n");
-			sb.append("\n");
-			newChunk = true;	
 		}
 		if(inputFormat.equalsIgnoreCase("dir")) {
 			File dir = new File(outPath);
@@ -167,7 +143,7 @@ public class SemRepJava
 			StringBuilder sb = new StringBuilder();
 			do {
 				line = br.readLine();
-				if( line == null || line.trim().length() == 0) {
+				if( line == null || line.trim().isEmpty()) {
 					count++;
 					Document doc = processingFromText(Integer.toString(count),sb.toString().trim());
 					sb = new StringBuilder();
