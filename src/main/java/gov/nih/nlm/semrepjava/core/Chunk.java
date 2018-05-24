@@ -31,7 +31,7 @@ public class Chunk {
 	}
 	
 	public String wordToString(Word w) {
-		return w.getText() + " (" + w.getPos() + ", " + head.getLemma() + ") ";
+		return w.getText() + " (" + w.getPos() + ", " + w.getLemma() + ") ";
 	}
 
 }

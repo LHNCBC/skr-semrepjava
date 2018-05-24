@@ -134,6 +134,7 @@ public class OpennlpUtils {
     	opennlp.tools.util.Span sentenceSpans[] = sentenceDetector.sentPosDetect(text);
     	ChunkedSentence s;
     	for (int i = 0; i < sentences.length; i++) {
+    		System.out.println(sentences[i]);
     		s = new ChunkedSentence(Integer.toString(i), sentences[i], 
     					new gov.nih.nlm.ling.core.Span(sentenceSpans[i].getStart(), sentenceSpans[i].getEnd()));
     		String[] tokens = tokenization(sentences[i]);
