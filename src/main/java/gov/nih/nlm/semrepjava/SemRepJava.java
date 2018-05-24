@@ -7,7 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 
@@ -115,7 +114,7 @@ public class SemRepJava
 		for(File file: files) {
 			String filename = file.getName();
 			String[] fields = filename.split("\\.");
-			if(fields[1].equals("txt") && new File(inPath + "/" + fields[0] + ".semrepchunk").exists()) {
+			if(fields[1].equals("txt")) {
 				BufferedReader br = new BufferedReader(new FileReader(file));
 				if (inputTextFormat.equalsIgnoreCase("plaintext")) {
 					long fileLen = file.length();
