@@ -69,6 +69,7 @@ public class MetaMapLiteClient implements TermAnnotator{
 		String inputText = document.getText();
 		String answer = s == null ? null : queryServer(s, inputText);
 		if (answer != null) {
+			System.out.println(answer);
 			String[] entities = answer.split(";;");
 			String[] fields;
 			String id;
@@ -96,6 +97,7 @@ public class MetaMapLiteClient implements TermAnnotator{
 					id = fields[cursorIndex];
 					name = fields[cursorIndex + 1];
 					conceptString = fields[cursorIndex + 2];
+					System.out.println(name + " | " + conceptString);
 					score = Double.parseDouble(fields[cursorIndex + 3]);
 					semTypes = new LinkedHashSet<String>(Arrays.asList(fields[cursorIndex + 4].split("::")));
 					concept = new UMLSConcept(id,name,semTypes,"metamaplite",conceptString,score);

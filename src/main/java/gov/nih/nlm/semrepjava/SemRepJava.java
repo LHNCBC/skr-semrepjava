@@ -7,11 +7,17 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import gov.nih.nlm.ling.core.Document;
 import gov.nih.nlm.ling.core.Sentence;
+import gov.nih.nlm.ling.core.SpanList;
+import gov.nih.nlm.ling.sem.Ontology;
+import gov.nih.nlm.ner.metamap.MetaMapLiteClient;
 import gov.nih.nlm.semrepjava.core.Chunk;
 import gov.nih.nlm.semrepjava.core.ChunkedSentence;
 import gov.nih.nlm.semrepjava.core.MedLineDocument;
@@ -114,7 +120,7 @@ public class SemRepJava
 		for(File file: files) {
 			String filename = file.getName();
 			String[] fields = filename.split("\\.");
-			if(fields[1].equals("txt")) {
+			if(fields.length == 2 && fields[1].equals("txt")) {
 				BufferedReader br = new BufferedReader(new FileReader(file));
 				if (inputTextFormat.equalsIgnoreCase("plaintext")) {
 					long fileLen = file.length();
@@ -145,16 +151,16 @@ public class SemRepJava
 				line = br.readLine();
 				if( line == null || line.trim().isEmpty()) {
 					count++;
-					Document doc = processingFromText(Integer.toString(count),sb.toString().trim());
+					Document doc = processingFromText(Integer.toString(count),sb.toString());
 					sb = new StringBuilder();
 					generateChunkOutput(doc);
 					
 					//test
-//					MetaMapLiteClient client = new MetaMapLiteClient();
-//					Map<SpanList, LinkedHashSet<Ontology>> annotations = new HashMap<SpanList, LinkedHashSet<Ontology>>();
-//					client.annotate(doc, System.getProperties(), annotations);
+					MetaMapLiteClient client = new MetaMapLiteClient();
+					Map<SpanList, LinkedHashSet<Ontology>> annotations = new HashMap<SpanList, LinkedHashSet<Ontology>>();
+					client.annotate(doc, System.getProperties(), annotations);
 				}else {
-					sb.append(line.trim() + " ");
+					sb.append(line + " ");
 				}
 			} while(line != null);
 		} else if (inputTextFormat.equalsIgnoreCase("medline")) {

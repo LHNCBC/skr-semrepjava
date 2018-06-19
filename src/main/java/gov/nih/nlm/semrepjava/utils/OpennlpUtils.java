@@ -48,11 +48,12 @@ public class OpennlpUtils {
 	}
 	
 	public static String[] chunker(String[] tokens, String[] tags) throws IOException {
+		
 		InputStream modelIn = new FileInputStream(System.getProperty("opennlp.en-chunker.bin.path", "data/models/en-chunker.bin"));
-    	ChunkerModel chunkerModel = new ChunkerModel(modelIn);
+		ChunkerModel chunkerModel = new ChunkerModel(modelIn);
     	ChunkerME chunker = new ChunkerME(chunkerModel);
     	String chunkTags[] = chunker.chunk(tokens, tags);
-//    	opennlp.tools.util.Span[] s = chunker.chunkAsSpans(tokens, tags);
+    	//opennlp.tools.util.Span[] s = chunker.chunkAsSpans(tokens, tags);
     	return chunkTags;
 	}
 	
@@ -134,7 +135,6 @@ public class OpennlpUtils {
     	opennlp.tools.util.Span sentenceSpans[] = sentenceDetector.sentPosDetect(text);
     	ChunkedSentence s;
     	for (int i = 0; i < sentences.length; i++) {
-    		System.out.println(sentences[i]);
     		s = new ChunkedSentence(Integer.toString(i), sentences[i], 
     					new gov.nih.nlm.ling.core.Span(sentenceSpans[i].getStart(), sentenceSpans[i].getEnd()));
     		String[] tokens = tokenization(sentences[i]);

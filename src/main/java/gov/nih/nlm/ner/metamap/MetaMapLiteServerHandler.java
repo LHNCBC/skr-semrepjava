@@ -36,7 +36,7 @@ public class MetaMapLiteServerHandler extends Thread {
 			BufferedReader br = new BufferedReader(new InputStreamReader(bis));
 			PrintWriter bw = new PrintWriter(socket.getOutputStream(), true);
 			String inputText = br.readLine();
-	    	BioCDocument document = FreeText.instantiateBioCDocument(inputText);
+	    	BioCDocument document = FreeText.instantiateBioCDocument(inputText.trim());
 	    	List<Entity> entityList = metaMapLiteInst.processDocument(document);
 	    	
 	    	StringBuilder sb = new StringBuilder(); 
