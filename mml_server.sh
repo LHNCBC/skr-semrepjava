@@ -1,1 +1,1 @@
-java -Xmx128m -jar metamapliteserver.jar
+java -Xmx256m -jar metamapliteserver.jar
