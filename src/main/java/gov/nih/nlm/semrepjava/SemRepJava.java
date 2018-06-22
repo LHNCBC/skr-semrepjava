@@ -66,6 +66,8 @@ public class SemRepJava
 			    	optionProps.setProperty("outputpath", fields[1]);
 			    } else if (fields[0].equals("--inputtextformat")) {
 			    	optionProps.setProperty("inputtextformat", fields[1]);
+			    } else if (fields[0].equals("--annsource")) {
+			    	optionProps.setProperty("annsource", fields[1]);
 			    }
 			}
 			i++;
