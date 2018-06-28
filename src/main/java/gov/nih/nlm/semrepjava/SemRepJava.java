@@ -21,6 +21,7 @@ import gov.nih.nlm.ner.metamap.MetaMapLiteClient;
 import gov.nih.nlm.semrepjava.core.Chunk;
 import gov.nih.nlm.semrepjava.core.ChunkedSentence;
 import gov.nih.nlm.semrepjava.core.MedLineDocument;
+import gov.nih.nlm.semrepjava.utils.Disambiguation;
 import gov.nih.nlm.semrepjava.utils.MedLineParser;
 import gov.nih.nlm.semrepjava.utils.OpennlpUtils;
 
@@ -161,6 +162,9 @@ public class SemRepJava
 					MetaMapLiteClient client = new MetaMapLiteClient();
 					Map<SpanList, LinkedHashSet<Ontology>> annotations = new HashMap<SpanList, LinkedHashSet<Ontology>>();
 					client.annotate(doc, System.getProperties(), annotations);
+					Disambiguation disambiguator = new Disambiguation();
+					disambiguator.disambiguateEntities(doc, annotations);
+					
 				}else {
 					sb.append(line + " ");
 				}

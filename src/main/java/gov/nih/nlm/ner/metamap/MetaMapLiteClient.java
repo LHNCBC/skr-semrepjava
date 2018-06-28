@@ -72,7 +72,7 @@ public class MetaMapLiteClient implements TermAnnotator{
 			System.out.println(answer);
 			String[] entities = answer.split(";;");
 			String[] fields;
-			String id;
+			String cui;
 			String name;
 			UMLSConcept concept;
 			String conceptString;
@@ -94,13 +94,13 @@ public class MetaMapLiteClient implements TermAnnotator{
 				sl = new SpanList(start, start+length);
 				int cursorIndex = 2;
 				do {
-					id = fields[cursorIndex];
+					cui = fields[cursorIndex];
 					name = fields[cursorIndex + 1];
 					conceptString = fields[cursorIndex + 2];
 					System.out.println(name + " | " + conceptString);
 					score = Double.parseDouble(fields[cursorIndex + 3]);
 					semTypes = new LinkedHashSet<String>(Arrays.asList(fields[cursorIndex + 4].split("::")));
-					concept = new UMLSConcept(id,name,semTypes,"metamaplite",conceptString,score);
+					concept = new UMLSConcept(cui,name,semTypes,"metamaplite",conceptString,score);
 					cursorIndex += 5;
 					onts.add(concept);
 				}while(cursorIndex < fields.length && !fields[cursorIndex].isEmpty());
@@ -111,6 +111,12 @@ public class MetaMapLiteClient implements TermAnnotator{
 			System.out.println("failed to create socket");
 		}
 		
+	}
+	
+	public void disambiguation(Map<SpanList, LinkedHashSet<Ontology>> annotations) {
+		for (int i = 0; i < annotations.size(); i++) {
+			
+		}
 	}
 }
 

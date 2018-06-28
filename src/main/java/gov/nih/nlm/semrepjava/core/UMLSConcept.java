@@ -10,15 +10,15 @@ public class UMLSConcept extends Concept {
 	private double score;
 	
 
-	public UMLSConcept(String id, String name, LinkedHashSet<String> semtypes) {
-		super(id, name, semtypes);
+	public UMLSConcept(String cui, String name, LinkedHashSet<String> semtypes) {
+		super(cui, name, semtypes);
 	}
 	
-	public UMLSConcept(String id, String name, LinkedHashSet<String> semtypes, String source) {
-		super(id, name, semtypes, source);
+	public UMLSConcept(String cui, String name, LinkedHashSet<String> semtypes, String source) {
+		super(cui, name, semtypes, source);
 	}
-	public UMLSConcept(String id, String name, LinkedHashSet<String> semtypes, String source, String conceptString, double score) {
-		super(id, name, semtypes, source);
+	public UMLSConcept(String cui, String name, LinkedHashSet<String> semtypes, String source, String conceptString, double score) {
+		super(cui, name, semtypes, source);
 		this.conceptString = conceptString;
 		this.score = score;
 	}
