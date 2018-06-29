@@ -38,11 +38,11 @@
       	<artifactId>opennlp-tools</artifactId>
       	<version>1.8.4</version>
 	</dependency>
-	<dependency>
+	<!--<dependency>
     	<groupId>edu.stanford.nlp</groupId>
     	<artifactId>stanford-corenlp</artifactId>
     	<version>3.9.1</version>
-	</dependency>
+	</dependency>-->
 	<dependency>
       	<groupId>org.apache.logging.log4j</groupId>
       	<artifactId>log4j-api</artifactId>

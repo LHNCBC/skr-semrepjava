@@ -69,7 +69,6 @@ public class MetaMapLiteClient implements TermAnnotator{
 		String inputText = document.getText();
 		String answer = s == null ? null : queryServer(s, inputText);
 		if (answer != null) {
-			System.out.println(answer);
 			String[] entities = answer.split(";;");
 			String[] fields;
 			String cui;
@@ -111,12 +110,6 @@ public class MetaMapLiteClient implements TermAnnotator{
 			System.out.println("failed to create socket");
 		}
 		
-	}
-	
-	public void disambiguation(Map<SpanList, LinkedHashSet<Ontology>> annotations) {
-		for (int i = 0; i < annotations.size(); i++) {
-			
-		}
 	}
 }
 

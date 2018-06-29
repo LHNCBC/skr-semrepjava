@@ -7,6 +7,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -21,15 +23,18 @@ import gov.nih.nlm.ner.metamap.MetaMapLiteClient;
 import gov.nih.nlm.semrepjava.core.Chunk;
 import gov.nih.nlm.semrepjava.core.ChunkedSentence;
 import gov.nih.nlm.semrepjava.core.MedLineDocument;
-import gov.nih.nlm.semrepjava.utils.Disambiguation;
 import gov.nih.nlm.semrepjava.utils.MedLineParser;
 import gov.nih.nlm.semrepjava.utils.OpennlpUtils;
+import gov.nih.nlm.semrepjava.wsd.WSDClient;
 
 public class SemRepJava 
 {
 	public static Document processingFromText(String documentID, String text) throws IOException {
 		Document doc = new Document(documentID, text);
 		List<Sentence> sentList= OpennlpUtils.sentenceSplit(text);
+		for(Sentence sent: sentList) {
+			sent.setDocument(doc);
+		}
 		doc.setSentences(sentList);
 		return doc;
 	}
@@ -162,9 +167,8 @@ public class SemRepJava
 					MetaMapLiteClient client = new MetaMapLiteClient();
 					Map<SpanList, LinkedHashSet<Ontology>> annotations = new HashMap<SpanList, LinkedHashSet<Ontology>>();
 					client.annotate(doc, System.getProperties(), annotations);
-					Disambiguation disambiguator = new Disambiguation();
-					disambiguator.disambiguateEntities(doc, annotations);
-					
+					WSDClient wsdClient = new WSDClient();
+					wsdClient.disambiguate(doc, System.getProperties(), annotations);
 				}else {
 					sb.append(line + " ");
 				}

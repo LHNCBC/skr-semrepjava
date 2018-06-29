@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gov.nih.nlm.ling.core.Sentence;
+import gov.nih.nlm.ling.core.SpanList;
 import gov.nih.nlm.ling.core.Word;
 import gov.nih.nlm.ling.core.WordLexeme;
 import gov.nih.nlm.semrepjava.core.Chunk;
@@ -38,6 +39,13 @@ public class OpennlpUtils {
     	Tokenizer tokenizer = new TokenizerME(tokenModel);
     	String tokens[] = tokenizer.tokenize(sentence);
     	return tokens;
+	}
+	
+	public static opennlp.tools.util.Span[] getTokenSpans(String sentence) throws IOException{
+		InputStream modelIn = new FileInputStream(System.getProperty("opennlp.en-token.bin.path", "data/models/en-token.bin"));
+    	TokenizerModel tokenModel = new TokenizerModel(modelIn);
+    	Tokenizer tokenizer = new TokenizerME(tokenModel);
+    	return tokenizer.tokenizePos(sentence);
 	}
 	
 	public static String[] lemmatization(String[] tokens, String[] tags) throws IOException {
@@ -77,7 +85,14 @@ public class OpennlpUtils {
     	return wordList;
 	}
 	
-	public static void chunking(String[] tokens, String[] tags, ChunkedSentence s) throws IOException {
+	public static void chunking(ChunkedSentence s, int index) throws IOException {
+		InputStream modelIn = new FileInputStream(System.getProperty("opennlp.en-token.bin.path", "data/models/en-token.bin"));
+    	TokenizerModel tokenModel = new TokenizerModel(modelIn);
+    	Tokenizer tokenizer = new TokenizerME(tokenModel);
+    	String tokens[] = tokenizer.tokenize(s.getText());
+    	opennlp.tools.util.Span[] tokenSpans = tokenizer.tokenizePos(s.getText());
+    	String[] tags = pos(tokens);
+    	
 		List<Chunk> chunkList = new ArrayList<Chunk>();
 		List<Word> wordList = new ArrayList<Word>();
 		String[] lemmas = lemmatization(tokens, tags);
@@ -85,6 +100,7 @@ public class OpennlpUtils {
 		
 		Word w;
     	WordLexeme wl;
+    	gov.nih.nlm.ling.core.Span span;
     	Chunk chunk = null;
     	List<Word> trail = null;
     	for (int i = 0; i < tokens.length; i++) {
@@ -94,7 +110,8 @@ public class OpennlpUtils {
     		}else {
     			wl = new WordLexeme(lemmas[i], tags[i]);
     		}
-    		w = new Word(tokens[i], tags[i], wl);
+    		span = new gov.nih.nlm.ling.core.Span(tokenSpans[i].getStart() + s.getSpan().getBegin(), tokenSpans[i].getEnd() + s.getSpan().getBegin());
+    		w = new Word(tokens[i], tags[i], wl, index, span);
     		wordList.add(w);
     		if(fields[0].equals("B")) {
     			if(chunk == null) {
@@ -132,14 +149,12 @@ public class OpennlpUtils {
     	SentenceModel model = new SentenceModel(modelIn);
     	SentenceDetectorME sentenceDetector = new SentenceDetectorME(model);
     	String sentences[] = sentenceDetector.sentDetect(text);
-    	opennlp.tools.util.Span sentenceSpans[] = sentenceDetector.sentPosDetect(text);
+    	opennlp.tools.util.Span[] sentenceSpans = sentenceDetector.sentPosDetect(text);
     	ChunkedSentence s;
     	for (int i = 0; i < sentences.length; i++) {
     		s = new ChunkedSentence(Integer.toString(i), sentences[i], 
     					new gov.nih.nlm.ling.core.Span(sentenceSpans[i].getStart(), sentenceSpans[i].getEnd()));
-    		String[] tokens = tokenization(sentences[i]);
-    		String[] tags = pos(tokens);
-    		chunking(tokens,tags, s);
+    		chunking(s, i);
     		sentList.add(s);
     	}
     	return sentList;

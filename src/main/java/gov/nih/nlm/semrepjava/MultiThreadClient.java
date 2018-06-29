@@ -94,7 +94,7 @@ public class MultiThreadClient {
 	return sb.toString();
     }
 
-    public Map<SpanList, LinkedHashSet<Ontology>> annotate(final Document document, final Properties props) {
+    /*public Map<SpanList, LinkedHashSet<Ontology>> annotate(final Document document, final Properties props) {
 
 	// Socket s = setGEnvironment(props);
 	// String inputText = document.getText();
@@ -199,5 +199,5 @@ public class MultiThreadClient {
 	}
 
 	// System.out.println(gnormplusout);
-    }
+    }*/
 }
