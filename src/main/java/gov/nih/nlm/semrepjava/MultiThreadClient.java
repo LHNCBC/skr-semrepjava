@@ -94,8 +94,9 @@ public class MultiThreadClient {
 	return sb.toString();
     }
 
-    public Map<SpanList, LinkedHashSet<Ontology>> annotate(final Document document, final Properties props) {
-
+    private Map<SpanList, LinkedHashSet<Ontology>> annotate(final Document document, final Properties props) {
+	// public void annotate(final Document document, final Properties props,
+	//	    Map<SpanList, LinkedHashSet<Ontology>> annotate) {
 	// Socket s = setGEnvironment(props);
 	// String inputText = document.getText();
 	// Document doc = document;
@@ -157,9 +158,14 @@ public class MultiThreadClient {
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
-
-	// returnannos = annotations;
+	System.out.println("Done");
+	// annotate = annotations;
 	return annotations;
+    }
+
+    public void annotate(Document document, Properties props, Map<SpanList, LinkedHashSet<Ontology>> annotations) {
+	Map<SpanList, LinkedHashSet<Ontology>> annotationsFromMethod = annotate(document, props);
+	annotations.putAll(annotationsFromMethod);
     }
 
     public static void main(String[] args) throws IOException {
@@ -178,7 +184,9 @@ public class MultiThreadClient {
 	prop.setProperty("gserver.name", "indsrv2");
 	prop.setProperty("mserver.port", "12345");
 	prop.setProperty("mserver.name", "indsrv2");
-	Map<SpanList, LinkedHashSet<Ontology>> annotations = new MultiThreadClient().annotate(doc, prop);
+	// Map<SpanList, LinkedHashSet<Ontology>> annotations = new MultiThreadClient().annotate(doc, prop);
+	Map<SpanList, LinkedHashSet<Ontology>> annotations = new HashMap<>();
+	new MultiThreadClient().annotate(doc, prop, annotations);
 	// MultiThreadClient MTC = new MultiThreadClient();
 	// MTC.annotate(doc, prop, annotations);
 	Set<SpanList> set = annotations.keySet();
