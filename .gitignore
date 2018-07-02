@@ -31,3 +31,4 @@ GS_060916
 SemRep_GS
 *.txt
 *.ann2
+/target/
