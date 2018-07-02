@@ -66,40 +66,40 @@ public class GNormPlusClient {
 	return sb.toString();
     }
 
-    public Map<SpanList, LinkedHashSet<Ontology>> annotate(Document document, Properties props) {
-
-	Map<SpanList, LinkedHashSet<Ontology>> annotations = new HashMap<SpanList, LinkedHashSet<Ontology>>();
-	Socket s = setEnvironment(props);
-	String inputText = document.getText();
-	String answer = s == null ? null : queryServer(s, inputText);
-	// System.out.println(answer);
-
-	if (answer != null) {
-	    String[] entities = answer.split("\n");
-	    for (String entity : entities) {
-		// System.out.println(entity);
-		String compo[] = entity.split("\t");
-		int start = Integer.parseInt(compo[0]);
-		int end = Integer.parseInt(compo[1]);
-		SpanList s1 = new SpanList(start, end);
-		int geneId = Integer.parseInt(compo[4]);
-
-		GNormPlusConcept gcon = new GNormPlusConcept(compo[2], compo[3], geneId);
-		LinkedHashSet<Ontology> onts = annotations.get(s1);
-		if (onts != null)
-		    onts.add(gcon);
-		else {
-		    onts = new LinkedHashSet<Ontology>();
-		    onts.add(gcon);
-		    annotations.put(s1, onts);
-		}
-
-	    }
-	}
-
-	return annotations;
-
+    /*- public Map<SpanList, LinkedHashSet<Ontology>> annotate(Document document, Properties props) {
+    
+    Map<SpanList, LinkedHashSet<Ontology>> annotations = new HashMap<SpanList, LinkedHashSet<Ontology>>();
+    Socket s = setEnvironment(props);
+    String inputText = document.getText();
+    String answer = s == null ? null : queryServer(s, inputText);
+    // System.out.println(answer);
+    
+    if (answer != null) {
+        String[] entities = answer.split("\n");
+        for (String entity : entities) {
+    	// System.out.println(entity);
+    	String compo[] = entity.split("\t");
+    	int start = Integer.parseInt(compo[0]);
+    	int end = Integer.parseInt(compo[1]);
+    	SpanList s1 = new SpanList(start, end);
+    	int geneId = Integer.parseInt(compo[4]);
+    
+    	GNormPlusConcept gcon = new GNormPlusConcept(compo[2], compo[3], geneId);
+    	LinkedHashSet<Ontology> onts = annotations.get(s1);
+    	if (onts != null)
+    	    onts.add(gcon);
+    	else {
+    	    onts = new LinkedHashSet<Ontology>();
+    	    onts.add(gcon);
+    	    annotations.put(s1, onts);
+    	}
+    
+        }
     }
+    
+    return annotations;
+    
+    } */
 
     public void annotate(Document document, Properties props, Map<SpanList, LinkedHashSet<Ontology>> annotations) {
 
@@ -124,7 +124,7 @@ public class GNormPlusClient {
 		if (onts != null)
 		    onts.add(gcon);
 		else {
-		    onts = new LinkedHashSet<Ontology>();
+		    onts = new LinkedHashSet<>();
 		    onts.add(gcon);
 		    annotations.put(s1, onts);
 		}
@@ -148,9 +148,11 @@ public class GNormPlusClient {
 	//"In a clinical trial that is still in progress, we studied the ability of deprenyl and tocopherol, antioxidative agents that act through complementary mechanisms, to delay the onset of disability necessitating levodopa therapy (the primary end point) in patients with early, untreated Parkinson's disease. Eight hundred subjects were randomly assigned in a two-by-two factorial design to receive deprenyl, tocopherol, a combination of both drugs, or placebo, and were followed up to determine the frequency of development of the end point. The interim results of independent monitoring prompted a preliminary comparison of the 401 subjects assigned to tocopherol or placebo with the 399 subjects assigned to deprenyl, alone or with tocopherol. Only 97 subjects who received deprenyl reached the end point during an average 12 months of follow-up, as compared with 176 subjects who did not receive deprenyl (P less than 10(-8). The risk of reaching the end point was reduced by 57 percent for the subjects who received deprenyl (Cox hazard ratio, 0.43; 95 percent confidence limits, 0.33 and 0.55; P less than 10(-10]. The subjects who received deprenyl also had a significant reduction in their risk of having to give up full-time employment (P = 0.01). We conclude from these preliminary results that the use of deprenyl (10 mg per day) delays the onset of disability associated with early, otherwise untreated cases of Parkinson's disease.");
 	Document doc = new Document("1", cit3);
 	Properties prop = new Properties();
-	prop.setProperty("server.port", "30000");
-	prop.setProperty("server.name", "indsrv2");
-	Map<SpanList, LinkedHashSet<Ontology>> annotations = new GNormPlusClient().annotate(doc, prop);
+	prop.setProperty("gserver.port", "30000");
+	prop.setProperty("gserver.name", "indsrv2");
+	// Map<SpanList, LinkedHashSet<Ontology>> annotations = new GNormPlusClient().annotate(doc, prop);
+	Map<SpanList, LinkedHashSet<Ontology>> annotations = new HashMap<>();
+	new GNormPlusClient().annotate(doc, prop, annotations);
 	Set<SpanList> set = annotations.keySet();
 	for (SpanList s1 : set) {
 	    Set<Ontology> onts = annotations.get(s1);
