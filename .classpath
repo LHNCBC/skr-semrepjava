@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" output="target/classes" path="src/main/java">
+	<classpathentry kind="src" path="src/main/java">
 		<attributes>
 			<attribute name="optional" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="src" output="target/test-classes" path="src/test/java">
+	<classpathentry kind="src" path="src/test/java">
 		<attributes>
 			<attribute name="optional" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>
@@ -24,5 +24,8 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/metamaplite-3.6-standalone.jar"/>
+	<classpathentry kind="lib" path="C:/Projects/CarolineZeissNew/lib/GNormPlus_HK.jar"/>
+	<classpathentry kind="lib" path="C:/Projects/TranslationalPortal2/lib/org.tartarus.snowball.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

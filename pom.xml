@@ -27,11 +27,6 @@
       	<version>1.8.4</version>
 	</dependency>
 	<dependency>
-  		<groupId>gov.nih.nlm.nls</groupId>
-  		<artifactId>metamaplite</artifactId>
- 		<version>3.6.1</version>
-	</dependency>
-	<dependency>
     	<groupId>edu.stanford.nlp</groupId>
     	<artifactId>stanford-corenlp</artifactId>
     	<version>3.9.1</version>
