@@ -1,4 +1,4 @@
-package gov.nih.nlm.semrepjava.wsd;
+package gov.nih.nlm.ner.wsd;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;

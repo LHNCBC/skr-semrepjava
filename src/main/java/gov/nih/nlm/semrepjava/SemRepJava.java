@@ -7,8 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -20,12 +18,12 @@ import gov.nih.nlm.ling.core.Sentence;
 import gov.nih.nlm.ling.core.SpanList;
 import gov.nih.nlm.ling.sem.Ontology;
 import gov.nih.nlm.ner.metamap.MetaMapLiteClient;
+import gov.nih.nlm.ner.wsd.WSDClient;
 import gov.nih.nlm.semrepjava.core.Chunk;
 import gov.nih.nlm.semrepjava.core.ChunkedSentence;
 import gov.nih.nlm.semrepjava.core.MedLineDocument;
 import gov.nih.nlm.semrepjava.utils.MedLineParser;
 import gov.nih.nlm.semrepjava.utils.OpennlpUtils;
-import gov.nih.nlm.semrepjava.wsd.WSDClient;
 
 public class SemRepJava 
 {
