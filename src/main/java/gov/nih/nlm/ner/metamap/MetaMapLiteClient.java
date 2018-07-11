@@ -16,16 +16,30 @@ import gov.nih.nlm.ling.core.Document;
 import gov.nih.nlm.ling.core.SpanList;
 import gov.nih.nlm.ling.process.TermAnnotator;
 import gov.nih.nlm.ling.sem.Ontology;
-import gov.nih.nlm.semrepjava.core.UMLSConcept;
+import gov.nih.nlm.semrep.core.UMLSConcept;
+
+/**
+ * Implementation of client for MetaMapLite(mml) server.
+ * 
+ * @author Zeshan Peng
+ *
+ */
 
 public class MetaMapLiteClient implements TermAnnotator{
 	
 	private int serverPort;
 	private String serverName;
 	
+	/**
+	 * Create a valid socket object with given properties
+	 * 
+	 * @param props appropriate properties for mml server infos
+	 * @return a valid socket object
+	 */
+	
 	private Socket setEnvironment(Properties props) {
-		this.serverPort = Integer.parseInt(props.getProperty("server.port", "12345"));
-		this.serverName = props.getProperty("server.name", "indsrv2");
+		this.serverPort = Integer.parseInt(props.getProperty("metamaplite.server.port", "12345"));
+		this.serverName = props.getProperty("metamaplite.server.name", "indsrv2");
 		try {
 			return new Socket(this.serverName, this.serverPort);
 		} catch (UnknownHostException e) {
@@ -39,6 +53,13 @@ public class MetaMapLiteClient implements TermAnnotator{
 		}
 	}
 	
+	/**
+	 * Query MetaMapLite server with the given socket and input string
+	 * 
+	 * @param socket the socket connected with the mml server
+	 * @param input string to be processed by MetaMapLite
+	 * @return string returned by MetaMapLite server program
+	 */
 	private String queryServer(Socket socket,String input) {
 		StringBuilder sb = new StringBuilder();  
 		try {
@@ -62,6 +83,10 @@ public class MetaMapLiteClient implements TermAnnotator{
 		}
 	      return sb.toString();
 	}
+	
+	/**
+	 * Implementation of annotate function in TermAnnotator interface
+	 */
 	
 	public void annotate(Document document, Properties props, Map<SpanList, LinkedHashSet<Ontology>> annotations) {
 		

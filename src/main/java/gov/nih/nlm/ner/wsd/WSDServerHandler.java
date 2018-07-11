@@ -16,6 +16,13 @@ import org.json.JSONObject;
 import gov.nih.nlm.nls.wsd.algorithms.AEC.AECMethod;
 import gov.nih.nlm.nls.wsd.algorithms.MRD.CandidateCUI;
 
+/**
+ * This class handles client requests for word sense disambiguation server
+ * 
+ * @author Zeshan Peng
+ *
+ */
+
 public class WSDServerHandler extends Thread {
 	final BufferedInputStream bis;
 	final BufferedOutputStream bos;

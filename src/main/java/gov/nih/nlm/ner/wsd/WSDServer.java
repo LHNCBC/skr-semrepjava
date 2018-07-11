@@ -11,6 +11,12 @@ import java.util.Properties;
 
 import gov.nih.nlm.nls.wsd.algorithms.AEC.AECMethod;
 
+/**
+ * Implementation of word sense disambiguation server program
+ * 
+ * @author Zeshan Peng
+ *
+ */
 
 public class WSDServer {
 	

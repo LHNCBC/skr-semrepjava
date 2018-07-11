@@ -26,13 +26,26 @@ import gov.nih.nlm.ling.core.Word;
 import gov.nih.nlm.ling.sem.Concept;
 import gov.nih.nlm.ling.sem.Entity;
 import gov.nih.nlm.ling.sem.Ontology;
-import gov.nih.nlm.nls.wsd.algorithms.MRD.CandidateCUI;
-import gov.nih.nlm.semrepjava.core.UMLSConcept;
+import gov.nih.nlm.semrep.core.UMLSConcept;
+
+/**
+ * Implementation of client for word sense disambiguation(wsd) server 
+ * 
+ * @author Zeshan Peng
+ *
+ */
 
 public class WSDClient {
 	
 	private int serverPort;
 	private String serverName;
+	
+	/**
+	 * Create a valid socket object with given properties
+	 * 
+	 * @param props appropriate properties for wsd server infos
+	 * @return a valid socket object
+	 */
 	
 	private Socket setEnvironment(Properties props) {
 		this.serverPort = Integer.parseInt(props.getProperty("wsd.server.port", "6789"));
@@ -49,6 +62,14 @@ public class WSDClient {
 			return null;
 		}
 	}
+	
+	/**
+	 * Query wsd server with the given socket and input string
+	 * 
+	 * @param socket the socket connected with the wsd server
+	 * @param input string to be processed by wsd
+	 * @return string returned by wsd server program
+	 */
 	
 	private String queryServer(Socket socket,String input) {
 		StringBuilder sb = new StringBuilder();  
@@ -74,6 +95,14 @@ public class WSDClient {
 	      return sb.toString();
 	}
 	
+	/**
+	 * Find the the best matched concept name from a list of preferred names
+	 * 
+	 * @param names the list of preferred names
+	 * @param map the map from concept name to concept object
+	 * @return the concept object which has the best matched concept name
+	 */
+	
 	private UMLSConcept findBestMatchConcept(List<String> names, Map<String, UMLSConcept> map) {
 		UMLSConcept bestConcept = map.get(names.get(0));
 		for(String name : names) {
@@ -82,6 +111,14 @@ public class WSDClient {
 		}
 		return bestConcept;
 	}
+	
+	/**
+	 * Disambiguate concepts names if there are more than one concept names associated with a string
+	 * 
+	 * @param doc the document object to be disambiguated
+	 * @param props the appropriate properties to be used for the disambiguation
+	 * @param annotations the map from spanlist object to ontologies set
+	 */
 	
 	public void disambiguate(Document doc, Properties props, Map<SpanList, LinkedHashSet<Ontology>> annotations) {
 		Socket s = setEnvironment(props);
