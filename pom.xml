@@ -13,6 +13,18 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
+  
+  <repositories>
+    <repository>
+      <id>ii internal</id>
+      <url>https://metamap.nlm.nih.gov/maven2/</url>
+    </repository>
+    <repository>
+	  <id>central</id>
+	  <name>Maven Central</name>
+	  <url>http://repo1.maven.org/maven2</url>
+	</repository>
+  </repositories>
 
   <dependencies>
     <dependency>
@@ -26,11 +38,15 @@
       	<artifactId>opennlp-tools</artifactId>
       	<version>1.8.4</version>
 	</dependency>
+<<<<<<< HEAD
 	<dependency>
+=======
+	<!--<dependency>
+>>>>>>> branch 'master' of https://github.com/woshipzs/semrepjava
     	<groupId>edu.stanford.nlp</groupId>
     	<artifactId>stanford-corenlp</artifactId>
     	<version>3.9.1</version>
-	</dependency>
+	</dependency>-->
 	<dependency>
       	<groupId>org.apache.logging.log4j</groupId>
       	<artifactId>log4j-api</artifactId>
@@ -51,5 +67,37 @@
     	<artifactId>log4j</artifactId>
     	<version>1.2.17</version>
 	</dependency>
+    <dependency>
+      <groupId>gov.nih.nlm</groupId>
+      <artifactId>bioscore</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>gov.nih.nlm.nls</groupId>
+      <artifactId>metamaplite</artifactId>
+      <version>3.6.1</version>
+    </dependency>
+    <dependency>
+      <groupId>gov.nih.nlm.nls</groupId>
+      <artifactId>aec_mrd_wsd</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+    
+    
+    <!--<dependency>
+      <groupId>org.w3c.xml</groupId>
+      <artifactId>thirdparty</artifactId>
+      <version>1.2.0</version>
+    </dependency>
+    <dependency>
+      <groupId>monq</groupId>
+      <artifactId>monq</artifactId>
+      <version>1.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sleepycat.db</groupId>
+      <artifactId>db</artifactId>
+      <version>4.1</version>
+    </dependency>-->
   </dependencies>
 </project>
