@@ -61,16 +61,21 @@ public class MedLineParser {
 					sb.append(content);
 				}
 			} else {
-				json.put(pkey, sb.toString());
-				text = json.getString("AB");
-				sentList = OpennlpUtils.sentenceSplit(text);
-				title = json.getString("TI");
-				PMID = json.getString("PMID");
-				md = new MedLineDocument(PMID, text, sentList, title);
-				mdList.add(md);
-				sb = new StringBuilder();
-				json = new JSONObject();
-				pkey = "";
+				if(!sb.toString().isEmpty()) {
+					json.put(pkey, sb.toString());
+					text = json.getString("AB");
+					sentList = OpennlpUtils.sentenceSplit(text);
+					title = json.getString("TI");
+					PMID = json.getString("PMID");
+					md = new MedLineDocument(PMID, text, sentList, title);
+					for(Sentence sent: sentList) {
+						sent.setDocument(md);
+					}
+					mdList.add(md);
+					sb = new StringBuilder();
+					json = new JSONObject();
+					pkey = "";
+				}
 			}
 			line = br.readLine();
 		}

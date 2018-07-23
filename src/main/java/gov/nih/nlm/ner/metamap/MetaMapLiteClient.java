@@ -130,9 +130,15 @@ public class MetaMapLiteClient implements TermAnnotator{
 				}while(cursorIndex < fields.length && !fields[cursorIndex].isEmpty());
 				annotations.put(sl, onts);
 			}
-			System.out.println("Parse succeed.");
+			System.out.println("Parse succeed.\n");
+			try {
+				s.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.err.println("fail to close socket in metamaplite client");
+			}
 		}else {
-			System.out.println("failed to create socket");
+			System.out.println("failed to create socket.\n");
 		}
 		
 	}

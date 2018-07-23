@@ -85,12 +85,14 @@ public class WSDClient {
         		//System.out.println(line);
         		sb.append(line);
         		line = br.readLine();
+        		if(line != null && line.isEmpty())
+        			System.out.println("yes");
         	}while(line != null);
         	bis.close();
         	br.close();
 
 		} catch (IOException ioe) {
-			System.err.println("Socket error");
+			System.err.println("Socket error haha");
 		}
 	      return sb.toString();
 	}
@@ -121,7 +123,6 @@ public class WSDClient {
 	 */
 	
 	public void disambiguate(Document doc, Properties props, Map<SpanList, LinkedHashSet<Ontology>> annotations) {
-		Socket s = setEnvironment(props);
 		String text = doc.getText();
 		LinkedHashSet<Ontology> onts;
 		Iterator<Ontology> itr;
@@ -133,6 +134,7 @@ public class WSDClient {
 		SpanList headSpan;
 		
 		for(SpanList sl: annotations.keySet()) {
+			Socket s = setEnvironment(props);
 			onts = annotations.get(sl);
 			wordList = doc.getWordsInSpan(sl);
 			headSpan = MultiWord.findHeadFromCategory(wordList).getSpan();
@@ -173,6 +175,12 @@ public class WSDClient {
 					System.out.println("failed to create socket");
 				}
 
+			}
+			try {
+				s.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.err.println("fail to close socket in wsd client");
 			}
 		}
 		
