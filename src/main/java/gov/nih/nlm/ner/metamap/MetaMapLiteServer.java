@@ -11,6 +11,13 @@ import java.util.Properties;
 
 import gov.nih.nlm.nls.ner.MetaMapLite;
 
+/**
+ * Implementation of MetaMapLite server program
+ * 
+ * @author Zeshan Peng
+ *
+ */
+
 public class MetaMapLiteServer {
 	
 	public static void main(String[] args) throws IOException, ClassNotFoundException, InstantiationException, NoSuchMethodException, IllegalAccessException {
@@ -26,7 +33,7 @@ public class MetaMapLiteServer {
 					if(fields[0].equals("--configfile")) {
 						configFilename = fields[1];
 					}else if (fields[0].equals("--indexdir")) {
-					      optionProps.setProperty ("index.dir.name",fields[1]);
+					      optionProps.setProperty ("metamaplite.index.dir.name",fields[1]);
 				    } else if (fields[0].equals("--modelsdir")) {
 				      optionProps.setProperty ("opennlp.models.dir",fields[1]);
 				    }
@@ -44,11 +51,11 @@ public class MetaMapLiteServer {
 		}
 		finalProps.putAll(optionProps);
 		System.getProperties().putAll(finalProps);
-		MetaMapLite.expandIndexDir(finalProps, System.getProperty("index.dir.name", "data/ivf/2017AA/Base/strict"));
+		MetaMapLite.expandIndexDir(finalProps, System.getProperty("metamaplite.index.dir.name", "data/ivf/2017AA/Base/strict"));
 		 
 		MetaMapLite metaMapLiteInst = new MetaMapLite(System.getProperties());
 		 
-		int port = Integer.parseInt(System.getProperty("server.port", "12345"));
+		int port = Integer.parseInt(System.getProperty("metamaplite.server.port", "12345"));
 			
 		ServerSocket serverSocket = new ServerSocket(port); 
 		

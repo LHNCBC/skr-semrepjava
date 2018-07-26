@@ -16,6 +16,13 @@ import gov.nih.nlm.nls.metamap.lite.types.Entity;
 import gov.nih.nlm.nls.metamap.lite.types.Ev;
 import gov.nih.nlm.nls.ner.MetaMapLite;
 
+/**
+ * This class handles client requests for MetaMapLite server
+ * 
+ * @author Zeshan Peng
+ *
+ */
+
 public class MetaMapLiteServerHandler extends Thread {
 	final BufferedInputStream bis;
 	final BufferedOutputStream bos;
