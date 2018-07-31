@@ -148,11 +148,11 @@ public class SemRep
 			if(!dir.isDirectory()) {
 				dir.mkdirs();
 			}
-			BufferedWriter writer = new BufferedWriter(new FileWriter(outPath + "/" + doc.getId() + ".ann2"));
+			BufferedWriter writer = new BufferedWriter(new FileWriter(outPath + "/" + doc.getId() + ".ann"));
 			writer.write(sb.toString());
 			writer.close();
 		}else if (inputFormat.equalsIgnoreCase("singlefile")) {
-			BufferedWriter writer = new BufferedWriter(new FileWriter(outPath + ".ann2", true));
+			BufferedWriter writer = new BufferedWriter(new FileWriter(outPath + ".ann", true));
 			writer.write(sb.toString());
 			writer.close();
 		}
@@ -206,7 +206,7 @@ public class SemRep
 			StringBuilder sb = new StringBuilder();
 			do {
 				line = br.readLine();
-				if( line == null || line.trim().isEmpty()) {
+				if( (line == null || line.trim().isEmpty()) && !sb.toString().trim().isEmpty()) {
 					count++;
 					Document doc = processingFromText(Integer.toString(count),sb.toString());
 					sb = new StringBuilder();
@@ -226,6 +226,12 @@ public class SemRep
 			List<MedLineDocument> mdList = MedLineParser.parseMultiMedLines(br);
 			for (MedLineDocument md : mdList) {
 				generateChunkOutput(md);
+				//test
+				MetaMapLiteClient client = new MetaMapLiteClient();
+				Map<SpanList, LinkedHashSet<Ontology>> annotations = new HashMap<SpanList, LinkedHashSet<Ontology>>();
+				client.annotate(md, System.getProperties(), annotations);
+				WSDClient wsdClient = new WSDClient();
+				wsdClient.disambiguate(md, System.getProperties(), annotations);
 			}
 		}
 		br.close();

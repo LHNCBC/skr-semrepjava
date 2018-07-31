@@ -85,7 +85,7 @@ public class OpennlpUtils {
 	 * @throws IOException if lemmatizer model file is not found
 	 */
 	public static String[] lemmatization(String[] tokens, String[] tags) throws IOException {
-		InputStream modelIn = new FileInputStream(System.getProperty("opennlp.en-lemmatizer.bin.path", "data/models/en-lemmatizer.txt"));
+		InputStream modelIn = new FileInputStream(System.getProperty("opennlp.en-lemmatizer.bin.path", "data/models/en-lemmatizer.bin"));
     	DictionaryLemmatizer lemmatizer = new DictionaryLemmatizer(modelIn);
     	String[] lemmas = lemmatizer.lemmatize(tokens, tags);
     	return lemmas;
