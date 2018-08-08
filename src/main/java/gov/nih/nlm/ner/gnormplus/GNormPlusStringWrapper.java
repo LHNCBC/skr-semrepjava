@@ -644,7 +644,12 @@ public class GNormPlusStringWrapper {
 	    int last = Integer.parseInt(anno[1]);
 	    String mention = anno[2];
 	    String type = anno[3];
-	    String geneid = anno[4];
+
+	    String geneid = null;
+	    if (anno.length >= 5)
+		geneid = anno[4];
+	    else
+		geneid = new String("0");
 
 	    SpanList sp = new SpanList(start, last);
 	    LinkedHashSet<Ontology> concs = new LinkedHashSet<>();
