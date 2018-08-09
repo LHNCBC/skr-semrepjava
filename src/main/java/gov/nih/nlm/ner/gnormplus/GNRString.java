@@ -1062,7 +1062,11 @@ public class GNRString {
 			&& !Mention.matches(".*[\\(].*")) {
 		} else if (Mention_nospace.length() <= 3 && Mention.matches(".*[0-9].*") && Mention.matches(".*[\\]].*")
 			&& !Mention.matches(".*[\\[].*")) {
-		} else if (Double.parseDouble(outputArr3_score.get(i)) > threshold) {
+		}
+		// Checking boundary of outputArr3
+		// May 9 2018 Dongwook Shin
+		// } else if (Double.parseDouble(outputArr3_score.get(i)) > threshold) {
+		else if (i < outputArr3_score.size() && Double.parseDouble(outputArr3_score.get(i)) > threshold) {
 		    boolean overlap = false;
 		    for (int j = 0; j < BioCDocobj.Annotations.get(countPMID).get(countPassage).size(); j++) {
 			String GetData[] = BioCDocobj.Annotations.get(countPMID).get(countPassage).get(j).split("\t");
