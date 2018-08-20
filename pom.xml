@@ -63,16 +63,6 @@
     	<artifactId>log4j</artifactId>
     	<version>1.2.17</version>
 	</dependency>
-	<dependency> 
-      <groupId>gov.nih.nlm</groupId>
-      <artifactId>bioscore</artifactId>
-      <version>0.0.1-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>gov.nih.nlm.nls</groupId>
-      <artifactId>metamaplite</artifactId>
-      <version>3.6.1</version>
-    </dependency>
     <dependency>
       <groupId>gov.nih.nlm.nls</groupId> 
       <artifactId>aec_mrd_wsd</artifactId>
@@ -82,6 +72,11 @@
       <groupId>gov.nih.nlm</groupId>
       <artifactId>bioscores</artifactId>
       <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>gov.nih.nlm.nls</groupId>
+      <artifactId>metamaplite</artifactId>
+      <version>3.6</version>
     </dependency>
     
 <!-- https://mvnrepository.com/artifact/gov.nih.nlm.nls.lvg/lvgdist -->

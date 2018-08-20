@@ -6,8 +6,9 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import gov.nih.nlm.ling.core.Sentence;
+import gov.nih.nlm.ling.core.Word;
 import gov.nih.nlm.ling.core.WordLexeme;
-import gov.nih.nlm.nls.lvg.Util.Word;
 import gov.nih.nlm.semrep.core.Chunk;
 import gov.nih.nlm.semrep.core.ChunkedSentence;
 import opennlp.tools.chunker.ChunkerME;
