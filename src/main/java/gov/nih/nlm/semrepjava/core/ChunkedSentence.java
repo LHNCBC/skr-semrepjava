@@ -4,6 +4,7 @@ import java.util.List;
 
 import gov.nih.nlm.ling.core.Sentence;
 import gov.nih.nlm.ling.core.Span;
+import gov.nih.nlm.semrep.core.Chunk;
 
 public class ChunkedSentence extends Sentence {
 
