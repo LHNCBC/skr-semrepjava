@@ -2,6 +2,19 @@
 
 Semantic Knowledge Representation project in Lister Hill Center for National Institute of Health.
 
+# Configuration
+
+To run source code, you need to either add all of the jar files in lib directory to your building path or compile them through maven and add them as maven dependencies in the pom file.
+
+Maven Compilation E.G.:
+
+mvn install:install-file -Dfile=lib/metamaplite-3.6.jar -DgroupId=gov.nih.nlm.nls -DartifactId=metamaplite -Dversion=3.6 -Dpackaging=jar
+
+mvn install:install-file -Dfile=lib/bioscores-1.0.0.jar -DgroupId=gov.nih.nlm -DartifactId=bioscores -Dversion=1.0.0 -Dpackaging=jar
+
+
+
+
 # Usage
 sh bin/semrepjava.sh <options>
 
