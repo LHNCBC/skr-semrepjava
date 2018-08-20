@@ -63,13 +63,18 @@
     	<artifactId>log4j</artifactId>
     	<version>1.2.17</version>
 	</dependency>
-    <!--  <dependency>
+	<dependency> 
+      <groupId>gov.nih.nlm</groupId>
+      <artifactId>bioscore</artifactId>
+      <version>0.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
       <groupId>gov.nih.nlm.nls</groupId>
       <artifactId>metamaplite</artifactId>
       <version>3.6.1</version>
-    </dependency> -->
+    </dependency>
     <dependency>
-      <groupId>gov.nih.nlm.nls</groupId>
+      <groupId>gov.nih.nlm.nls</groupId> 
       <artifactId>aec_mrd_wsd</artifactId>
       <version>1.0-SNAPSHOT</version>
     </dependency>
@@ -79,6 +84,8 @@
       <version>1.0.0</version>
     </dependency>
     
+<!-- https://mvnrepository.com/artifact/gov.nih.nlm.nls.lvg/lvgdist -->
+   
     
     <!--<dependency>
       <groupId>org.w3c.xml</groupId>
@@ -95,5 +102,11 @@
       <artifactId>db</artifactId>
       <version>4.1</version>
     </dependency>-->
+<!-- https://mvnrepository.com/artifact/gov.nih.nlm.nls.lvg/lvgdist -->
+	<!-- <dependency>
+		<groupId>gov.nih.nlm.nls.lvg</groupId>
+ 		<artifactId>lvg2016dist</artifactId>
+  		<version>0.0.1</version>
+ 	</dependency> -->
   </dependencies>
 </project>

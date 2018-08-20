@@ -26,3 +26,4 @@
 	<classpathentry kind="lib" path="lib/metamaplite-3.6-standalone.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>
+
