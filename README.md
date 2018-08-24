@@ -12,6 +12,10 @@ mvn install:install-file -Dfile=lib/metamaplite-3.6.jar -DgroupId=gov.nih.nlm.nl
 
 mvn install:install-file -Dfile=lib/bioscores-1.0.0.jar -DgroupId=gov.nih.nlm -DartifactId=bioscores -Dversion=1.0.0 -Dpackaging=jar
 
+mvn install:install-file -Dfile=lib/lvg2016dist-0.0.1.jar -DgroupId=gov.nih.nlm.nls.lvg -DartifactId=lvg2016dist -Dversion=0.0.1 -Dpackaging=jar
+
+mvn install:install-file -Dfile=lib/gnormplus-1.0.0.jar -DgroupId=gov.nih.nlm -DartifactId=gnormplus -Dversion=1.0.0 -Dpackaging=jar
+
 
 
 
