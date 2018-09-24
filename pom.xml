@@ -48,6 +48,11 @@
       	<artifactId>json</artifactId>
       	<version>20180130</version>
 	</dependency>
+	<dependency>
+      <groupId>com.sleepycat</groupId>
+      <artifactId>je</artifactId>
+      <version>18.3.1</version>
+	</dependency>
     <dependency> 
       <groupId>gov.nih.nlm</groupId>
       <artifactId>bioscores</artifactId>
