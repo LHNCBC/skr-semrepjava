@@ -39,6 +39,5 @@ public class LexiconTest extends TestCase {
 	LexAccessApi lexAccess = lexWrapper.initializeLexicon("lexAccess.properties");
 	LexAccessApiResult result = lexWrapper.getLexResult("cold");
 	System.out.println(result.GetText());
-
     }
 }

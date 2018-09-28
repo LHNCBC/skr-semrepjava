@@ -1,29 +1,57 @@
-package gov.nih.nlm.semrep;
+package gov.nih.nlm.ner;
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.FutureTask;
+import java.util.logging.Logger;
 
 import gov.nih.nlm.ling.core.Document;
 import gov.nih.nlm.ling.core.SpanList;
 import gov.nih.nlm.ling.sem.Ontology;
-import gov.nih.nlm.semrep.core.GNormPlusConcept;
+import gov.nih.nlm.ner.gnormplus.GNormPlusClient;
+import gov.nih.nlm.ner.metamap.MetaMapLiteClient;
 
-public class GNormPlusClient {
+/**
+ * A multi-threaded client to accommodate multiple named entity recognition systems.
+ * 
+ * @author Dongwook Shin
+ * @author Halil Kilicoglu
+ *
+ */
 
+public class MultiThreadClient {
+	private static Logger log = Logger.getLogger(MultiThreadClient.class.getName());	
+	
+	private static MetaMapLiteClient metamap;
+	private static GNormPlusClient gnormplus;
+	
+	public MultiThreadClient(Properties props) {
+		init(props);
+	}
+	
+	private static void  init(Properties props) {
+		if (metamap == null) {
+			metamap = new MetaMapLiteClient(props);
+		}
+		if (gnormplus == null) {
+			gnormplus = new GNormPlusClient(props);
+		}
+	}
+
+/*    private int MserverPort;
+    private String MserverName;
     private int GserverPort;
     private String GserverName;
 
-    private Socket setEnvironment(Properties props) {
+    private Socket setGEnvironment(Properties props) {
 	this.GserverPort = Integer.parseInt(props.getProperty("gserver.port"));
 	this.GserverName = props.getProperty("gserver.name");
 	// this.serverPort = 30000;
@@ -40,9 +68,28 @@ public class GNormPlusClient {
 	    e.printStackTrace();
 	    return null;
 	}
-    }
+    }*/
 
-    private String queryServer(Socket socket, String input) {
+/*    private Socket setMEnvironment(Properties props) {
+	this.MserverPort = Integer.parseInt(props.getProperty("mserver.port"));
+	this.MserverName = props.getProperty("mserver.name");
+	// this.serverPort = 30000;
+	//this.serverName = "indsrv2";
+
+	try {
+	    return new Socket(this.MserverName, this.MserverPort);
+	} catch (UnknownHostException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	    return null;
+	} catch (IOException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+	    return null;
+	}
+    }*/
+
+/*    private String queryServer(Socket socket, String input) {
 	StringBuilder sb = new StringBuilder();
 	try {
 	    // write text to the socket
@@ -64,79 +111,83 @@ public class GNormPlusClient {
 	    System.err.println("Socket error");
 	}
 	return sb.toString();
-    }
+    }*/
 
-    /*- public Map<SpanList, LinkedHashSet<Ontology>> annotate(Document document, Properties props) {
-    
-    Map<SpanList, LinkedHashSet<Ontology>> annotations = new HashMap<SpanList, LinkedHashSet<Ontology>>();
-    Socket s = setEnvironment(props);
-    String inputText = document.getText();
-    String answer = s == null ? null : queryServer(s, inputText);
-    // System.out.println(answer);
-    
-    if (answer != null) {
-        String[] entities = answer.split("\n");
-        for (String entity : entities) {
-    	// System.out.println(entity);
-    	String compo[] = entity.split("\t");
-    	int start = Integer.parseInt(compo[0]);
-    	int end = Integer.parseInt(compo[1]);
-    	SpanList s1 = new SpanList(start, end);
-    	int geneId = Integer.parseInt(compo[4]);
-    
-    	GNormPlusConcept gcon = new GNormPlusConcept(compo[2], compo[3], geneId);
-    	LinkedHashSet<Ontology> onts = annotations.get(s1);
-    	if (onts != null)
-    	    onts.add(gcon);
-    	else {
-    	    onts = new LinkedHashSet<Ontology>();
-    	    onts.add(gcon);
-    	    annotations.put(s1, onts);
-    	}
-    
-        }
+    private Map<SpanList, LinkedHashSet<Ontology>> annotate(final Document document, final Properties props) {
+	// public void annotate(final Document document, final Properties props,
+	//	    Map<SpanList, LinkedHashSet<Ontology>> annotate) {
+	// Socket s = setGEnvironment(props);
+	// String inputText = document.getText();
+	// Document doc = document;
+	// final Properties pro = props;
+
+	int threadNum = 2;
+	Map<SpanList, LinkedHashSet<Ontology>> annotations = new HashMap<>();
+	try {
+	    ExecutorService executor = Executors.newFixedThreadPool(threadNum);
+	    List<FutureTask<Map<SpanList, LinkedHashSet<Ontology>>>> taskList = new ArrayList<>();
+
+	    FutureTask<Map<SpanList, LinkedHashSet<Ontology>>> futureTask_1 = new FutureTask<>(
+		    new Callable<Map<SpanList, LinkedHashSet<Ontology>>>() {
+
+			// @Override
+			@Override
+			public Map<SpanList, LinkedHashSet<Ontology>> call() {
+			    final Map<SpanList, LinkedHashSet<Ontology>> anno = new HashMap<>();
+			    new GNormPlusClient(props).annotate(document, props, anno);
+			    return anno;
+			}
+		    });
+	    taskList.add(futureTask_1);
+
+	    FutureTask<Map<SpanList, LinkedHashSet<Ontology>>> futureTask_2 = new FutureTask<>(
+		    new Callable<Map<SpanList, LinkedHashSet<Ontology>>>() {
+
+			// @Override
+			@Override
+			public Map<SpanList, LinkedHashSet<Ontology>> call() {
+			    final Map<SpanList, LinkedHashSet<Ontology>> anno = new HashMap<>();
+			    new MetaMapLiteClient(props).annotate(document, props, anno);
+			    return anno;
+			}
+		    });
+
+	    taskList.add(futureTask_2);
+	    executor.execute(futureTask_1);
+	    executor.execute(futureTask_2);
+
+	    FutureTask<Map<SpanList, LinkedHashSet<Ontology>>> futureTask_r1 = taskList.get(0);
+	    annotations = futureTask_r1.get();
+
+	    FutureTask<Map<SpanList, LinkedHashSet<Ontology>>> futureTask_r2 = taskList.get(1);
+	    Map<SpanList, LinkedHashSet<Ontology>> secondMap = futureTask_r2.get();
+
+	    Set<SpanList> set = secondMap.keySet();
+	    for (SpanList s1 : set) {
+		LinkedHashSet<Ontology> onts1 = annotations.get(s1);
+		LinkedHashSet<Ontology> onts2 = secondMap.get(s1);
+		if (onts1 == null) {
+		    annotations.put(s1, onts2);
+		} else {
+		    onts1.addAll(onts2);
+		}
+	    }
+
+	    executor.shutdown();
+	} catch (Exception e) {
+	    e.printStackTrace();
+	}
+	log.info("Annotation complete.");
+	return annotations;
     }
-    
-    return annotations;
-    
-    } */
 
     public void annotate(Document document, Properties props, Map<SpanList, LinkedHashSet<Ontology>> annotations) {
-
-	// Map<SpanList, LinkedHashSet<Ontology>> annotations = new HashMap<SpanList, LinkedHashSet<Ontology>>();
-	Socket s = setEnvironment(props);
-	String inputText = document.getText();
-	String answer = s == null ? null : queryServer(s, inputText);
-	// System.out.println(answer);
-
-	if (answer != null) {
-	    String[] entities = answer.split("\n");
-	    for (String entity : entities) {
-		// System.out.println(entity);
-		String compo[] = entity.split("\t");
-		int start = Integer.parseInt(compo[0]);
-		int end = Integer.parseInt(compo[1]);
-		SpanList s1 = new SpanList(start, end);
-		int geneId = Integer.parseInt(compo[4]);
-
-		GNormPlusConcept gcon = new GNormPlusConcept(compo[2], compo[3], geneId);
-		LinkedHashSet<Ontology> onts = annotations.get(s1);
-		if (onts != null)
-		    onts.add(gcon);
-		else {
-		    onts = new LinkedHashSet<>();
-		    onts.add(gcon);
-		    annotations.put(s1, onts);
-		}
-
-	    }
-	}
-
-	// return annotations;
-
+	Map<SpanList, LinkedHashSet<Ontology>> annotationsFromMethod = annotate(document, props);
+	annotations.putAll(annotationsFromMethod);
     }
 
-    public static void main(String[] args) throws IOException {
+    // use unit test instead
+/*    public static void main(String[] args) throws IOException {
 	Socket socket = new Socket("indsrv2", 30000);
 	// Map<SpanList, LinkedHashSet<Ontology>> annotations = new HashMap<SpanList, LinkedHashSet<Ontology>>();
 	String cit = new String(
@@ -148,19 +199,31 @@ public class GNormPlusClient {
 	//"In a clinical trial that is still in progress, we studied the ability of deprenyl and tocopherol, antioxidative agents that act through complementary mechanisms, to delay the onset of disability necessitating levodopa therapy (the primary end point) in patients with early, untreated Parkinson's disease. Eight hundred subjects were randomly assigned in a two-by-two factorial design to receive deprenyl, tocopherol, a combination of both drugs, or placebo, and were followed up to determine the frequency of development of the end point. The interim results of independent monitoring prompted a preliminary comparison of the 401 subjects assigned to tocopherol or placebo with the 399 subjects assigned to deprenyl, alone or with tocopherol. Only 97 subjects who received deprenyl reached the end point during an average 12 months of follow-up, as compared with 176 subjects who did not receive deprenyl (P less than 10(-8). The risk of reaching the end point was reduced by 57 percent for the subjects who received deprenyl (Cox hazard ratio, 0.43; 95 percent confidence limits, 0.33 and 0.55; P less than 10(-10]. The subjects who received deprenyl also had a significant reduction in their risk of having to give up full-time employment (P = 0.01). We conclude from these preliminary results that the use of deprenyl (10 mg per day) delays the onset of disability associated with early, otherwise untreated cases of Parkinson's disease.");
 	Document doc = new Document("1", cit3);
 	Properties prop = new Properties();
-	prop.setProperty("gserver.port", "30000");
-	prop.setProperty("gserver.name", "indsrv2");
-	// Map<SpanList, LinkedHashSet<Ontology>> annotations = new GNormPlusClient().annotate(doc, prop);
+	prop.setProperty("gnormplus.server.port", "30000");
+	prop.setProperty("gnormplus.server.name", "indsrv2");
+	prop.setProperty("metamaplite.server.port", "12345");
+	prop.setProperty("metamaplite.server.name", "indsrv2");
+	// Map<SpanList, LinkedHashSet<Ontology>> annotations = new MultiThreadClient().annotate(doc, prop);
 	Map<SpanList, LinkedHashSet<Ontology>> annotations = new HashMap<>();
-	new GNormPlusClient().annotate(doc, prop, annotations);
+	new MultiThreadClient(prop).annotate(doc, prop, annotations);
+	// MultiThreadClient MTC = new MultiThreadClient();
+	// MTC.annotate(doc, prop, annotations);
 	Set<SpanList> set = annotations.keySet();
 	for (SpanList s1 : set) {
 	    Set<Ontology> onts = annotations.get(s1);
+	    System.out.println(s1.toString());
+	    System.out.print("\t");
 	    for (Ontology ont : onts) {
-		GNormPlusConcept gpc = (GNormPlusConcept) ont;
-		System.out.println(s1.toString() + " : " + gpc.toString());
+		if (ont.getClass().equals(GNormPlusConcept.class)) {
+		    GNormPlusConcept gpc = (GNormPlusConcept) ont;
+		    System.out.print(" *** GNormPLus : " + gpc.toString());
+		} else {
+		    // Ontology gpc = (Concept) ont;
+		    System.out.print(" --- MetaMap Lite : " + ont.toString());
+		}
 	    }
+	    System.out.println();
 	}
-	// System.out.println(gnormplusout);
-    }
+
+    }*/
 }

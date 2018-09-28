@@ -35,3 +35,4 @@ SemRep_GS
 *.ann2
 *.ann
 /target/
+/classes/
