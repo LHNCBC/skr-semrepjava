@@ -10,6 +10,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.json.JSONObject;
 
@@ -24,6 +25,8 @@ import gov.nih.nlm.nls.wsd.algorithms.MRD.CandidateCUI;
  */
 
 public class WSDServerHandler extends Thread {
+	private static Logger log = Logger.getLogger(WSDServerHandler.class.getName());	
+	
 	final BufferedInputStream bis;
 	final BufferedOutputStream bos;
 	final Socket socket;
@@ -55,7 +58,7 @@ public class WSDServerHandler extends Thread {
 	    		System.out.println(key);
 	    		cuis.add(new CandidateCUI((String) cuiJson.get(key), key));
 	    	}
-	    	List<String> filteredNames = this.methodInst.disambiguate(cuis, text);
+	    	List<String> filteredNames =AECMethod.disambiguate(cuis, text);
 	    	json = new JSONObject();
 	    	for(String name: filteredNames) {
 	    		json.put(name, name);

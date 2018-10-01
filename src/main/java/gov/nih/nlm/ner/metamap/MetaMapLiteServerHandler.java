@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.List;
+import java.util.logging.Logger;
 
 import bioc.BioCDocument;
 import gov.nih.nlm.nls.metamap.document.FreeText;
@@ -20,10 +21,13 @@ import gov.nih.nlm.nls.ner.MetaMapLite;
  * This class handles client requests for MetaMapLite server
  * 
  * @author Zeshan Peng
+ * @author Halil Kilicoglu
  *
  */
 
 public class MetaMapLiteServerHandler extends Thread {
+	private static Logger log = Logger.getLogger(MetaMapLiteServerHandler.class.getName());	
+	
 	final BufferedInputStream bis;
 	final BufferedOutputStream bos;
 	final Socket socket;
@@ -43,7 +47,7 @@ public class MetaMapLiteServerHandler extends Thread {
 			BufferedReader br = new BufferedReader(new InputStreamReader(bis));
 			PrintWriter bw = new PrintWriter(socket.getOutputStream(), true);
 			String inputText = br.readLine();
-	    	BioCDocument document = FreeText.instantiateBioCDocument(inputText.trim());
+	    	BioCDocument document = FreeText.instantiateBioCDocument(inputText);
 	    	List<Entity> entityList = metaMapLiteInst.processDocument(document);
 	    	
 	    	StringBuilder sb = new StringBuilder(); 
@@ -60,10 +64,10 @@ public class MetaMapLiteServerHandler extends Thread {
 				}
 				sb.append(";;"); 
 	    	}
-	    	System.out.println(sb.toString());
 	    	bw.print(sb.toString());
 	    	bw.flush();
 		} catch (Exception e) {
+			log.severe("Unable to process text with MML Server.");
 			e.printStackTrace();
 		}
 
@@ -73,6 +77,7 @@ public class MetaMapLiteServerHandler extends Thread {
 			this.bos.close();
 
 		} catch (IOException e) {
+			log.severe("Unable to close MML Server streams.");
 			e.printStackTrace();
 		}
 	}

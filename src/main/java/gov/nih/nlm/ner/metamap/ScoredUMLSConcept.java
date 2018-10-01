@@ -1,4 +1,4 @@
-package gov.nih.nlm.semrep.core;
+package gov.nih.nlm.ner.metamap;
 
 import java.util.LinkedHashSet;
 
@@ -11,20 +11,20 @@ import gov.nih.nlm.ling.sem.Concept;
  *
  */
 
-public class UMLSConcept extends Concept {
+public class ScoredUMLSConcept extends Concept {
 	
 	private String conceptString;
 	private double score;
 	
 
-	public UMLSConcept(String cui, String name, LinkedHashSet<String> semtypes) {
+	public ScoredUMLSConcept(String cui, String name, LinkedHashSet<String> semtypes) {
 		super(cui, name, semtypes);
 	}
 	
-	public UMLSConcept(String cui, String name, LinkedHashSet<String> semtypes, String source) {
+	public ScoredUMLSConcept(String cui, String name, LinkedHashSet<String> semtypes, String source) {
 		super(cui, name, semtypes, source);
 	}
-	public UMLSConcept(String cui, String name, LinkedHashSet<String> semtypes, String source, String conceptString, double score) {
+	public ScoredUMLSConcept(String cui, String name, LinkedHashSet<String> semtypes, String source, String conceptString, double score) {
 		super(cui, name, semtypes, source);
 		this.conceptString = conceptString;
 		this.score = score;

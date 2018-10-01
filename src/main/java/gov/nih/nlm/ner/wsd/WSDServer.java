@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Properties;
+import java.util.logging.Logger;
 
 import gov.nih.nlm.nls.wsd.algorithms.AEC.AECMethod;
 
@@ -19,6 +20,7 @@ import gov.nih.nlm.nls.wsd.algorithms.AEC.AECMethod;
  */
 
 public class WSDServer {
+	private static Logger log = Logger.getLogger(WSDServer.class.getName());	
 	
 	public static void main(String[] args) throws IOException, ClassNotFoundException, InstantiationException, NoSuchMethodException, IllegalAccessException {
 		
