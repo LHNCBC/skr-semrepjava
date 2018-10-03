@@ -26,7 +26,7 @@ public class MedLineParser {
 	 * @throws IOException if the buffered reader fails to read
 	 */
 	
-	public static List<MedLineDocument> parseMultiMedLines(BufferedReader br) throws IOException {
+	public static List<MedLineDocument> parseMultiMedLines(BufferedReader br, OpennlpUtils nlpClient) throws IOException {
 		
 		List<MedLineDocument> mdList = new ArrayList<MedLineDocument>();
 		String[] textKeys = {"ID", "PMID", "SO", "RF", "NI", "JC", "TA", "IS", "CY", "TT",
@@ -64,7 +64,7 @@ public class MedLineParser {
 				if(!sb.toString().isEmpty()) {
 					json.put(pkey, sb.toString());
 					text = json.getString("AB");
-					sentList = OpennlpUtils.sentenceSplit(text);
+					sentList = nlpClient.sentenceSplit(text);
 					title = json.getString("TI");
 					PMID = json.getString("PMID");
 					md = new MedLineDocument(PMID, text, sentList, title);
@@ -91,8 +91,8 @@ public class MedLineParser {
 	 * @return a MedLineDocument object
 	 * @throws IOException if the buffered reader fails to read
 	 */
-	public static MedLineDocument parseSingleMedLine(BufferedReader br) throws IOException {
-		return parseMultiMedLines(br).get(0);
+	public static MedLineDocument parseSingleMedLine(BufferedReader br, OpennlpUtils nlpClient) throws IOException {
+		return parseMultiMedLines(br, nlpClient).get(0);
 	}
 	
 }

@@ -34,7 +34,6 @@ import gov.nih.nlm.ling.util.FileUtils;
 import gov.nih.nlm.ner.AnnotationFilter;
 import gov.nih.nlm.ner.LargestSpanFilter;
 import gov.nih.nlm.ner.MultiThreadClient;
-import gov.nih.nlm.ner.gnormplus.GNormPlusConcept;
 import gov.nih.nlm.semrep.core.Chunk;
 import gov.nih.nlm.semrep.core.ChunkedSentence;
 import gov.nih.nlm.semrep.core.MedLineDocument;
@@ -55,6 +54,7 @@ public class SemRep
 
 //	private static MetaMapLiteClient metamap;
 	private static MultiThreadClient nerAnnotator;
+	private static OpennlpUtils nlpClient;
 
 	/**
 	 * Create document object from string and analyze the document with respect to 
@@ -67,7 +67,7 @@ public class SemRep
 	 */
 	public static Document lexicoSyntacticAnalysis(String documentID, String text) throws IOException {
 		Document doc = new Document(documentID, text);
-		List<Sentence> sentList= OpennlpUtils.sentenceSplit(text);
+		List<Sentence> sentList= nlpClient.sentenceSplit(text);
 		for(Sentence sent: sentList) {
 			sent.setDocument(doc);
 		}
@@ -200,7 +200,7 @@ public class SemRep
 					Document doc = lexicoSyntacticAnalysis(fields[0], text);
 					processForSemantics(doc);
 				}else if (inputTextFormat.equalsIgnoreCase("medline")) {
-					MedLineDocument md = MedLineParser.parseSingleMedLine(br);
+					MedLineDocument md = MedLineParser.parseSingleMedLine(br, nlpClient);
 					processForSemantics(md);
 				}
 				br.close();
@@ -238,7 +238,7 @@ public class SemRep
 			} while(line != null);
 		} else if (inputTextFormat.equalsIgnoreCase("medline")) {
 			log.info("Processing Medline input file : " + inPath);
-			List<MedLineDocument> mdList = MedLineParser.parseMultiMedLines(br);
+			List<MedLineDocument> mdList = MedLineParser.parseMultiMedLines(br, nlpClient);
 			for (MedLineDocument md : mdList) {
 				processForSemantics(md);
 				writeResults(md);
@@ -270,7 +270,7 @@ public class SemRep
 			LinkedHashSet<Ontology> terms = annotations.get(sp);
 		    for (Ontology ont : terms) {
 		    	Concept conc = (Concept) ont;
-		    	log.info("Concept : " + sp.toString() + "\t" +  conc.toString());
+		    	//log.info("Concept : " + sp.toString() + "\t" +  conc.toString());
 			    }
 		}
 		
@@ -299,7 +299,7 @@ public class SemRep
 			Concept sense = null;
 			LinkedHashSet<Concept> concepts = new LinkedHashSet<>();
 			Iterator<Ontology> iter = terms.iterator();
-			while (iter.hasNext()) {
+			while (iter.hasNext()) {		
 				Concept conc = (Concept)iter.next();
 				if (sense == null) sense = conc;
 				concepts.add(conc);
@@ -309,7 +309,7 @@ public class SemRep
 		LinkedHashSet<SemanticItem> entities = Document.getSemanticItemsByClass(doc, Entity.class);
 		for (SemanticItem sem : entities) {
 			Entity ent = (Entity)sem;
-			log.info("Entity:" + ent.toShortString());
+			//log.info("Entity:" + ent.toShortString());
 		}
 	
 		// these entities now can now be written to output.
@@ -335,11 +335,14 @@ public class SemRep
 
 	/**
 	 * Initializes logging and named entity recognizers.
+	 * @throws IOException 
+	 * 				if any opennlp model file is not found
 	 * 
 	 */
-	public static void init() {
+	public static void init() throws IOException {
 		initLogging();
 		nerAnnotator = new MultiThreadClient(System.getProperties());
+		nlpClient = new OpennlpUtils();
 //		metamap = new MetaMapLiteClient(System.getProperties());
 	}
 
@@ -347,6 +350,7 @@ public class SemRep
 
 	public static void main( String[] args ) throws IOException
 	{
+		long beg = System.currentTimeMillis();
 		System.setProperties(getProps(args));
 		init();
 
@@ -359,5 +363,7 @@ public class SemRep
 		}else if(inputFormat.equalsIgnoreCase("singlefile")) {
 			processFromSingleFile(inPath);
 		}
+		long end = System.currentTimeMillis();
+		log.info("Completed all " +(end-beg) + " msec.");
 	}
 }
