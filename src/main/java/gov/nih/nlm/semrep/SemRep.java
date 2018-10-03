@@ -270,7 +270,7 @@ public class SemRep
 			LinkedHashSet<Ontology> terms = annotations.get(sp);
 		    for (Ontology ont : terms) {
 		    	Concept conc = (Concept) ont;
-		    	//log.info("Concept : " + sp.toString() + "\t" +  conc.toString());
+		    	log.info("Concept : " + sp.toString() + "\t" +  conc.toString());
 			    }
 		}
 		
@@ -309,7 +309,7 @@ public class SemRep
 		LinkedHashSet<SemanticItem> entities = Document.getSemanticItemsByClass(doc, Entity.class);
 		for (SemanticItem sem : entities) {
 			Entity ent = (Entity)sem;
-			//log.info("Entity:" + ent.toShortString());
+			log.info("Entity:" + ent.toShortString());
 		}
 	
 		// these entities now can now be written to output.
