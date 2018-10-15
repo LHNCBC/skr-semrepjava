@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import gov.nih.nlm.ling.core.Document;
@@ -85,11 +84,12 @@ public class MetaMapLiteClient implements TermAnnotator{
 			int length;
 			SpanList sl;
 			LinkedHashSet<String> semTypes;
+			LinkedHashSet<String> semgroups;
 			LinkedHashSet<Ontology> onts;
 			for(int i = 0; i < entities.length; i++) {
 				onts = new LinkedHashSet<Ontology>();
 				fields = entities[i].split(",,");
-				if (fields.length < 5) {
+				if (fields.length < 6) {
 					log.severe("Error parsing MML server string " + answer);
 					return;
 				}
@@ -104,8 +104,9 @@ public class MetaMapLiteClient implements TermAnnotator{
 					System.out.println(name + " | " + conceptString);
 					score = Double.parseDouble(fields[cursorIndex + 3]);
 					semTypes = new LinkedHashSet<String>(Arrays.asList(fields[cursorIndex + 4].split("::")));
-					concept = new ScoredUMLSConcept(cui,name,semTypes,"metamaplite",conceptString,score);
-					cursorIndex += 5;
+					semgroups = new LinkedHashSet<String>(Arrays.asList(fields[cursorIndex + 5].split("::")));
+					concept = new ScoredUMLSConcept(cui,name,semTypes,semgroups,"metamaplite",conceptString,score);
+					cursorIndex += 6;
 					onts.add(concept);
 				} while(cursorIndex < fields.length && !fields[cursorIndex].isEmpty());
 				temp.put(sl, onts);

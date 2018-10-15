@@ -20,6 +20,8 @@ mvn install:install-file -Dfile=lib/gnormplus-1.0.0.jar -DgroupId=gov.nih.nlm -D
 
 
 # Usage
+You have to run it from top level:
+
 sh bin/semrepjava.sh <options>
 
 Please specify the following options:

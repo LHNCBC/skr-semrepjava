@@ -219,27 +219,29 @@ public class WSDClient {
 			json.put("sl", sl.toString());
 			jsonList.add(json.toString());
 		}
-		String answers = SemRepUtils.queryServer(s, String.join("\t\t\t", jsonList));	
-		if(answers != null) {
-			String[] jsonStrings = answers.split("\t\t\t");
-			for(String str: jsonStrings) {
-				json = new JSONObject(str);
-				String[] names = ((String)json.get("names")).split(";");
-				SpanList sl = new SpanList((String)json.get("sl"));
-				if (names.length == 1) {
-						sense = nameConceptMap.get(names[0]);
-					}else {
-						sense = findBestMatchConcept(names, nameConceptMap);
+		if(jsonList.size() > 0) {
+			String answers = SemRepUtils.queryServer(s, String.join("\t\t\t", jsonList));	
+			if(answers != null) {
+				String[] jsonStrings = answers.split("\t\t\t");
+				for(String str: jsonStrings) {
+					json = new JSONObject(str);
+					String[] names = ((String)json.get("names")).split(";");
+					SpanList sl = new SpanList((String)json.get("sl"));
+					if (names.length == 1) {
+							sense = nameConceptMap.get(names[0]);
+						}else {
+							sense = findBestMatchConcept(names, nameConceptMap);
+						}
+					LinkedHashSet<Ontology> disambiguated = new LinkedHashSet<>();
+					onts = annotations.get(sl);
+					itr = onts.iterator();
+					while (itr.hasNext()) {
+						Ontology conc = itr.next();
+						if (conc.equals(sense)) disambiguated.add(conc);
+						else if (conc instanceof ScoredUMLSConcept == false) disambiguated.add(conc);
 					}
-				LinkedHashSet<Ontology> disambiguated = new LinkedHashSet<>();
-				onts = annotations.get(sl);
-				itr = onts.iterator();
-				while (itr.hasNext()) {
-					Ontology conc = itr.next();
-					if (conc.equals(sense)) disambiguated.add(conc);
-					else if (conc instanceof ScoredUMLSConcept == false) disambiguated.add(conc);
+					outAnnotations.put(sl, disambiguated);
 				}
-				outAnnotations.put(sl, disambiguated);
 			}
 		}
 		SemRepUtils.closeSocket(s);
