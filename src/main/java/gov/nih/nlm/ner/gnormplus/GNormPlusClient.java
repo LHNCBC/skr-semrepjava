@@ -117,6 +117,7 @@ public class GNormPlusClient {
 		String inputText = document.getText();
 		String answer = SemRepUtils.queryServer(s, inputText);
 		if (answer != null) {
+			//System.out.println("gnormplus answer:" + answer);
 			String[] entities = answer.split("\n");
 			for (String entity : entities) {
 				// System.out.println(entity);

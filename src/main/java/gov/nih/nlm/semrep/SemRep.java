@@ -8,6 +8,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -17,6 +20,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Scanner;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
@@ -24,7 +28,6 @@ import gov.nih.nlm.ling.core.Document;
 import gov.nih.nlm.ling.core.MultiWord;
 import gov.nih.nlm.ling.core.Sentence;
 import gov.nih.nlm.ling.core.SpanList;
-import gov.nih.nlm.ling.core.SurfaceElement;
 import gov.nih.nlm.ling.core.Word;
 import gov.nih.nlm.ling.sem.Concept;
 import gov.nih.nlm.ling.sem.Entity;
@@ -188,12 +191,19 @@ public class SemRep
 	 */
 	public static void processFromDirectory(String inPath) throws IOException {
 		File[] files = new File(inPath).listFiles();
+		String outPath = System.getProperty("user.outputpath");
 		String inputTextFormat = System.getProperty("user.inputtextformat");
+		File dir = new File(outPath);
+		BufferedWriter bw;
+		BufferedReader br;
+		if(!dir.isDirectory()) {
+			dir.mkdirs();
+		}
 		for(File file: files) {
 			String filename = file.getName();
 			String[] fields = filename.split("\\.");
 			if(fields.length == 2 && fields[1].equals("txt")) {
-				BufferedReader br = new BufferedReader(new FileReader(file));
+				 br = new BufferedReader(new FileReader(file));
 				if (inputTextFormat.equalsIgnoreCase("plaintext")) {
 					long fileLen = file.length();
 					char[] buf = new char[(int)fileLen];
@@ -202,9 +212,15 @@ public class SemRep
 					String text = new String(buf);
 					Document doc = lexicoSyntacticAnalysis(fields[0], text);
 					processForSemantics(doc);
+					bw = new BufferedWriter(new FileWriter(outPath + "/" + doc.getId(), true));
+					writeResults(doc, bw);
+					bw.close();
 				}else if (inputTextFormat.equalsIgnoreCase("medline")) {
 					MedLineDocument md = MedLineParser.parseSingleMedLine(br, nlpClient);
 					processForSemantics(md);
+					bw = new BufferedWriter(new FileWriter(outPath + "/" + md.getId(), true));
+					writeResults(md, bw);
+					bw.close();
 				}
 				br.close();
 			}
@@ -221,7 +237,10 @@ public class SemRep
 	 */
 	public static void processFromSingleFile(String inPath) throws IOException {
 		String inputTextFormat = System.getProperty("user.inputtextformat");
+		String outPath = System.getProperty("user.outputpath");
 		BufferedReader br = new BufferedReader(new FileReader(inPath));
+		BufferedWriter bw = new BufferedWriter(new FileWriter(outPath, true));
+		
 		if (inputTextFormat.equalsIgnoreCase("plaintext")) {		
 			log.info("Processing plain text file : " + inPath);
 			int count = 0;
@@ -234,7 +253,7 @@ public class SemRep
 					Document doc = lexicoSyntacticAnalysis(Integer.toString(count),sb.toString());
 					sb = new StringBuilder();
 					processForSemantics(doc);
-					writeResults(doc);
+					writeResults(doc, bw);
 				}else {
 					sb.append(line + " ");
 				}
@@ -244,11 +263,36 @@ public class SemRep
 			List<MedLineDocument> mdList = MedLineParser.parseMultiMedLines(br, nlpClient);
 			for (MedLineDocument md : mdList) {
 				processForSemantics(md);
-				writeResults(md);
+				writeResults(md, bw);
 			}
 		}
+		bw.close();
 		br.close();
 	}
+	
+	/**
+	 * Process interactively on the command line. Expect a line of text to be entered.
+	 * @throws IOException if it fails to open the input file or to create and write to the output file
+	 */
+	
+	public static void processInteractively() throws IOException {
+		Scanner in = new Scanner(System.in);
+		BufferedWriter bw = new BufferedWriter(new PrintWriter(System.out));
+		Document doc;
+		
+		System.out.println("Enter text below:");
+		String input = in.nextLine();
+		while(!input.equalsIgnoreCase("exit")) {
+			doc = lexicoSyntacticAnalysis("0", input);
+			processForSemantics(doc);
+			writeResults(doc, bw);
+			System.out.println("\nEnter text below:");
+			input = in.nextLine();
+		}
+		bw.close();
+		in.close();
+	}
+	
 
 	/**
 	 * Processes a <code>Document</code> object semantically, by identifying named entities 
@@ -318,12 +362,19 @@ public class SemRep
 		}
 	
 		// these entities now can now be written to output.
+		log.info("Semantic process done.");
 	}
+	
+	/**
+	 * This function outputs document infos to a file according to the specified options
+	 * 
+	 * @param doc the document that contains infos
+	 * 
+	 * @throws IOException
+	 */
 
-	public static void writeResults(Document doc) throws IOException {
+	public static void writeResults(Document doc, BufferedWriter writer) throws IOException {
 		String outputFormat = System.getProperty("user.outputformat");
-		String inputFormat = System.getProperty("user.inputformat");
-		String outPath = System.getProperty("user.outputpath");
 		StringBuilder sb = new StringBuilder();
 		List<Sentence> sentList = doc.getSentences();
 		ChunkedSentence cs;
@@ -354,20 +405,10 @@ public class SemRep
 				}
 				sb.append("\n");
 			}
+		} else if(outputFormat.equalsIgnoreCase("brat")) {
+			// TODO : brat output format
 		}
-		if(inputFormat.equalsIgnoreCase("dir")) {
-			File dir = new File(outPath);
-			if(!dir.isDirectory()) {
-				dir.mkdirs();
-			}
-			BufferedWriter writer = new BufferedWriter(new FileWriter(outPath + "/" + doc.getId() + ".ann"));
-			writer.write(sb.toString());
-			writer.close();
-		}else if (inputFormat.equalsIgnoreCase("singlefile")) {
-			BufferedWriter writer = new BufferedWriter(new FileWriter(outPath, true));
-			writer.write(sb.toString());
-			writer.close();
-		}
+		writer.write(sb.toString());	
 	}
 
    /**
@@ -413,6 +454,8 @@ public class SemRep
 			processFromDirectory(inPath);	
 		}else if(inputFormat.equalsIgnoreCase("singlefile")) {
 			processFromSingleFile(inPath);
+		}else if(inputFormat.equalsIgnoreCase("interactive")) {
+			processInteractively();
 		}
 		long end = System.currentTimeMillis();
 		log.info("Completed all " +(end-beg) + " msec.");

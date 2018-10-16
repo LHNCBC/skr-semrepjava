@@ -72,7 +72,7 @@ public class MetaMapLiteClient implements TermAnnotator{
 		Map<SpanList, LinkedHashSet<Ontology>> temp = new HashMap<>();
 		String inputText = document.getText();
 		String answer = SemRepUtils.queryServer(s, inputText);
-		if (answer != null) {
+		if (answer != null && !answer.equalsIgnoreCase("null")) {
 			String[] entities = answer.split(";;");
 			String[] fields;
 			String cui;
@@ -111,16 +111,15 @@ public class MetaMapLiteClient implements TermAnnotator{
 				} while(cursorIndex < fields.length && !fields[cursorIndex].isEmpty());
 				temp.put(sl, onts);
 			}			
-			long mmend = System.currentTimeMillis();
-			log.info("Completed processing document with MetaMapLite " + document.getId() + " .. " +(mmend-mmbeg) + " msec.");
 			if (wsd != null) {
 				annotations.putAll(wsd.disambiguate2(document, props, temp));
 			} else {
 				annotations.putAll(temp);
 			}
-			SemRepUtils.closeSocket(s);
 		}
-		
+		long mmend = System.currentTimeMillis();
+		log.info("Completed processing document with MetaMapLite " + document.getId() + " .. " +(mmend-mmbeg) + " msec.");
+		SemRepUtils.closeSocket(s);
 	}
 }
 
