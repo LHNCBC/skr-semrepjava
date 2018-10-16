@@ -24,6 +24,7 @@ import gov.nih.nlm.ling.core.Document;
 import gov.nih.nlm.ling.core.MultiWord;
 import gov.nih.nlm.ling.core.Sentence;
 import gov.nih.nlm.ling.core.SpanList;
+import gov.nih.nlm.ling.core.SurfaceElement;
 import gov.nih.nlm.ling.core.Word;
 import gov.nih.nlm.ling.sem.Concept;
 import gov.nih.nlm.ling.sem.Entity;
@@ -118,6 +119,8 @@ public class SemRep
 					optionProps.setProperty("user.inputtextformat", fields[1]);
 				} else if (fields[0].equals("--annsource")) {
 					optionProps.setProperty("user.annsource", fields[1]);
+				} else if (fields[0].equals("--includes")) {
+					optionProps.setProperty("user.output.includes", fields[1]);
 				}
 			}
 			i++;
@@ -262,7 +265,9 @@ public class SemRep
 			return;
 		}
 		
-		generateChunkOutput(doc);
+		// to generate chunk output to a file
+		//generateChunkOutput(doc);
+		
 		// named entity recognition
 		Map<SpanList, LinkedHashSet<Ontology>> annotations = new HashMap<SpanList, LinkedHashSet<Ontology>>();
 		nerAnnotator.annotate(doc,System.getProperties(),annotations);
@@ -316,7 +321,53 @@ public class SemRep
 	}
 
 	public static void writeResults(Document doc) throws IOException {
-		// TODO: Once the document is processed semantically, we need to write the results out according to specifications
+		String outputFormat = System.getProperty("user.outputformat");
+		String inputFormat = System.getProperty("user.inputformat");
+		String outPath = System.getProperty("user.outputpath");
+		StringBuilder sb = new StringBuilder();
+		List<Sentence> sentList = doc.getSentences();
+		ChunkedSentence cs;
+		LinkedHashSet<SemanticItem> siList;
+		Entity ent;
+		String includes;
+		
+		if(outputFormat.equalsIgnoreCase("human-readable")) {
+			for(int i = 0; i < sentList.size(); i++) {
+				cs = (ChunkedSentence)sentList.get(i);
+				sb.append(cs.getText() + "\n");
+				siList = Document.getSemanticItemsBySpan(doc, new SpanList(cs.getSpan()), true);
+				for(SemanticItem si : siList) {
+					ent = (Entity) si;
+					sb.append(ent.toShortString() + "\n");
+				}
+				includes = System.getProperty("user.output.includes");
+				if(includes != null) {
+					if(includes.equalsIgnoreCase("chunk")) {
+						List<Chunk> chunkList = cs.getChunks();
+						for(int j = 0; j < chunkList.size(); j++) {
+							sb.append(chunkList.get(j).toString() + "\n");
+						}
+					} else if(includes.equalsIgnoreCase("tag")) {
+						List<String> tagList = cs.getTags();
+						sb.append(String.join(" ", tagList) + "\n");
+					}
+				}
+				sb.append("\n");
+			}
+		}
+		if(inputFormat.equalsIgnoreCase("dir")) {
+			File dir = new File(outPath);
+			if(!dir.isDirectory()) {
+				dir.mkdirs();
+			}
+			BufferedWriter writer = new BufferedWriter(new FileWriter(outPath + "/" + doc.getId() + ".ann"));
+			writer.write(sb.toString());
+			writer.close();
+		}else if (inputFormat.equalsIgnoreCase("singlefile")) {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(outPath, true));
+			writer.write(sb.toString());
+			writer.close();
+		}
 	}
 
    /**

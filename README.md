@@ -30,11 +30,13 @@ Please specify the following options:
 --inputtextformat=? (either "plaintext" or "medline")
 --inputpath=? (the input directory path or single file path)
 --outputpath=? (the output directory name or a file name)
+--outputFormat=? ("human-readable" or "brat" or "plain" or "xml")
+--includes=? (optional, whether to include addition infos in the output, can be "chunk" or "tag")
 
 e.g. to test with plaintext:
 
-sh bin/semrepjava.sh --inputformat=singlefile --inputtextformat=plaintext --inputpath=TestFiles/test.plain --outputpath=TestFiles/out.plain
+sh bin/semrepjava.sh --inputformat=singlefile --inputtextformat=plaintext --inputpath=TestFiles/test.plain --outputpath=TestFiles/out.plain --outputFormat=human-readable --includes=chunk
 
 e.g. to test with medline:
 
-sh bin/semrepjava.sh --inputformat=singlefile --inputtextformat=medline --inputpath=TestFiles/test.ml --outputpath=TestFiles/out.ml
+sh bin/semrepjava.sh --inputformat=singlefile --inputtextformat=medline --inputpath=TestFiles/test.ml --outputpath=TestFiles/out.ml --outputFormat=human-readable --includes=chunk
