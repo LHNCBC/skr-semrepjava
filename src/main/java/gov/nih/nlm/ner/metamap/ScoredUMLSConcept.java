@@ -15,6 +15,7 @@ public class ScoredUMLSConcept extends Concept {
 	
 	private String conceptString;
 	private double score;
+	private LinkedHashSet<String> semgroups;
 	
 
 	public ScoredUMLSConcept(String cui, String name, LinkedHashSet<String> semtypes) {
@@ -28,6 +29,13 @@ public class ScoredUMLSConcept extends Concept {
 		super(cui, name, semtypes, source);
 		this.conceptString = conceptString;
 		this.score = score;
+	}
+	
+	public ScoredUMLSConcept(String cui, String name, LinkedHashSet<String> semtypes, LinkedHashSet<String> semgroups, String source, String conceptString, double score) {
+		super(cui, name, semtypes, source);
+		this.conceptString = conceptString;
+		this.score = score;
+		this.semgroups = semgroups;
 	}
 	
 	public void setConceptString(String s) {
@@ -44,6 +52,14 @@ public class ScoredUMLSConcept extends Concept {
 	
 	public double getScore() {
 		return this.score;
+	}
+	
+	public LinkedHashSet<String> getSemGroups() {
+		return this.semgroups;
+	}
+	
+	public void setSemGroups(LinkedHashSet<String> semgroups) {
+		this.semgroups = semgroups;
 	}
 
 }

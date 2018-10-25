@@ -105,8 +105,8 @@ public class WSDClient {
 	 * @return the concept object which has the best matched concept name
 	 */
 	
-	private ScoredUMLSConcept findBestMatchConcept(List<String> names, Map<String, ScoredUMLSConcept> map) {
-		ScoredUMLSConcept bestConcept = map.get(names.get(0));
+	private ScoredUMLSConcept findBestMatchConcept(String[] names, Map<String, ScoredUMLSConcept> map) {
+		ScoredUMLSConcept bestConcept = map.get(names[0]);
 		for(String name : names) {
 			if(map.get(name).getConceptString().compareTo(bestConcept.getConceptString()) < 0)
 				bestConcept = map.get(name);
@@ -183,14 +183,16 @@ public class WSDClient {
 		long wsdbeg = System.currentTimeMillis();
 		log.finest("Disambiguating UMLS concepts..." + doc.getId());
 		String text = doc.getText();
-		LinkedHashSet<Ontology> onts;
+		LinkedHashSet<Ontology> onts = new LinkedHashSet<Ontology>();
 		Iterator<Ontology> itr;
 		ScoredUMLSConcept sense,concept;
 		Set<Concept> conceptSet = new HashSet<Concept>();
+		List<String> jsonList = new ArrayList<String>();
 		JSONObject json,cuiJson;
 		Map<SpanList, LinkedHashSet<Ontology>> outAnnotations = new HashMap<>();
+		Map<String, ScoredUMLSConcept> nameConceptMap = new HashMap<String, ScoredUMLSConcept>();
+		Socket s = SemRepUtils.getSocket(serverName, serverPort);
 		for(SpanList sl: annotations.keySet()) {
-			Socket s = SemRepUtils.getSocket(serverName, serverPort);
 			if (s == null) { 
 				outAnnotations.put(sl, annotations.get(sl));
 				continue;
@@ -202,7 +204,6 @@ public class WSDClient {
 				continue;
 			} 
 			cuiJson = new JSONObject();
-			Map<String, ScoredUMLSConcept> nameConceptMap = new HashMap<String, ScoredUMLSConcept>();
 			while(itr.hasNext()) {
 				Ontology conc = itr.next();
 				if (conc instanceof ScoredUMLSConcept) {
@@ -215,31 +216,35 @@ public class WSDClient {
 			json = new JSONObject(); 
 			json.put("text", text);
 			json.put("cuis", cuiJson.toString());
-			String answer = SemRepUtils. queryServer(s, json.toString());
-			if(answer != null) {
-				List<String> filteredNames = new ArrayList<String>();
-				json = new JSONObject(answer);
-				Iterator<String> keys = json.keys();
-				while(keys.hasNext()) {
-					String key = keys.next();
-					filteredNames.add(key);
-				}
-				if (filteredNames.size() == 1) {
-						sense = nameConceptMap.get(filteredNames.get(0));
-					}else {
-						sense = findBestMatchConcept(filteredNames, nameConceptMap);
-					}
-				LinkedHashSet<Ontology> disambiguated = new LinkedHashSet<>();
-				itr = onts.iterator();
-				while (itr.hasNext()) {
-					Ontology conc = itr.next();
-					if (conc.equals(sense)) disambiguated.add(conc);
-					else if (conc instanceof ScoredUMLSConcept == false) disambiguated.add(conc);
-				}
-				outAnnotations.put(sl, disambiguated);
-			}
-			SemRepUtils.closeSocket(s);
+			json.put("sl", sl.toString());
+			jsonList.add(json.toString());
 		}
+		if(jsonList.size() > 0) {
+			String answers = SemRepUtils.queryServer(s, String.join("\t\t\t", jsonList));	
+			if(answers != null) {
+				String[] jsonStrings = answers.split("\t\t\t");
+				for(String str: jsonStrings) {
+					json = new JSONObject(str);
+					String[] names = ((String)json.get("names")).split(";");
+					SpanList sl = new SpanList((String)json.get("sl"));
+					if (names.length == 1) {
+							sense = nameConceptMap.get(names[0]);
+						}else {
+							sense = findBestMatchConcept(names, nameConceptMap);
+						}
+					LinkedHashSet<Ontology> disambiguated = new LinkedHashSet<>();
+					onts = annotations.get(sl);
+					itr = onts.iterator();
+					while (itr.hasNext()) {
+						Ontology conc = itr.next();
+						if (conc.equals(sense)) disambiguated.add(conc);
+						else if (conc instanceof ScoredUMLSConcept == false) disambiguated.add(conc);
+					}
+					outAnnotations.put(sl, disambiguated);
+				}
+			}
+		}
+		SemRepUtils.closeSocket(s);
 		long wsdend = System.currentTimeMillis();
 		log.info("Completed disambiguating " + doc.getId() + " .. " +(wsdend-wsdbeg) + " msec.");
 		return outAnnotations;

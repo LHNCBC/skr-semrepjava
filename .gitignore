@@ -36,3 +36,5 @@ SemRep_GS
 *.ann
 /target/
 /classes/
+*.plain
+berkeleyDB
