@@ -87,29 +87,31 @@ public class MetaMapLiteClient implements TermAnnotator{
 			LinkedHashSet<String> semgroups;
 			LinkedHashSet<Ontology> onts;
 			for(int i = 0; i < entities.length; i++) {
-				onts = new LinkedHashSet<Ontology>();
-				fields = entities[i].split(",,");
-				if (fields.length < 6) {
-					log.severe("Error parsing MML server string " + answer);
-					return;
+				if(!entities[i].equalsIgnoreCase("null")) {
+					onts = new LinkedHashSet<Ontology>();
+					fields = entities[i].split(",,");
+					if (fields.length < 6) {
+						log.severe("Error parsing MML server string " + answer);
+						return;
+					}
+					start = Integer.parseInt(fields[0]);
+					length = Integer.parseInt(fields[1]);
+					sl = new SpanList(start, start+length);
+					int cursorIndex = 2;
+					do {
+						cui = fields[cursorIndex];
+						name = fields[cursorIndex + 1];
+						conceptString = fields[cursorIndex + 2];
+						System.out.println(name + " | " + conceptString);
+						score = Double.parseDouble(fields[cursorIndex + 3]);
+						semTypes = new LinkedHashSet<String>(Arrays.asList(fields[cursorIndex + 4].split("::")));
+						semgroups = new LinkedHashSet<String>(Arrays.asList(fields[cursorIndex + 5].split("::")));
+						concept = new ScoredUMLSConcept(cui,name,semTypes,semgroups,"metamaplite",conceptString,score);
+						cursorIndex += 6;
+						onts.add(concept);
+					} while(cursorIndex < fields.length && !fields[cursorIndex].isEmpty());
+					temp.put(sl, onts);
 				}
-				start = Integer.parseInt(fields[0]);
-				length = Integer.parseInt(fields[1]);
-				sl = new SpanList(start, start+length);
-				int cursorIndex = 2;
-				do {
-					cui = fields[cursorIndex];
-					name = fields[cursorIndex + 1];
-					conceptString = fields[cursorIndex + 2];
-					System.out.println(name + " | " + conceptString);
-					score = Double.parseDouble(fields[cursorIndex + 3]);
-					semTypes = new LinkedHashSet<String>(Arrays.asList(fields[cursorIndex + 4].split("::")));
-					semgroups = new LinkedHashSet<String>(Arrays.asList(fields[cursorIndex + 5].split("::")));
-					concept = new ScoredUMLSConcept(cui,name,semTypes,semgroups,"metamaplite",conceptString,score);
-					cursorIndex += 6;
-					onts.add(concept);
-				} while(cursorIndex < fields.length && !fields[cursorIndex].isEmpty());
-				temp.put(sl, onts);
 			}			
 			if (wsd != null) {
 				annotations.putAll(wsd.disambiguate2(document, props, temp));
