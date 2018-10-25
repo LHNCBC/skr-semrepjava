@@ -71,10 +71,9 @@
     </dependency>
     <dependency>
       <groupId>gov.nih.nlm</groupId>
-  	<artifactId>lexCheck2011dist</artifactId>
-  	<version>1.0.0</version>
-  	<description>POM was created from install:install-file</description>
-  </dependency>
+  	  <artifactId>lexCheck2011dist</artifactId>
+  	  <version>1.0.0</version>
+  	</dependency>
     <dependency>
       <groupId>gov.nih.nlm</groupId>
       <artifactId>gnormplus</artifactId>

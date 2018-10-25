@@ -16,7 +16,7 @@ mvn install:install-file -Dfile=lib/lvg2016dist-0.0.1.jar -DgroupId=gov.nih.nlm.
 
 mvn install:install-file -Dfile=lib/gnormplus-1.0.0.jar -DgroupId=gov.nih.nlm -DartifactId=gnormplus -Dversion=1.0.0 -Dpackaging=jar
 
-
+mvn install:install-file -Dfile=lib/lexCheck2011dist-1.0.0.jar -DgroupId=gov.nih.nlm -DartifactId=lexCheck2011dist -Dversion=1.0.0 -Dpackaging=jar
 
 
 # Usage
