@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import gov.nih.nlm.ling.core.Chunk;
 import gov.nih.nlm.ling.core.Document;
 import gov.nih.nlm.ling.core.MultiWord;
 import gov.nih.nlm.ling.core.Sentence;
@@ -42,7 +43,6 @@ import gov.nih.nlm.ner.LargestSpanFilter;
 import gov.nih.nlm.ner.MultiThreadClient;
 import gov.nih.nlm.ner.gnormplus.GNormPlusConcept;
 import gov.nih.nlm.ner.metamap.ScoredUMLSConcept;
-import gov.nih.nlm.semrep.core.Chunk;
 import gov.nih.nlm.semrep.core.ChunkedSentence;
 import gov.nih.nlm.semrep.core.MedLineDocument;
 import gov.nih.nlm.semrep.utils.MedLineParser;

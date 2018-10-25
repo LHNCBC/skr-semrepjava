@@ -3,6 +3,7 @@ package gov.nih.nlm.semrep.core;
 import java.util.ArrayList;
 import java.util.List;
 
+import gov.nih.nlm.ling.core.Chunk;
 import gov.nih.nlm.ling.core.Sentence;
 import gov.nih.nlm.ling.core.Span;
 import gov.nih.nlm.ling.core.Word;

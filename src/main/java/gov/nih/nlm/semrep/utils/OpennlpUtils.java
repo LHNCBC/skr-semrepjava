@@ -6,10 +6,12 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import gov.nih.nlm.ling.core.Chunk;
 import gov.nih.nlm.ling.core.Sentence;
+import gov.nih.nlm.ling.core.SurfaceElement;
+import gov.nih.nlm.ling.core.SurfaceElementFactory;
 import gov.nih.nlm.ling.core.Word;
 import gov.nih.nlm.ling.core.WordLexeme;
-import gov.nih.nlm.semrep.core.Chunk;
 import gov.nih.nlm.semrep.core.ChunkedSentence;
 import opennlp.tools.chunker.ChunkerME;
 import opennlp.tools.chunker.ChunkerModel;
@@ -195,7 +197,9 @@ public class OpennlpUtils {
 	WordLexeme wl;
 	gov.nih.nlm.ling.core.Span span;
 	Chunk chunk = null;
-	List<Word> trail = null;
+	List<SurfaceElement> seList;
+	SurfaceElementFactory sef = new SurfaceElementFactory();
+	
 	for (int i = 0; i < tokens.length; i++) {
 	    String[] fields = chunkTags[i].split("-");
 	    if (lemmas[i].equals("O")) {
@@ -209,29 +213,28 @@ public class OpennlpUtils {
 	    w.setSentence(s);
 	    wordList.add(w);
 	    if (fields[0].equals("B")) {
-		if (chunk == null) {
-		    trail = new ArrayList<Word>();
-		    chunk = new Chunk(w, trail, fields[1]);
-		} else {
-		    chunkList.add(chunk);
-		    trail = new ArrayList<Word>();
-		    chunk = new Chunk(w, trail, fields[1]);
-		}
+			if (chunk == null) {
+				seList = new ArrayList<SurfaceElement>();
+			    chunk = new Chunk(seList, fields[1]);
+			} else {
+			    chunkList.add(chunk);
+			    seList = new ArrayList<SurfaceElement>();
+			    chunk = new Chunk(seList, fields[1]);
+			}
 	    } else if (fields[0].equals("I")) {
-		if (trail == null) {
-		    trail = new ArrayList<Word>();
-		}
-		trail.add(w);
+			
 	    } else if (fields[0].equals("O")) {
-		if (chunk != null)
-		    chunkList.add(chunk);
-		chunk = new Chunk(w, null, tags[i]);
-		chunkList.add(chunk);
-		chunk = null;
-		trail = null;
+			if (chunk != null)
+			    chunkList.add(chunk);
+			seList = new ArrayList<SurfaceElement>();
+			seList.add(w);
+			chunk = new Chunk(seList, tags[i]);
+			w.setChunk(chunk);
+			chunkList.add(chunk);
+			chunk = null;
 	    }
 	    if (i == tokens.length - 1 && chunk != null) {
-		chunkList.add(chunk);
+	    	chunkList.add(chunk);
 	    }
 	}
 	s.setWords(wordList);

@@ -53,5 +53,13 @@ public class ScoredUMLSConcept extends Concept {
 	public double getScore() {
 		return this.score;
 	}
+	
+	public LinkedHashSet<String> getSemGroups() {
+		return this.semgroups;
+	}
+	
+	public void setSemGroups(LinkedHashSet<String> semgroups) {
+		this.semgroups = semgroups;
+	}
 
 }
