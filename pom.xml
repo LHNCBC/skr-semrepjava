@@ -65,10 +65,16 @@
     </dependency>
       <!-- https://mvnrepository.com/artifact/gov.nih.nlm.nls.lvg/lvg2010dist -->
     <dependency>
-      <groupId>gov.nih.nlm.nls.lvg</groupId>
+      <groupId>gov.nih.nlm.nls.lvg</groupId> 
       <artifactId>lvg2016dist</artifactId> 
       <version>0.0.1</version>
     </dependency>
+    <dependency>
+      <groupId>gov.nih.nlm</groupId>
+  	<artifactId>lexCheck2011dist</artifactId>
+  	<version>1.0.0</version>
+  	<description>POM was created from install:install-file</description>
+  </dependency>
     <dependency>
       <groupId>gov.nih.nlm</groupId>
       <artifactId>gnormplus</artifactId>
