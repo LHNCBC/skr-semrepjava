@@ -8,13 +8,15 @@ To run source code, you need to either add all of the jar files in lib directory
 
 Maven Compilation E.G.:
 
-mvn install:install-file -Dfile=lib/metamaplite-3.6.jar -DgroupId=gov.nih.nlm.nls -DartifactId=metamaplite -Dversion=3.6 -Dpackaging=jar
+mvn install:install-file -Dfile=lib/metamaplite-3.6.2rc1.jar -DgroupId=gov.nih.nlm.nls -DartifactId=metamaplite -Dversion=3.6.2rc1 -Dpackaging=jar
 
 mvn install:install-file -Dfile=lib/bioscores-2.0.1.jar -DgroupId=gov.nih.nlm -DartifactId=bioscores -Dversion=2.0.1 -Dpackaging=jar
 
 mvn install:install-file -Dfile=lib/lvg2016dist-0.0.1.jar -DgroupId=gov.nih.nlm.nls.lvg -DartifactId=lvg2016dist -Dversion=0.0.1 -Dpackaging=jar
 
 mvn install:install-file -Dfile=lib/gnormplus-1.0.0.jar -DgroupId=gov.nih.nlm -DartifactId=gnormplus -Dversion=1.0.0 -Dpackaging=jar
+
+mvn install:install-file -Dfile=lib/aec_mrd_wsd-1.0-SNAPSHOT.jar -DgroupId=gov.nih.nlm.nls -DartifactId=aec_mrd_wsd -Dversion=1.0-SNAPSHOT -Dpackaging=jar
 
 mvn install:install-file -Dfile=lib/lexCheck2011dist-1.0.0.jar -DgroupId=gov.nih.nlm -DartifactId=lexCheck2011dist -Dversion=1.0.0 -Dpackaging=jar
 

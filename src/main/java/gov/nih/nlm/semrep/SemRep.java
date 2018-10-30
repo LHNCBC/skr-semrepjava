@@ -47,6 +47,7 @@ import gov.nih.nlm.semrep.core.ChunkedSentence;
 import gov.nih.nlm.semrep.core.MedLineDocument;
 import gov.nih.nlm.semrep.utils.MedLineParser;
 import gov.nih.nlm.semrep.utils.OpennlpUtils;
+import gov.nih.nlm.umls.HypernymProcessing;
 
 /**
  * Main class for SemRep Java implementation
@@ -63,6 +64,7 @@ public class SemRep
 //	private static MetaMapLiteClient metamap;
 	private static MultiThreadClient nerAnnotator;
 	private static OpennlpUtils nlpClient;
+	private static HypernymProcessing hpClient;
 
 	/**
 	 * Create document object from string and analyze the document with respect to 
@@ -526,6 +528,7 @@ public class SemRep
 		nerAnnotator = new MultiThreadClient(System.getProperties());
 		nlpClient = new OpennlpUtils();
 //		metamap = new MetaMapLiteClient(System.getProperties());
+		hpClient = new HypernymProcessing();
 	}
 
 

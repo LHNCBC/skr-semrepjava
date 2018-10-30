@@ -71,8 +71,10 @@ public class MetaMapLiteClient implements TermAnnotator{
 		long mmbeg = System.currentTimeMillis();
 		Map<SpanList, LinkedHashSet<Ontology>> temp = new HashMap<>();
 		String inputText = document.getText();
+		System.out.println("inputText: " + inputText);
 		String answer = SemRepUtils.queryServer(s, inputText);
 		if (answer != null && !answer.equalsIgnoreCase("null")) {
+			log.info(answer);
 			String[] entities = answer.split(";;");
 			String[] fields;
 			String cui;
