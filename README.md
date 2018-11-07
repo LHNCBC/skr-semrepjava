@@ -29,10 +29,10 @@ sh bin/semrepjava.sh <options>
 Please specify the following options:
 
 --inputformat=? (either "dir" or "singlefile")
---inputtextformat=? (either "plaintext" or "medline")
+--inputtextformat=? (either "plaintext" or "medline" or "medlinexml")
 --inputpath=? (the input directory path or single file path)
 --outputpath=? (the output directory name or a file name)
---outputFormat=? ("human-readable" or "brat" or "plain" or "xml")
+--outputFormat=? ("human-readable" or "brat" or "simplified" or "json")
 --includes=? (optional, whether to include addition infos in the output, can be "chunk" or "tag")
 
 e.g. to test with plaintext:
