@@ -10,16 +10,18 @@ Maven Compilation E.G.:
 
 mvn install:install-file -Dfile=lib/metamaplite-3.6.jar -DgroupId=gov.nih.nlm.nls -DartifactId=metamaplite -Dversion=3.6 -Dpackaging=jar
 
-mvn install:install-file -Dfile=lib/bioscores-2.0.0.jar -DgroupId=gov.nih.nlm -DartifactId=bioscores -Dversion=2.0.0 -Dpackaging=jar
+mvn install:install-file -Dfile=lib/bioscores-2.0.1.jar -DgroupId=gov.nih.nlm -DartifactId=bioscores -Dversion=2.0.1 -Dpackaging=jar
 
 mvn install:install-file -Dfile=lib/lvg2016dist-0.0.1.jar -DgroupId=gov.nih.nlm.nls.lvg -DartifactId=lvg2016dist -Dversion=0.0.1 -Dpackaging=jar
 
 mvn install:install-file -Dfile=lib/gnormplus-1.0.0.jar -DgroupId=gov.nih.nlm -DartifactId=gnormplus -Dversion=1.0.0 -Dpackaging=jar
 
-
+mvn install:install-file -Dfile=lib/lexCheck2011dist-1.0.0.jar -DgroupId=gov.nih.nlm -DartifactId=lexCheck2011dist -Dversion=1.0.0 -Dpackaging=jar
 
 
 # Usage
+You have to run it from top level:
+
 sh bin/semrepjava.sh <options>
 
 Please specify the following options:
@@ -28,11 +30,13 @@ Please specify the following options:
 --inputtextformat=? (either "plaintext" or "medline")
 --inputpath=? (the input directory path or single file path)
 --outputpath=? (the output directory name or a file name)
+--outputFormat=? ("human-readable" or "brat" or "plain" or "xml")
+--includes=? (optional, whether to include addition infos in the output, can be "chunk" or "tag")
 
 e.g. to test with plaintext:
 
-sh bin/semrepjava.sh --inputformat=singlefile --inputtextformat=plaintext --inputpath=TestFiles/test.plain --outputpath=TestFiles/out.plain
+sh bin/semrepjava.sh --inputformat=singlefile --inputtextformat=plaintext --inputpath=TestFiles/test.plain --outputpath=TestFiles/out.plain --outputFormat=human-readable --includes=chunk
 
 e.g. to test with medline:
 
-sh bin/semrepjava.sh --inputformat=singlefile --inputtextformat=medline --inputpath=TestFiles/test.ml --outputpath=TestFiles/out.ml
+sh bin/semrepjava.sh --inputformat=singlefile --inputtextformat=medline --inputpath=TestFiles/test.ml --outputpath=TestFiles/out.ml --outputFormat=human-readable --includes=chunk

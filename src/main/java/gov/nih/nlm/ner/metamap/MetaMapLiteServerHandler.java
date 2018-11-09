@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import bioc.BioCDocument;
@@ -32,13 +33,24 @@ public class MetaMapLiteServerHandler extends Thread {
 	final BufferedOutputStream bos;
 	final Socket socket;
 	MetaMapLite metaMapLiteInst;
+	Map<String, String> semgroupMap;
+	
 
 	// Constructor
-	public MetaMapLiteServerHandler(Socket s, BufferedInputStream bis, BufferedOutputStream bos, MetaMapLite mtmpl) throws IOException {
+	public MetaMapLiteServerHandler(Socket s, BufferedInputStream bis, BufferedOutputStream bos, MetaMapLite mtmpl, Map<String, String> semgroupMap) throws IOException {
 		this.socket = s;
 		this.bis = bis;
 		this.bos = bos;
 		this.metaMapLiteInst = mtmpl;
+		this.semgroupMap = semgroupMap;
+	}
+	
+	public String[] findSemanticGroups(String[] semTypes) {
+		String[] semgroups = new String[semTypes.length];
+		for(int i = 0; i < semTypes.length; i++) {
+			semgroups[i] = semgroupMap.containsKey(semTypes[i]) ? semgroupMap.get(semTypes[i]) : "null";
+		}
+		return semgroups;
 	}
 
 	@Override
@@ -51,16 +63,21 @@ public class MetaMapLiteServerHandler extends Thread {
 	    	List<Entity> entityList = metaMapLiteInst.processDocument(document);
 	    	
 	    	StringBuilder sb = new StringBuilder(); 
+	    	String[] semTypes;
+	    	String[] semgroupinfos;
 	    	for (Entity entity: entityList) {
 	    		sb.append(entity.getStart() + ",," + entity.getLength() + ",,");
 				for (Ev ev: entity.getEvSet()) {
 					ConceptInfo ci = ev.getConceptInfo();
 					int setSize = ci.getSemanticTypeSet().size();
+					semTypes = ci.getSemanticTypeSet().toArray(new String[setSize]);
+					semgroupinfos = findSemanticGroups(semTypes);
 					sb.append(ci.getCUI() + ",," + 
 							ci.getPreferredName() + ",," + 
 							ev.getConceptString() + ",," +
 							ev.getScore() + ",," +
-							String.join("::", ci.getSemanticTypeSet().toArray(new String[setSize])) + ",,");
+							String.join("::", semTypes) + ",," + 
+							String.join("::", semgroupinfos) + ",,");
 				}
 				sb.append(";;"); 
 	    	}
