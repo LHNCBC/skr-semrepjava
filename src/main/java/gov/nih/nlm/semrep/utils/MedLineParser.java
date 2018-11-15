@@ -6,7 +6,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.xml.parsers.DocumentBuilder;
+
 import org.json.JSONObject;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import gov.nih.nlm.ling.core.Sentence;
 import gov.nih.nlm.semrep.core.MedLineDocument;
@@ -93,6 +99,51 @@ public class MedLineParser {
 	 */
 	public static MedLineDocument parseSingleMedLine(BufferedReader br, OpennlpUtils nlpClient) throws IOException {
 		return parseMultiMedLines(br, nlpClient).get(0);
+	}
+	
+	public static List<MedLineDocument> parseMultiMedLinesXML(String inPath, OpennlpUtils nlpClient, DocumentBuilder dBuilder) throws IOException {
+		
+		List<MedLineDocument> mdList = new ArrayList<MedLineDocument>();
+		MedLineDocument md;
+		String PMID=null, text=null, title=null;
+		List<Sentence> sentList = null;
+		Document doc;
+		try {
+			doc = dBuilder.parse(inPath);
+		} catch (SAXException e) {
+			e.printStackTrace();
+			System.out.println("Failed to parse Medline XML file using DocumentBuilder class...");
+			return null;
+		}
+		if(doc.getElementsByTagName("PubmedArticleSet").getLength() > 0) {
+			Element articles = (Element) doc.getElementsByTagName("PubmedArticleSet").item(0);
+			if(articles.getElementsByTagName("PubmedArticle").getLength() > 0) {
+				NodeList nl = articles.getElementsByTagName("PubmedArticle");
+				Element article, cit, art;
+				for(int i = 0; i < nl.getLength(); i++) {
+					article = (Element) nl.item(i);
+					if(article.getElementsByTagName("MedlineCitation").getLength() > 0) {
+						cit = (Element) article.getElementsByTagName("MedlineCitation").item(0);
+						if(cit.getElementsByTagName("PMID").getLength() > 0) PMID = cit.getElementsByTagName("PMID").item(0).getTextContent();
+						if(cit.getElementsByTagName("Article").getLength() > 0) {
+							art = (Element) cit.getElementsByTagName("Article").item(0);
+							if(art.getElementsByTagName("ArticleTitle").getLength() > 0) title = art.getElementsByTagName("ArticleTitle").item(0).getTextContent();
+							if(art.getElementsByTagName("Abstract").getLength() > 0) {
+								text = art.getElementsByTagName("Abstract").item(0).getTextContent();
+								sentList = nlpClient.sentenceSplit(text);
+							}
+							System.out.println(title);
+						}
+					}
+					md = new MedLineDocument(PMID, text, sentList, title);
+					for(Sentence sent: sentList) {
+						sent.setDocument(md);
+					}
+					mdList.add(md);
+				}
+			}
+		}
+		return mdList;
 	}
 	
 }

@@ -16,7 +16,7 @@ import gov.nih.nlm.ner.metamap.ScoredUMLSConcept;
 
 public class HypernymProcessing {
 	
-	String hierarchyDB = "berkeleyDB";
+	String hierarchyDB = "hierarchyDB";
 	HierarchyDatabase hdb;
 	
 	public HypernymProcessing() {
@@ -85,14 +85,14 @@ public class HypernymProcessing {
 		if (firstCUI.equals("C1457887") || secondCUI.equals("C1457887")) return null;
 		if (firstCUI.equals(secondCUI)) return null;
 		if(!semGroupMatch(firstConcept.getSemGroups(), secondConcept.getSemGroups())) return null;
-		if(hdb.getData(firstCUI+secondCUI)) {
+		if(hdb.contains(firstCUI+secondCUI)) {
 			subject = new Argument("subject", firstEntity);
 			object = new Argument("object", secondEntity);
 			args.add(subject);
 			args.add(object);
 			return args;
 		}
-		if(hdb.getData(secondCUI+firstCUI)) {
+		if(hdb.contains(secondCUI+firstCUI)) {
 			subject = new Argument("subject", secondEntity);
 			object = new Argument("object", firstEntity);
 			args.add(subject);

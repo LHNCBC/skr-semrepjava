@@ -2,7 +2,6 @@ package gov.nih.nlm.umls;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
@@ -15,13 +14,13 @@ import com.sleepycat.je.EnvironmentConfig;
 import com.sleepycat.je.LockMode;
 import com.sleepycat.je.OperationStatus;
 
-public class HierarchyDatabase
+public class OntologyDatabase
 {
     private Environment env;
-    private static final String HIERARCHY_DATABASE = "hierarchy_database";
-    private Database hierarchyDb;
+    private static final String ONTOLOGY_DATABASE = "ontology_database";
+    private Database ontologyDb;
     
-    public HierarchyDatabase(String homeDirectory, boolean query)
+    public OntologyDatabase(String homeDirectory, boolean query)
     {
     	System.out.println("Opening environment in: " + homeDirectory);
 
@@ -54,13 +53,13 @@ public class HierarchyDatabase
             dbConfig.setKeyPrefixing(true);
         }
         
-        hierarchyDb = env.openDatabase(null, HIERARCHY_DATABASE, dbConfig);
+        ontologyDb = env.openDatabase(null, ONTOLOGY_DATABASE, dbConfig);
     }
 
     public void close()
         throws DatabaseException
     {
-    	hierarchyDb.close();
+    	ontologyDb.close();
     	env.close();
     }
     
@@ -69,9 +68,9 @@ public class HierarchyDatabase
         return env;
     }
     
-    public final Database getHierarchyDatabase()
+    public final Database getOntologyDatabase()
     {
-        return hierarchyDb;
+        return ontologyDb;
     }
     
     public void putDataIntoDatabase(String filename) throws IOException {
@@ -84,11 +83,10 @@ public class HierarchyDatabase
         String empty = "";
         while ( (line = in.readLine()) != null)
         {
-        	//System.out.println("Processing: " + line);
         	i++;
-        	bytes = line.getBytes();
+        	bytes = (line.split("\\|"))[1].getBytes();
         	entry = new DatabaseEntry(bytes);
-        	hierarchyDb.put(null, entry, new DatabaseEntry(empty.getBytes()));
+        	ontologyDb.put(null, entry, new DatabaseEntry(empty.getBytes()));
         }
         in.close();
         System.out.println(i);
@@ -97,9 +95,10 @@ public class HierarchyDatabase
     public boolean contains(String key) {
     	DatabaseEntry entry = new DatabaseEntry(key.getBytes());
     	String empty = "";
-    	OperationStatus status = hierarchyDb.get(null, entry, new DatabaseEntry(empty.getBytes()), LockMode.DEFAULT);
+    	OperationStatus status = ontologyDb.get(null, entry, new DatabaseEntry(empty.getBytes()), LockMode.DEFAULT);
     	if (status == OperationStatus.SUCCESS)
     		return true;
     	return false;
     }
 }
+

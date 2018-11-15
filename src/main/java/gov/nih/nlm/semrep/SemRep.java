@@ -22,6 +22,10 @@ import java.util.Scanner;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -68,6 +72,8 @@ public class SemRep
 	private static MultiThreadClient nerAnnotator;
 	private static OpennlpUtils nlpClient;
 	private static HypernymProcessing hpClient;
+	private static DocumentBuilder dBuilder;
+	private static DocumentBuilderFactory factory;
 
 	/**
 	 * Create document object from string and analyze the document with respect to 
@@ -256,7 +262,13 @@ public class SemRep
 				//writeResults(md, bw);
 			}
 		} else if (inputTextFormat.equalsIgnoreCase("medlinexml")) {
-			
+			log.info("Processing Medline input file : " + inPath);
+			List<MedLineDocument> mdList = MedLineParser.parseMultiMedLinesXML(inPath, nlpClient, dBuilder);
+			for (MedLineDocument md : mdList) {
+				processForSemantics(md);
+				processedDocuments.add(md);
+				//writeResults(md, bw);
+			}
 		}
 		writeResults(processedDocuments, bw);
 		bw.close();
@@ -552,8 +564,20 @@ public class SemRep
 		nlpClient = new OpennlpUtils();
 //		metamap = new MetaMapLiteClient(System.getProperties());
 		hpClient = new HypernymProcessing();
+		factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(false);
+		factory.setValidating(false);
+		try {
+			factory.setFeature("http://xml.org/sax/features/namespaces", false);
+			factory.setFeature("http://xml.org/sax/features/validation", false);
+			factory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
+			factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+			dBuilder = factory.newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+			System.out.println("Unable to initialize document builder in init()...");
+		}
 	}
-
 
 
 	public static void main( String[] args ) throws IOException
