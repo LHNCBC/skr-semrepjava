@@ -52,8 +52,8 @@ public class GNormPlusClientTest extends TestCase {
     public void testGNormPlusClient() throws IOException {
 	SemRep.initLogging();
 	Properties props = FileUtils.loadPropertiesFromFile("semrepjava.properties");
-	// Document doc = SemRep.lexicoSyntacticAnalysis("0", "BRCA1");
-	Document doc = SemRep.lexicoSyntacticAnalysis("0", "ab");
+	Document doc = SemRep.lexicoSyntacticAnalysis("0", "BRCA1");
+	// Document doc = SemRep.lexicoSyntacticAnalysis("0", "ab");
 	Map<SpanList, LinkedHashSet<Ontology>> annotations = new HashMap<>();
 	GNormPlusClient gnormplus = new GNormPlusClient(props);
 	gnormplus.annotate(doc, props, annotations);

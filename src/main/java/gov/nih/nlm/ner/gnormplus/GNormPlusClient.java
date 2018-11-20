@@ -26,8 +26,8 @@ public class GNormPlusClient {
     private int gnpServerPort;
 
     public GNormPlusClient(Properties props) {
-	this.gnpServerPort = Integer.parseInt(props.getProperty("gnormplus.server.port"));
-	this.gnpServerName = props.getProperty("gnormplus.server.name");
+	this.gnpServerPort = Integer.parseInt(props.getProperty("gnormplus.server.port", "30000"));
+	this.gnpServerName = props.getProperty("gnormplus.server.name", "indsrv2");
     }
 
     /*
