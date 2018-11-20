@@ -22,14 +22,13 @@ public class HierarchyDatabase
     private Database hierarchyDb;
     
     public HierarchyDatabase(String homeDirectory, boolean query)
-        throws DatabaseException, FileNotFoundException
     {
     	System.out.println("Opening environment in: " + homeDirectory);
 
         EnvironmentConfig envConfig = new EnvironmentConfig();
-        if(query)
+        if(query) {
         	envConfig.setReadOnly(true);
-        else {
+    	}else {
         	envConfig.setReadOnly(false);
         	envConfig.setTransactional(false);
             envConfig.setAllowCreate(true);
@@ -40,9 +39,11 @@ public class HierarchyDatabase
         //envConfig.setConfigParam(EnvironmentConfig.ENV_RUN_CHECKPOINTER, "false");
         //envConfig.setConfigParam(EnvironmentConfig.ENV_RUN_IN_COMPRESSOR, "false");
         
-
-        env = new Environment(new File(homeDirectory), envConfig);
-        
+        try {
+        	env = new Environment(new File(homeDirectory), envConfig);
+        }catch(DatabaseException e) {
+        	e.printStackTrace();
+        }
         DatabaseConfig dbConfig = new DatabaseConfig();
         if(query)
         	dbConfig.setReadOnly(true);
@@ -93,7 +94,7 @@ public class HierarchyDatabase
         System.out.println(i);
     }
     
-    public boolean getData(String key) {
+    public boolean contains(String key) {
     	DatabaseEntry entry = new DatabaseEntry(key.getBytes());
     	String empty = "";
     	OperationStatus status = hierarchyDb.get(null, entry, new DatabaseEntry(empty.getBytes()), LockMode.DEFAULT);

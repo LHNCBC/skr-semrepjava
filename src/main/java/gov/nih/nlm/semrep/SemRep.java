@@ -22,6 +22,10 @@ import java.util.Scanner;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -31,9 +35,12 @@ import gov.nih.nlm.ling.core.MultiWord;
 import gov.nih.nlm.ling.core.Sentence;
 import gov.nih.nlm.ling.core.SpanList;
 import gov.nih.nlm.ling.core.Word;
+import gov.nih.nlm.ling.sem.AbstractRelation;
 import gov.nih.nlm.ling.sem.AbstractTerm;
+import gov.nih.nlm.ling.sem.Argument;
 import gov.nih.nlm.ling.sem.Concept;
 import gov.nih.nlm.ling.sem.Entity;
+import gov.nih.nlm.ling.sem.ImplicitRelation;
 import gov.nih.nlm.ling.sem.Ontology;
 import gov.nih.nlm.ling.sem.SemanticItem;
 import gov.nih.nlm.ling.sem.SemanticItemFactory;
@@ -47,6 +54,7 @@ import gov.nih.nlm.semrep.core.ChunkedSentence;
 import gov.nih.nlm.semrep.core.MedLineDocument;
 import gov.nih.nlm.semrep.utils.MedLineParser;
 import gov.nih.nlm.semrep.utils.OpennlpUtils;
+import gov.nih.nlm.umls.HypernymProcessing;
 
 /**
  * Main class for SemRep Java implementation
@@ -63,6 +71,9 @@ public class SemRep
 //	private static MetaMapLiteClient metamap;
 	private static MultiThreadClient nerAnnotator;
 	private static OpennlpUtils nlpClient;
+	private static HypernymProcessing hpClient;
+	private static DocumentBuilder dBuilder;
+	private static DocumentBuilderFactory factory;
 
 	/**
 	 * Create document object from string and analyze the document with respect to 
@@ -75,6 +86,7 @@ public class SemRep
 	 */
 	public static Document lexicoSyntacticAnalysis(String documentID, String text) throws IOException {
 		Document doc = new Document(documentID, text);
+		if(nlpClient == null) nlpClient = new OpennlpUtils();
 		List<Sentence> sentList= nlpClient.sentenceSplit(text);
 		for(Sentence sent: sentList) {
 			sent.setDocument(doc);
@@ -249,6 +261,14 @@ public class SemRep
 				processedDocuments.add(md);
 				//writeResults(md, bw);
 			}
+		} else if (inputTextFormat.equalsIgnoreCase("medlinexml")) {
+			log.info("Processing Medline input file : " + inPath);
+			List<MedLineDocument> mdList = MedLineParser.parseMultiMedLinesXML(inPath, nlpClient, dBuilder);
+			for (MedLineDocument md : mdList) {
+				processForSemantics(md);
+				processedDocuments.add(md);
+				//writeResults(md, bw);
+			}
 		}
 		writeResults(processedDocuments, bw);
 		bw.close();
@@ -274,6 +294,7 @@ public class SemRep
 			processedDocuments = new ArrayList<Document>();
 			processedDocuments.add(doc);
 			writeResults(processedDocuments, bw);
+			bw.flush();
 			System.out.println("\nEnter text below:");
 			input = in.nextLine();
 		}
@@ -302,6 +323,7 @@ public class SemRep
 		
 		// named entity recognition
 		Map<SpanList, LinkedHashSet<Ontology>> annotations = new HashMap<SpanList, LinkedHashSet<Ontology>>();
+		if(nerAnnotator == null) nerAnnotator = new MultiThreadClient(System.getProperties());
 		nerAnnotator.annotate(doc,System.getProperties(),annotations);
 		for (SpanList sp: annotations.keySet()) {
 			LinkedHashSet<Ontology> terms = annotations.get(sp);
@@ -348,6 +370,15 @@ public class SemRep
 			Entity ent = (Entity)sem;
 			log.info("Entity:" + ent.toShortString());
 		}
+		
+		List<Argument> args;
+		for (Sentence cs: doc.getSentences()) {
+			for(Chunk chunk: ((ChunkedSentence)cs).getChunks()) {
+				if(hpClient == null) hpClient = new HypernymProcessing();
+				args = hpClient.intraNP(chunk);
+				if(args != null) sif.newImplicitRelation(doc, "ISA", args);
+			}
+		}
 	
 		// these entities now can now be written to output.
 		log.info("Semantic process done.");
@@ -378,10 +409,14 @@ public class SemRep
 				for(int j = 0; j < sentList.size(); j++) {
 					cs = (ChunkedSentence)sentList.get(j);
 					sb.append(cs.getText() + "\n");
-					siList = Document.getSemanticItemsBySpan(doc, new SpanList(cs.getSpan()), true);
+					siList = Document.getSemanticItemsByClassSpan(doc, Entity.class, new SpanList(cs.getSpan()), true);
 					for(SemanticItem si : siList) {
 						ent = (Entity) si;
 						sb.append(ent.toShortString() + "\n");
+					}
+					siList = Document.getSemanticItemsByClassSpan(doc, AbstractRelation.class, new SpanList(cs.getSpan()), true);
+					for(SemanticItem si : siList) {
+						if(si instanceof ImplicitRelation) sb.append(((ImplicitRelation)si).toShortString() + "\n");
 					}
 					if( includes != null)
 						sb.append(cs.getIncludeInfo(includes));
@@ -422,7 +457,7 @@ public class SemRep
 					textOutputFields.addAll(cs.getRemainFieldsForTextOutput());
 					sb.append(String.join("|", textOutputFields) + "\n");
 					
-					entities = Document.getSemanticItemsBySpan(doc, new SpanList(cs.getSpan()), true);
+					entities = Document.getSemanticItemsByClassSpan(doc, Entity.class, new SpanList(cs.getSpan()), true);
 					for(SemanticItem entity : entities) {
 						for(Concept concept: ((Entity)entity).getConcepts()) {
 							entityOutputFields = new ArrayList<String>();
@@ -441,11 +476,13 @@ public class SemRep
 							sb.append(String.join("|", entityOutputFields) + "\n");
 						}			
 					}
-					
+					siList = Document.getSemanticItemsByClassSpan(doc, AbstractRelation.class, new SpanList(cs.getSpan()), true);
+					for(SemanticItem si : siList) {
+						if(si instanceof ImplicitRelation) sb.append(((ImplicitRelation)si).toShortString() + "\n");
+					}
 					if( includes != null)
 						sb.append(cs.getIncludeInfo(includes));
 					sb.append("\n");
-					
 				}
 			}
 		} else if(outputFormat.equalsIgnoreCase("json")) {
@@ -526,8 +563,21 @@ public class SemRep
 		nerAnnotator = new MultiThreadClient(System.getProperties());
 		nlpClient = new OpennlpUtils();
 //		metamap = new MetaMapLiteClient(System.getProperties());
+		hpClient = new HypernymProcessing();
+		factory = DocumentBuilderFactory.newInstance();
+		factory.setNamespaceAware(false);
+		factory.setValidating(false);
+		try {
+			factory.setFeature("http://xml.org/sax/features/namespaces", false);
+			factory.setFeature("http://xml.org/sax/features/validation", false);
+			factory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
+			factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+			dBuilder = factory.newDocumentBuilder();
+		} catch (ParserConfigurationException e) {
+			e.printStackTrace();
+			System.out.println("Unable to initialize document builder in init()...");
+		}
 	}
-
 
 
 	public static void main( String[] args ) throws IOException

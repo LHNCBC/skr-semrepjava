@@ -5,7 +5,6 @@ import java.util.LinkedHashSet;
 import java.util.logging.Logger;
 
 import gov.nih.nlm.ling.core.Document;
-import gov.nih.nlm.ling.sem.Predication;
 import gov.nih.nlm.ling.sem.SemanticItem;
 import junit.framework.Test;
 import junit.framework.TestCase;
@@ -43,10 +42,10 @@ public class SemRepTest
      */
     public void testSemRep() throws IOException
     {
-		SemRep.init();
+		SemRep.initLogging();
 		Document doc = SemRep.lexicoSyntacticAnalysis("0", "Aspirin treats headache.");
 		SemRep.processForSemantics(doc);
-		LinkedHashSet<SemanticItem> preds = Document.getSemanticItemsByClass(doc, Predication.class);
+		LinkedHashSet<SemanticItem> preds = Document.getSemanticItemsByClass(doc, SemanticItem.class);
         assertTrue( preds.size() != 0 );
     }
     

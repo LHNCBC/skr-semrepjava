@@ -9,7 +9,6 @@ import java.util.List;
 import gov.nih.nlm.ling.core.Chunk;
 import gov.nih.nlm.ling.core.Sentence;
 import gov.nih.nlm.ling.core.SurfaceElement;
-import gov.nih.nlm.ling.core.SurfaceElementFactory;
 import gov.nih.nlm.ling.core.Word;
 import gov.nih.nlm.ling.core.WordLexeme;
 import gov.nih.nlm.semrep.core.ChunkedSentence;
@@ -197,8 +196,7 @@ public class OpennlpUtils {
 	WordLexeme wl;
 	gov.nih.nlm.ling.core.Span span;
 	Chunk chunk = null;
-	List<SurfaceElement> seList;
-	SurfaceElementFactory sef = new SurfaceElementFactory();
+	List<SurfaceElement> seList = null;
 	
 	for (int i = 0; i < tokens.length; i++) {
 	    String[] fields = chunkTags[i].split("-");
@@ -211,34 +209,68 @@ public class OpennlpUtils {
 		    tokenSpans[i].getEnd() + s.getSpan().getBegin());
 	    w = new Word(tokens[i], tags[i], wl, index, span);
 	    w.setSentence(s);
+	    w.setChunkRole('X');
 	    wordList.add(w);
 	    if (fields[0].equals("B")) {
-			if (chunk == null) {
-				seList = new ArrayList<SurfaceElement>();
-			    chunk = new Chunk(seList, fields[1]);
-			} else {
-			    chunkList.add(chunk);
+			if (chunk == null) {	
+			    chunk = new Chunk(null, fields[1]);
 			    seList = new ArrayList<SurfaceElement>();
-			    chunk = new Chunk(seList, fields[1]);
+			    w.setChunk(chunk);
+				seList.add(w);
+			} else {
+				if (chunk.getChunkType().equals("NP") && seList.size() > 1) setChunkRolesForSurfaceElementList(seList);
+				chunk.setSurfaceElementList(seList);
+			    chunkList.add(chunk);
+			    chunk = new Chunk(null, fields[1]);
+			    seList = new ArrayList<SurfaceElement>();
+			    w.setChunk(chunk);
+			    seList.add(w);
+			    
 			}
 	    } else if (fields[0].equals("I")) {
-			
+	    	if (seList == null) seList = new ArrayList<SurfaceElement>();
+	    	w.setChunk(chunk);
+	    	seList.add(w);
 	    } else if (fields[0].equals("O")) {
-			if (chunk != null)
+			if (chunk != null) {
+				if (chunk.getChunkType().equals("NP") && seList.size() > 1) setChunkRolesForSurfaceElementList(seList);
+				chunk.setSurfaceElementList(seList);
 			    chunkList.add(chunk);
-			seList = new ArrayList<SurfaceElement>();
-			seList.add(w);
+			}
 			chunk = new Chunk(seList, tags[i]);
+			seList = new ArrayList<SurfaceElement>();
 			w.setChunk(chunk);
+			seList.add(w);
 			chunkList.add(chunk);
 			chunk = null;
 	    }
 	    if (i == tokens.length - 1 && chunk != null) {
+	    	if (chunk.getChunkType().equals("NP") && seList.size() > 1) setChunkRolesForSurfaceElementList(seList);
+	    	chunk.setSurfaceElementList(seList);
 	    	chunkList.add(chunk);
 	    }
 	}
 	s.setWords(wordList);
 	s.setChunks(chunkList);
+    }
+    
+    public void setChunkRolesForSurfaceElementList(List<SurfaceElement> seList) {
+    	int size = seList.size();
+    	boolean headDetermined = false;
+    	Word w;
+    	String tag;
+    	for (int i = size - 1; i >= 0; i--) {
+    		w = (Word) seList.get(i);
+			tag = w.getPos();
+    		if(!headDetermined) {
+    			if(tag.contains("NN") || tag.contains("JJ") || tag.contains("VBG")) {
+    				w.setChunkRole('H');
+    				headDetermined = true;
+    			}
+    		}else {
+    			if(!tag.contains("DT")) w.setChunkRole('M');
+    		}
+    	}
     }
 
     /**
