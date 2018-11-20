@@ -9,6 +9,8 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.logging.Logger;
 
+import gov.nih.nlm.umls.OntologyDatabase;
+
 /**
  * A class that contains methods broadly useful in SemRep.
  * 
@@ -90,6 +92,12 @@ public class SemRepUtils {
 	    ioe.printStackTrace();
 	}
 	return sb.toString();
+    }
+    
+    public static void createOntologyDatabase(String homeDirectory, String input_file) throws IOException {
+    	OntologyDatabase ontDB = new OntologyDatabase(homeDirectory, false);
+    	ontDB.putDataIntoDatabase(input_file);
+    	ontDB.close();
     }
 
 }

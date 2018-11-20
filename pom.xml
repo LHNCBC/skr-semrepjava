@@ -16,21 +16,16 @@
   
   <repositories>
     <repository>
-      <id>ii internal</id>
+      <id>metamap maven</id>
       <url>https://metamap.nlm.nih.gov/maven2/</url>
     </repository>
-    <repository>
-	  <id>central</id>
-	  <name>Maven Central</name>
-	  <url>http://repo1.maven.org/maven2</url>
-	</repository>
   </repositories>
 
   <dependencies> 
     <dependency>
       	<groupId>junit</groupId>
       	<artifactId>junit</artifactId>
-      	<version>3.8.1</version>
+      	<version>4.11</version>
       	<scope>test</scope>
     </dependency>
     <dependency>
@@ -53,6 +48,11 @@
       <artifactId>je</artifactId>
       <version>18.3.1</version>
 	</dependency>
+	<dependency>
+	    <groupId>xerces</groupId>
+	    <artifactId>xercesImpl</artifactId>
+	    <version>2.8.0</version>
+	</dependency>
     <dependency> 
       <groupId>gov.nih.nlm</groupId>
       <artifactId>bioscores</artifactId>
@@ -61,7 +61,7 @@
     <dependency>
       <groupId>gov.nih.nlm.nls</groupId>
       <artifactId>metamaplite</artifactId>
-      <version>3.6</version>
+      <version>3.6.2rc1</version>
     </dependency>
       <!-- https://mvnrepository.com/artifact/gov.nih.nlm.nls.lvg/lvg2010dist -->
     <dependency>
@@ -78,6 +78,11 @@
       <groupId>gov.nih.nlm</groupId>
       <artifactId>gnormplus</artifactId>
       <version>1.0.0</version>
+    </dependency>
+    <dependency>
+      <groupId>gov.nih.nlm.nls</groupId>
+      <artifactId>aec_mrd_wsd</artifactId>
+      <version>1.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 

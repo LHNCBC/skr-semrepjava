@@ -59,8 +59,10 @@ public class MetaMapLiteServerHandler extends Thread {
 			BufferedReader br = new BufferedReader(new InputStreamReader(bis));
 			PrintWriter bw = new PrintWriter(socket.getOutputStream(), true);
 			String inputText = br.readLine();
+			System.out.println("inputtext: " + inputText);
 	    	BioCDocument document = FreeText.instantiateBioCDocument(inputText);
 	    	List<Entity> entityList = metaMapLiteInst.processDocument(document);
+	    	System.out.println("Entity size: " + entityList.size());
 	    	
 	    	StringBuilder sb = new StringBuilder(); 
 	    	String[] semTypes;
