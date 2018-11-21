@@ -43,5 +43,3 @@ e.g. to test with medline:
 
 sh bin/semrepjava.sh --inputformat=singlefile --inputtextformat=medline --inputpath=TestFiles/test.ml --outputpath=TestFiles/out.ml --outputFormat=human-readable --includes=chunk
 
-
-asjkhdkhsajdhjkahdahjks
