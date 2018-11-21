@@ -108,15 +108,20 @@ public class GNormPlusClient {
 		int end = Integer.parseInt(compo[1]);
 		SpanList s1 = new SpanList(start, end);
 		//				int geneId = Integer.parseInt(compo[4]);
-
-		GNormPlusConcept gcon = new GNormPlusConcept(compo[4], compo[2], compo[3]);
-		LinkedHashSet<Ontology> onts = annotations.get(s1);
-		if (onts != null)
-		    onts.add(gcon);
-		else {
-		    onts = new LinkedHashSet<>();
-		    onts.add(gcon);
-		    annotations.put(s1, onts);
+		/*
+		 * The GNormPlusJNIServer returns "Gene" and "Species", so here Species are
+		 * filtered out
+		 */
+		if (compo[3].trim().equals("Gene")) {
+		    GNormPlusConcept gcon = new GNormPlusConcept(compo[4], compo[2], compo[3]);
+		    LinkedHashSet<Ontology> onts = annotations.get(s1);
+		    if (onts != null)
+			onts.add(gcon);
+		    else {
+			onts = new LinkedHashSet<>();
+			onts.add(gcon);
+			annotations.put(s1, onts);
+		    }
 		}
 
 	    }
