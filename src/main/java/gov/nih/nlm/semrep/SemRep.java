@@ -22,10 +22,6 @@ import java.util.Scanner;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -52,9 +48,14 @@ import gov.nih.nlm.ner.gnormplus.GNormPlusConcept;
 import gov.nih.nlm.ner.metamap.ScoredUMLSConcept;
 import gov.nih.nlm.semrep.core.ChunkedSentence;
 import gov.nih.nlm.semrep.core.MedLineDocument;
+import gov.nih.nlm.semrep.core.SRIndicator;
 import gov.nih.nlm.semrep.utils.MedLineParser;
 import gov.nih.nlm.semrep.utils.OpennlpUtils;
 import gov.nih.nlm.umls.HypernymProcessing;
+import nu.xom.Builder;
+import nu.xom.Elements;
+import nu.xom.ParsingException;
+import nu.xom.ValidityException;
 
 /**
  * Main class for SemRep Java implementation
@@ -72,6 +73,7 @@ public class SemRep
 	private static MultiThreadClient nerAnnotator;
 	public static OpennlpUtils nlpClient;
 	private static HypernymProcessing hpClient;
+	private static List<SRIndicator> indList;
 
 	/**
 	 * Create document object from string and analyze the document with respect to 
@@ -556,18 +558,26 @@ public class SemRep
 	 * Initializes logging and named entity recognizers.
 	 * @throws IOException 
 	 * 				if any opennlp model file is not found
-	 * 
+	 * @throws ParsingException 
+	 * 				if failed to parse indicator rules file
+	 * @throws ValidityException 
+	 * 				if indicator rules file is not correctly formatted
 	 */
-	public static void init() throws IOException {
+	public static void init() throws IOException, ValidityException, ParsingException {
 		initLogging();
 		nerAnnotator = new MultiThreadClient(System.getProperties());
 		nlpClient = new OpennlpUtils();
 //		metamap = new MetaMapLiteClient(System.getProperties());
 		hpClient = new HypernymProcessing();
+		Elements els = new Builder().build(new File(System.getProperty("semrulesinfo"))).getRootElement().getChildElements("SRIndicator");
+		indList = new ArrayList<>();
+		for(int i = 0; i < els.size(); i++) {
+			indList.add(new SRIndicator(els.get(i)));
+		}
 	}
 
 
-	public static void main( String[] args ) throws IOException
+	public static void main( String[] args ) throws IOException, ValidityException, ParsingException
 	{
 		long beg = System.currentTimeMillis();
 		System.setProperties(getProps(args));
@@ -586,6 +596,6 @@ public class SemRep
 			processInteractively();
 		}
 		long end = System.currentTimeMillis();
-		log.info("Completed all " +(end-beg) + " msec.");
+		log.info("Completed all " +(end-beg) + " msec.");	
 	}
 }
