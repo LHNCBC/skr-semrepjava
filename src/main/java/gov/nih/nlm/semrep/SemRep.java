@@ -31,6 +31,7 @@ import gov.nih.nlm.ling.core.MultiWord;
 import gov.nih.nlm.ling.core.Sentence;
 import gov.nih.nlm.ling.core.SpanList;
 import gov.nih.nlm.ling.core.Word;
+import gov.nih.nlm.ling.process.IndicatorAnnotator;
 import gov.nih.nlm.ling.sem.AbstractRelation;
 import gov.nih.nlm.ling.sem.AbstractTerm;
 import gov.nih.nlm.ling.sem.Argument;
@@ -38,6 +39,7 @@ import gov.nih.nlm.ling.sem.Concept;
 import gov.nih.nlm.ling.sem.Entity;
 import gov.nih.nlm.ling.sem.ImplicitRelation;
 import gov.nih.nlm.ling.sem.Ontology;
+import gov.nih.nlm.ling.sem.Predicate;
 import gov.nih.nlm.ling.sem.SemanticItem;
 import gov.nih.nlm.ling.sem.SemanticItemFactory;
 import gov.nih.nlm.ling.util.FileUtils;
@@ -52,8 +54,6 @@ import gov.nih.nlm.semrep.core.SRIndicator;
 import gov.nih.nlm.semrep.utils.MedLineParser;
 import gov.nih.nlm.semrep.utils.OpennlpUtils;
 import gov.nih.nlm.umls.HypernymProcessing;
-import nu.xom.Builder;
-import nu.xom.Elements;
 import nu.xom.ParsingException;
 import nu.xom.ValidityException;
 
@@ -73,7 +73,8 @@ public class SemRep
 	private static MultiThreadClient nerAnnotator;
 	public static OpennlpUtils nlpClient;
 	private static HypernymProcessing hpClient;
-	private static List<SRIndicator> indList;
+//	private static LinkedHashSet<SRIndicator> indicators;
+	private static IndicatorAnnotator indAnnotator;
 
 	/**
 	 * Create document object from string and analyze the document with respect to 
@@ -381,6 +382,12 @@ public class SemRep
 				if(args != null) sif.newImplicitRelation(doc, "ISA", args);
 			}
 		}
+		
+		indAnnotator.annotateIndicators(doc, System.getProperties());
+		LinkedHashSet<SemanticItem> predicates = Document.getSemanticItemsByClass(doc, Predicate.class);
+		log.info("Predicates size: " + predicates.size());
+		log.info("Predicate info: " + predicates.toString());
+		
 	
 		// these entities now can now be written to output.
 		log.info("Semantic process done.");
@@ -569,11 +576,9 @@ public class SemRep
 		nlpClient = new OpennlpUtils();
 //		metamap = new MetaMapLiteClient(System.getProperties());
 		hpClient = new HypernymProcessing();
-		Elements els = new Builder().build(new File(System.getProperty("semrulesinfo"))).getRootElement().getChildElements("SRIndicator");
-		indList = new ArrayList<>();
-		for(int i = 0; i < els.size(); i++) {
-			indList.add(new SRIndicator(els.get(i)));
-		}
+		indAnnotator = new IndicatorAnnotator(SRIndicator.loadSRIndicatorsFromFile(System.getProperty("semrulesinfo"), 0));
+//		indicators = SRIndicator.loadSRIndicatorsFromFile(System.getProperty("semrulesinfo"), 0);
+		
 	}
 
 
