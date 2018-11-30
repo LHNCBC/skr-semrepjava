@@ -21,7 +21,6 @@ import gov.nih.nlm.nls.wsd.algorithms.AEC.AECMethod;
 
 public class WSDServer {
 	private static Logger log = Logger.getLogger(WSDServer.class.getName());	
-	
 	public static void main(String[] args) throws IOException, ClassNotFoundException, InstantiationException, NoSuchMethodException, IllegalAccessException {
 		
 		

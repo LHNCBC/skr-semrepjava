@@ -36,3 +36,7 @@ SemRep_GS
 *.ann
 /target/
 /classes/
+*.plain
+hierarchyDB
+ontologyDB
+MedLineXML

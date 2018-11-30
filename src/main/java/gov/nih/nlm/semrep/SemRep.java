@@ -8,6 +8,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -17,17 +18,28 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Scanner;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import gov.nih.nlm.ling.core.Chunk;
 import gov.nih.nlm.ling.core.Document;
 import gov.nih.nlm.ling.core.MultiWord;
 import gov.nih.nlm.ling.core.Sentence;
 import gov.nih.nlm.ling.core.SpanList;
 import gov.nih.nlm.ling.core.Word;
+import gov.nih.nlm.ling.process.IndicatorAnnotator;
+import gov.nih.nlm.ling.sem.AbstractRelation;
+import gov.nih.nlm.ling.sem.AbstractTerm;
+import gov.nih.nlm.ling.sem.Argument;
 import gov.nih.nlm.ling.sem.Concept;
 import gov.nih.nlm.ling.sem.Entity;
+import gov.nih.nlm.ling.sem.ImplicitRelation;
 import gov.nih.nlm.ling.sem.Ontology;
+import gov.nih.nlm.ling.sem.Predicate;
 import gov.nih.nlm.ling.sem.SemanticItem;
 import gov.nih.nlm.ling.sem.SemanticItemFactory;
 import gov.nih.nlm.ling.util.FileUtils;
@@ -35,11 +47,15 @@ import gov.nih.nlm.ner.AnnotationFilter;
 import gov.nih.nlm.ner.LargestSpanFilter;
 import gov.nih.nlm.ner.MultiThreadClient;
 import gov.nih.nlm.ner.gnormplus.GNormPlusConcept;
-import gov.nih.nlm.semrep.core.Chunk;
+import gov.nih.nlm.ner.metamap.ScoredUMLSConcept;
 import gov.nih.nlm.semrep.core.ChunkedSentence;
 import gov.nih.nlm.semrep.core.MedLineDocument;
+import gov.nih.nlm.semrep.core.SRIndicator;
 import gov.nih.nlm.semrep.utils.MedLineParser;
 import gov.nih.nlm.semrep.utils.OpennlpUtils;
+import gov.nih.nlm.umls.HypernymProcessing;
+import nu.xom.ParsingException;
+import nu.xom.ValidityException;
 
 /**
  * Main class for SemRep Java implementation
@@ -55,6 +71,10 @@ public class SemRep
 
 //	private static MetaMapLiteClient metamap;
 	private static MultiThreadClient nerAnnotator;
+	public static OpennlpUtils nlpClient;
+	private static HypernymProcessing hpClient;
+//	private static LinkedHashSet<SRIndicator> indicators;
+	private static IndicatorAnnotator indAnnotator;
 
 	/**
 	 * Create document object from string and analyze the document with respect to 
@@ -67,9 +87,12 @@ public class SemRep
 	 */
 	public static Document lexicoSyntacticAnalysis(String documentID, String text) throws IOException {
 		Document doc = new Document(documentID, text);
-		List<Sentence> sentList= OpennlpUtils.sentenceSplit(text);
+		if(nlpClient == null) nlpClient = new OpennlpUtils();
+		List<Sentence> sentList= nlpClient.sentenceSplit(text);
 		for(Sentence sent: sentList) {
 			sent.setDocument(doc);
+			((ChunkedSentence) sent).setSectionAbbreviation("tx");
+			((ChunkedSentence) sent).setSentenceIDInSection(sent.getId());
 		}
 		doc.setSentences(sentList);
 		return doc;
@@ -118,6 +141,8 @@ public class SemRep
 					optionProps.setProperty("user.inputtextformat", fields[1]);
 				} else if (fields[0].equals("--annsource")) {
 					optionProps.setProperty("user.annsource", fields[1]);
+				} else if (fields[0].equals("--includes")) {
+					optionProps.setProperty("user.output.includes", fields[1]);
 				}
 			}
 			i++;
@@ -183,28 +208,17 @@ public class SemRep
 	 * @param inPath the path of the directory
 	 * @throws IOException if it fails to open input files or to create and write to the output file
 	 */
-	public static void processFromDirectory(String inPath) throws IOException {
-		File[] files = new File(inPath).listFiles();
-		String inputTextFormat = System.getProperty("user.inputtextformat");
+	public static void processFromDirectory(String inPath, String outPath) throws IOException {
+		File[] files = new File(inPath).listFiles();	
+		File dir = new File(outPath);
+		
+		if(!dir.isDirectory()) {
+			dir.mkdirs();
+		}
 		for(File file: files) {
 			String filename = file.getName();
 			String[] fields = filename.split("\\.");
-			if(fields.length == 2 && fields[1].equals("txt")) {
-				BufferedReader br = new BufferedReader(new FileReader(file));
-				if (inputTextFormat.equalsIgnoreCase("plaintext")) {
-					long fileLen = file.length();
-					char[] buf = new char[(int)fileLen];
-					br.read(buf,0, (int)fileLen);
-					br.close();
-					String text = new String(buf);
-					Document doc = lexicoSyntacticAnalysis(fields[0], text);
-					processForSemantics(doc);
-				}else if (inputTextFormat.equalsIgnoreCase("medline")) {
-					MedLineDocument md = MedLineParser.parseSingleMedLine(br);
-					processForSemantics(md);
-				}
-				br.close();
-			}
+			processFromSingleFile(inPath + "/" + filename, outPath + "/" + fields[0]);
 		}
 
 	}
@@ -216,9 +230,12 @@ public class SemRep
 	 * @param inPath the path of the single file
 	 * @throws IOException if it fails to open the input file or to create and write to the output file
 	 */
-	public static void processFromSingleFile(String inPath) throws IOException {
+	public static void processFromSingleFile(String inPath, String outPath) throws IOException {
 		String inputTextFormat = System.getProperty("user.inputtextformat");
 		BufferedReader br = new BufferedReader(new FileReader(inPath));
+		BufferedWriter bw = new BufferedWriter(new FileWriter(outPath, true));
+		List<Document> processedDocuments = new ArrayList<Document>();
+		
 		if (inputTextFormat.equalsIgnoreCase("plaintext")) {		
 			log.info("Processing plain text file : " + inPath);
 			int count = 0;
@@ -231,21 +248,63 @@ public class SemRep
 					Document doc = lexicoSyntacticAnalysis(Integer.toString(count),sb.toString());
 					sb = new StringBuilder();
 					processForSemantics(doc);
-					writeResults(doc);
+					processedDocuments.add(doc);
+					//writeResults(doc, bw);
 				}else {
 					sb.append(line + " ");
 				}
 			} while(line != null);
 		} else if (inputTextFormat.equalsIgnoreCase("medline")) {
 			log.info("Processing Medline input file : " + inPath);
-			List<MedLineDocument> mdList = MedLineParser.parseMultiMedLines(br);
+			List<MedLineDocument> mdList = MedLineParser.parseMultiMedLines(br, nlpClient);
 			for (MedLineDocument md : mdList) {
 				processForSemantics(md);
-				writeResults(md);
+				processedDocuments.add(md);
+				//writeResults(md, bw);
 			}
+		} else if (inputTextFormat.equalsIgnoreCase("medlinexml")) {
+			log.info("Processing Medline input file : " + inPath);
+			List<MedLineDocument> mdList = MedLineParser.parseMultiMedLinesXML(inPath);
+			for (MedLineDocument md : mdList) {
+				processForSemantics(md);
+				processedDocuments.add(md);
+				//writeResults(md, bw);
+			}
+			System.out.println(mdList.size());
+			System.out.println(mdList.get(0).getText());
 		}
+		writeResults(processedDocuments, bw);
+		bw.close();
 		br.close();
 	}
+	
+	/**
+	 * Process interactively on the command line. Expect a line of text to be entered.
+	 * @throws IOException if it fails to open the input file or to create and write to the output file
+	 */
+	
+	public static void processInteractively() throws IOException {
+		Scanner in = new Scanner(System.in);
+		BufferedWriter bw = new BufferedWriter(new PrintWriter(System.out));
+		Document doc;
+		List<Document> processedDocuments;
+		
+		System.out.println("Enter text below:");
+		String input = in.nextLine();
+		while(!input.equalsIgnoreCase("exit")) {
+			doc = lexicoSyntacticAnalysis("0", input);
+			processForSemantics(doc);
+			processedDocuments = new ArrayList<Document>();
+			processedDocuments.add(doc);
+			writeResults(processedDocuments, bw);
+			bw.flush();
+			System.out.println("\nEnter text below:");
+			input = in.nextLine();
+		}
+		bw.close();
+		in.close();
+	}
+	
 
 	/**
 	 * Processes a <code>Document</code> object semantically, by identifying named entities 
@@ -262,9 +321,12 @@ public class SemRep
 			return;
 		}
 		
-		generateChunkOutput(doc);
+		// to generate chunk output to a file
+		//generateChunkOutput(doc);
+		
 		// named entity recognition
 		Map<SpanList, LinkedHashSet<Ontology>> annotations = new HashMap<SpanList, LinkedHashSet<Ontology>>();
+		if(nerAnnotator == null) nerAnnotator = new MultiThreadClient(System.getProperties());
 		nerAnnotator.annotate(doc,System.getProperties(),annotations);
 		for (SpanList sp: annotations.keySet()) {
 			LinkedHashSet<Ontology> terms = annotations.get(sp);
@@ -299,7 +361,7 @@ public class SemRep
 			Concept sense = null;
 			LinkedHashSet<Concept> concepts = new LinkedHashSet<>();
 			Iterator<Ontology> iter = terms.iterator();
-			while (iter.hasNext()) {
+			while (iter.hasNext()) {		
 				Concept conc = (Concept)iter.next();
 				if (sense == null) sense = conc;
 				concepts.add(conc);
@@ -311,13 +373,179 @@ public class SemRep
 			Entity ent = (Entity)sem;
 			log.info("Entity:" + ent.toShortString());
 		}
+		
+		List<Argument> args;
+		for (Sentence cs: doc.getSentences()) {
+			for(Chunk chunk: ((ChunkedSentence)cs).getChunks()) {
+				if(hpClient == null) hpClient = new HypernymProcessing();
+				args = hpClient.intraNP(chunk);
+				if(args != null) sif.newImplicitRelation(doc, "ISA", args);
+			}
+		}
+		
+		indAnnotator.annotateIndicators(doc, System.getProperties());
+		LinkedHashSet<SemanticItem> predicates = Document.getSemanticItemsByClass(doc, Predicate.class);
+		log.info("Predicates size: " + predicates.size());
+		log.info("Predicate info: " + predicates.toString());
+		
 	
 		// these entities now can now be written to output.
+		log.info("Semantic process done.");
 	}
+	
+	/**
+	 * This function outputs documents' infos to a output stream according to the specified options
+	 * 
+	 * @param docs the list of documents to be output
+	 * 
+	 * @throws IOException
+	 */
 
-	public static void writeResults(Document doc) throws IOException {
-		// TODO: Once the document is processed semantically, we need to write the results out according to specifications
+	public static void writeResults(List<Document> docs, BufferedWriter writer) throws IOException {
+		String outputFormat = System.getProperty("user.outputformat");
+		StringBuilder sb = new StringBuilder();
+		List<Sentence> sentList;
+		ChunkedSentence cs;
+		LinkedHashSet<SemanticItem> siList;
+		Entity ent;
+		String includes = System.getProperty("user.output.includes");
+		Document doc;
+		
+		if(outputFormat.equalsIgnoreCase("simplified")) {
+			for(int i = 0; i < docs.size(); i++) {
+				doc = docs.get(i);
+				sentList = doc.getSentences();
+				for(int j = 0; j < sentList.size(); j++) {
+					cs = (ChunkedSentence)sentList.get(j);
+					sb.append(cs.getText() + "\n");
+					siList = Document.getSemanticItemsByClassSpan(doc, Entity.class, new SpanList(cs.getSpan()), true);
+					for(SemanticItem si : siList) {
+						ent = (Entity) si;
+						sb.append(ent.toShortString() + "\n");
+					}
+					siList = Document.getSemanticItemsByClassSpan(doc, AbstractRelation.class, new SpanList(cs.getSpan()), true);
+					for(SemanticItem si : siList) {
+						if(si instanceof ImplicitRelation) sb.append(((ImplicitRelation)si).toShortString() + "\n");
+					}
+					if( includes != null)
+						sb.append(cs.getIncludeInfo(includes));
+					sb.append("\n");
+				}
+			}
+		} else if(outputFormat.equalsIgnoreCase("brat")) {
+			for(int i = 0; i < docs.size(); i++) {
+				doc = docs.get(i);
+				siList = Document.getSemanticItemsByClass(doc, Entity.class);
+				for (SemanticItem si : siList) {
+					ent = (Entity)si;
+					sb.append(ent.toStandoffAnnotation(true, 0) + "\n");
+				}
+				sb.append("\n");
+			}		
+		} else if(outputFormat.equalsIgnoreCase("human-readable")) {
+			for(int i = 0; i < docs.size(); i++) {
+				doc = docs.get(i);
+				sentList = doc.getSentences();
+				List<String> commonOutputFields;
+				List<String> textOutputFields;
+				List<String> entityOutputFields;
+				LinkedHashSet<SemanticItem> entities;
+				
+				for(int j = 0; j < sentList.size(); j++) {
+					cs = (ChunkedSentence)sentList.get(j);
+					commonOutputFields = new ArrayList<String>();
+					textOutputFields = new ArrayList<String>();
+						
+					commonOutputFields.add(doc.getId());
+					commonOutputFields.add(cs.getSubsection());
+					commonOutputFields.add(cs.getSectionAbbreviation());
+					commonOutputFields.add(cs.getSentenceIDInSection());
+					
+					textOutputFields.addAll(commonOutputFields);
+					textOutputFields.add("text");
+					textOutputFields.addAll(cs.getRemainFieldsForTextOutput());
+					sb.append(String.join("|", textOutputFields) + "\n");
+					
+					entities = Document.getSemanticItemsByClassSpan(doc, Entity.class, new SpanList(cs.getSpan()), true);
+					for(SemanticItem entity : entities) {
+						for(Concept concept: ((Entity)entity).getConcepts()) {
+							entityOutputFields = new ArrayList<String>();
+							entityOutputFields.addAll(commonOutputFields);
+							entityOutputFields.add("entity");
+							entityOutputFields.add(concept.getId());
+							entityOutputFields.add(concept.getName());
+							entityOutputFields.add(String.join(",", concept.getSemtypes()));
+							entityOutputFields.add(((AbstractTerm)entity).getText());
+							if(concept instanceof GNormPlusConcept)
+								entityOutputFields.add("1000");
+							else if(concept instanceof ScoredUMLSConcept)
+								entityOutputFields.add(Double.toString(((ScoredUMLSConcept)concept).getScore()));
+							entityOutputFields.add(Integer.toString(entity.getSpan().getBegin()));
+							entityOutputFields.add(Integer.toString(entity.getSpan().getEnd()));
+							sb.append(String.join("|", entityOutputFields) + "\n");
+						}			
+					}
+					siList = Document.getSemanticItemsByClassSpan(doc, AbstractRelation.class, new SpanList(cs.getSpan()), true);
+					for(SemanticItem si : siList) {
+						if(si instanceof ImplicitRelation) sb.append(((ImplicitRelation)si).toShortString() + "\n");
+					}
+					if( includes != null)
+						sb.append(cs.getIncludeInfo(includes));
+					sb.append("\n");
+				}
+			}
+		} else if(outputFormat.equalsIgnoreCase("json")) {
+			JSONArray documentsJsonArray = new JSONArray();
+			JSONArray sentencesJsonArray, entitiesJsonArray;
+			JSONObject docJson,sentJson,entJson;
+			LinkedHashSet<SemanticItem> entities;
+			
+			for(int i = 0; i < docs.size(); i++) {
+				doc = docs.get(i);
+				docJson = new JSONObject();
+				docJson.put("id", doc.getId());
+				docJson.put("text", doc.getText());
+				sentList = doc.getSentences();
+				sentencesJsonArray = new JSONArray();
+				for(int j = 0; j < sentList.size(); j++) {
+					cs = (ChunkedSentence)sentList.get(j);
+					sentJson = new JSONObject();
+					sentJson.put("id", cs.getId());
+					sentJson.put("subsection", cs.getSubsection());
+					sentJson.put("section_abbreviation", cs.getSectionAbbreviation());
+					sentJson.put("sentence_id", cs.getSentenceIDInSection());
+					sentJson.put("text", cs.getText());
+					sentJson.put("begin", cs.getSpan().getBegin());
+					sentJson.put("end", cs.getSpan().getEnd());
+					entitiesJsonArray = new JSONArray();
+					entities = Document.getSemanticItemsBySpan(doc, new SpanList(cs.getSpan()), true);
+					for(SemanticItem entity : entities) {
+						for(Concept concept: ((Entity)entity).getConcepts()) {
+							entJson = new JSONObject();
+							entJson.put("cui", concept.getId());
+							entJson.put("name", concept.getName());
+							entJson.put("semtypes", String.join(",", concept.getSemtypes()));
+							entJson.put("text", ((AbstractTerm)entity).getText());
+							if(concept instanceof GNormPlusConcept)
+								entJson.put("score", "1000");
+							else if(concept instanceof ScoredUMLSConcept)
+								entJson.put("score", ((ScoredUMLSConcept)concept).getScore());
+							entJson.put("begin", entity.getSpan().getBegin());
+							entJson.put("end", entity.getSpan().getEnd());
+							entitiesJsonArray.put(entJson);
+						}			
+					}
+					sentJson.put("entities", entitiesJsonArray);
+					sentencesJsonArray.put(sentJson);
+				}
+				docJson.put("sentences", sentencesJsonArray);
+				documentsJsonArray.put(docJson);
+			}
+			sb.append(documentsJsonArray.toString());
+		}
+		writer.write(sb.toString());	
 	}
+	
 
    /**
     * Initializes logging from a file configuration (logging.properties).
@@ -335,29 +563,44 @@ public class SemRep
 
 	/**
 	 * Initializes logging and named entity recognizers.
-	 * 
+	 * @throws IOException 
+	 * 				if any opennlp model file is not found
+	 * @throws ParsingException 
+	 * 				if failed to parse indicator rules file
+	 * @throws ValidityException 
+	 * 				if indicator rules file is not correctly formatted
 	 */
-	public static void init() {
+	public static void init() throws IOException, ValidityException, ParsingException {
 		initLogging();
 		nerAnnotator = new MultiThreadClient(System.getProperties());
+		nlpClient = new OpennlpUtils();
 //		metamap = new MetaMapLiteClient(System.getProperties());
+		hpClient = new HypernymProcessing();
+		indAnnotator = new IndicatorAnnotator(SRIndicator.loadSRIndicatorsFromFile(System.getProperty("semrulesinfo"), 0));
+//		indicators = SRIndicator.loadSRIndicatorsFromFile(System.getProperty("semrulesinfo"), 0);
+		
 	}
 
 
-
-	public static void main( String[] args ) throws IOException
+	public static void main( String[] args ) throws IOException, ValidityException, ParsingException
 	{
+		long beg = System.currentTimeMillis();
 		System.setProperties(getProps(args));
 		init();
 
 		String inputFormat = System.getProperty("user.inputformat");
 		String inPath = System.getProperty("user.inputpath");
+		String outPath = System.getProperty("user.outputpath");
 
 		log.info("Starting SemRep...");
 		if(inputFormat.equalsIgnoreCase("dir")) {
-			processFromDirectory(inPath);	
+			processFromDirectory(inPath, outPath);	
 		}else if(inputFormat.equalsIgnoreCase("singlefile")) {
-			processFromSingleFile(inPath);
+			processFromSingleFile(inPath, outPath);
+		}else if(inputFormat.equalsIgnoreCase("interactive")) {
+			processInteractively();
 		}
+		long end = System.currentTimeMillis();
+		log.info("Completed all " +(end-beg) + " msec.");	
 	}
 }

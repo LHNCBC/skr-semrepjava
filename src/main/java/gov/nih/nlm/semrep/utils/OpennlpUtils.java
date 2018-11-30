@@ -6,10 +6,11 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import gov.nih.nlm.ling.core.Chunk;
 import gov.nih.nlm.ling.core.Sentence;
+import gov.nih.nlm.ling.core.SurfaceElement;
 import gov.nih.nlm.ling.core.Word;
 import gov.nih.nlm.ling.core.WordLexeme;
-import gov.nih.nlm.semrep.core.Chunk;
 import gov.nih.nlm.semrep.core.ChunkedSentence;
 import opennlp.tools.chunker.ChunkerME;
 import opennlp.tools.chunker.ChunkerModel;
@@ -29,6 +30,41 @@ import opennlp.tools.tokenize.TokenizerModel;
  *
  */
 public class OpennlpUtils {
+	
+	private POSTaggerME tagger;
+	private Tokenizer tokenizer;
+	private DictionaryLemmatizer lemmatizer;
+	private ChunkerME chunker;
+	private SentenceDetectorME sentenceDetector;
+	
+	/**
+	 * Initialize opennlp models
+	 * @throws IOException 
+	 * 				if any opennlp model file is not found
+	 */
+	
+	public OpennlpUtils() throws IOException{
+		InputStream modelIn = new FileInputStream(
+				System.getProperty("opennlp.en-pos.bin.path", "data/models/en-pos-maxent.bin"));
+		POSModel posModel = new POSModel(modelIn);
+		tagger = new POSTaggerME(posModel);
+		modelIn = new FileInputStream(
+				System.getProperty("opennlp.en-token.bin.path", "data/models/en-token.bin"));
+		TokenizerModel tokenModel = new TokenizerModel(modelIn);
+		tokenizer = new TokenizerME(tokenModel);
+		modelIn = new FileInputStream(
+				System.getProperty("opennlp.en-lemmatizer.bin.path", "data/models/en-lemmatizer.bin"));
+		lemmatizer = new DictionaryLemmatizer(modelIn);
+		modelIn = new FileInputStream(
+				System.getProperty("opennlp.en-chunker.bin.path", "data/models/en-chunker.bin"));
+		ChunkerModel chunkerModel = new ChunkerModel(modelIn);
+		chunker = new ChunkerME(chunkerModel);
+		modelIn = new FileInputStream(
+				System.getProperty("opennlp.en-sent.bin.path", "data/models/en-sent.bin"));
+		SentenceModel model = new SentenceModel(modelIn);
+		sentenceDetector = new SentenceDetectorME(model);
+}
+	
 
     /**
      * Compute part-of-speech tags for the given tokens
@@ -39,11 +75,7 @@ public class OpennlpUtils {
      * @throws IOException
      *             if part-of-speech model file is not found
      */
-    public static String[] pos(String[] tokens) throws IOException {
-	InputStream modelIn = new FileInputStream(
-		System.getProperty("opennlp.en-pos.bin.path", "data/models/en-pos-maxent.bin"));
-	POSModel posModel = new POSModel(modelIn);
-	POSTaggerME tagger = new POSTaggerME(posModel);
+    public String[] pos(String[] tokens) throws IOException {
 	String tags[] = tagger.tag(tokens);
 	return tags;
     }
@@ -58,11 +90,7 @@ public class OpennlpUtils {
      *             if token model file is not found
      */
 
-    public static String[] tokenization(String sentence) throws IOException {
-	InputStream modelIn = new FileInputStream(
-		System.getProperty("opennlp.en-token.bin.path", "data/models/en-token.bin"));
-	TokenizerModel tokenModel = new TokenizerModel(modelIn);
-	Tokenizer tokenizer = new TokenizerME(tokenModel);
+    public String[] tokenization(String sentence) throws IOException {
 	String tokens[] = tokenizer.tokenize(sentence);
 	return tokens;
     }
@@ -76,11 +104,7 @@ public class OpennlpUtils {
      * @throws IOException
      *             if token model file is not found
      */
-    public static opennlp.tools.util.Span[] getTokenSpans(String sentence) throws IOException {
-	InputStream modelIn = new FileInputStream(
-		System.getProperty("opennlp.en-token.bin.path", "data/models/en-token.bin"));
-	TokenizerModel tokenModel = new TokenizerModel(modelIn);
-	Tokenizer tokenizer = new TokenizerME(tokenModel);
+    public opennlp.tools.util.Span[] getTokenSpans(String sentence) throws IOException {
 	return tokenizer.tokenizePos(sentence);
     }
 
@@ -95,10 +119,7 @@ public class OpennlpUtils {
      * @throws IOException
      *             if lemmatizer model file is not found
      */
-    public static String[] lemmatization(String[] tokens, String[] tags) throws IOException {
-	InputStream modelIn = new FileInputStream(
-		System.getProperty("opennlp.en-lemmatizer.bin.path", "data/models/en-lemmatizer.bin"));
-	DictionaryLemmatizer lemmatizer = new DictionaryLemmatizer(modelIn);
+    public String[] lemmatization(String[] tokens, String[] tags) throws IOException {
 	String[] lemmas = lemmatizer.lemmatize(tokens, tags);
 	return lemmas;
     }
@@ -114,12 +135,8 @@ public class OpennlpUtils {
      * @throws IOException
      *             if chunk model file is not found
      */
-    public static String[] chunker(String[] tokens, String[] tags) throws IOException {
+    public String[] chunker(String[] tokens, String[] tags) throws IOException {
 
-	InputStream modelIn = new FileInputStream(
-		System.getProperty("opennlp.en-chunker.bin.path", "data/models/en-chunker.bin"));
-	ChunkerModel chunkerModel = new ChunkerModel(modelIn);
-	ChunkerME chunker = new ChunkerME(chunkerModel);
 	String chunkTags[] = chunker.chunk(tokens, tags);
 	//opennlp.tools.util.Span[] s = chunker.chunkAsSpans(tokens, tags);
 	return chunkTags;
@@ -136,7 +153,7 @@ public class OpennlpUtils {
      * @throws IOException
      *             if any opennlp model file is not found
      */
-    public static List<Word> wording(String[] tokens, String[] tags) throws IOException {
+    public List<Word> wording(String[] tokens, String[] tags) throws IOException {
 
 	List<Word> wordList = new ArrayList<Word>();
 	String[] lemmas = lemmatization(tokens, tags);
@@ -165,11 +182,7 @@ public class OpennlpUtils {
      * @throws IOException
      *             if any opennlp model file is not found
      */
-    public static void chunking(ChunkedSentence s, int index) throws IOException {
-	InputStream modelIn = new FileInputStream(
-		System.getProperty("opennlp.en-token.bin.path", "data/models/en-token.bin"));
-	TokenizerModel tokenModel = new TokenizerModel(modelIn);
-	Tokenizer tokenizer = new TokenizerME(tokenModel);
+    public void chunking(ChunkedSentence s, int index) throws IOException {
 	String tokens[] = tokenizer.tokenize(s.getText());
 	opennlp.tools.util.Span[] tokenSpans = tokenizer.tokenizePos(s.getText());
 	String[] tags = pos(tokens);
@@ -183,7 +196,8 @@ public class OpennlpUtils {
 	WordLexeme wl;
 	gov.nih.nlm.ling.core.Span span;
 	Chunk chunk = null;
-	List<Word> trail = null;
+	List<SurfaceElement> seList = null;
+	
 	for (int i = 0; i < tokens.length; i++) {
 	    String[] fields = chunkTags[i].split("-");
 	    if (lemmas[i].equals("O")) {
@@ -195,35 +209,68 @@ public class OpennlpUtils {
 		    tokenSpans[i].getEnd() + s.getSpan().getBegin());
 	    w = new Word(tokens[i], tags[i], wl, index, span);
 	    w.setSentence(s);
+	    w.setChunkRole('X');
 	    wordList.add(w);
 	    if (fields[0].equals("B")) {
-		if (chunk == null) {
-		    trail = new ArrayList<Word>();
-		    chunk = new Chunk(w, trail, fields[1]);
-		} else {
-		    chunkList.add(chunk);
-		    trail = new ArrayList<Word>();
-		    chunk = new Chunk(w, trail, fields[1]);
-		}
+			if (chunk == null) {	
+			    chunk = new Chunk(null, fields[1]);
+			    seList = new ArrayList<SurfaceElement>();
+			    w.setChunk(chunk);
+				seList.add(w);
+			} else {
+				if (chunk.getChunkType().equals("NP") && seList.size() > 1) setChunkRolesForSurfaceElementList(seList);
+				chunk.setSurfaceElementList(seList);
+			    chunkList.add(chunk);
+			    chunk = new Chunk(null, fields[1]);
+			    seList = new ArrayList<SurfaceElement>();
+			    w.setChunk(chunk);
+			    seList.add(w);
+			    
+			}
 	    } else if (fields[0].equals("I")) {
-		if (trail == null) {
-		    trail = new ArrayList<Word>();
-		}
-		trail.add(w);
+	    	if (seList == null) seList = new ArrayList<SurfaceElement>();
+	    	w.setChunk(chunk);
+	    	seList.add(w);
 	    } else if (fields[0].equals("O")) {
-		if (chunk != null)
-		    chunkList.add(chunk);
-		chunk = new Chunk(w, null, tags[i]);
-		chunkList.add(chunk);
-		chunk = null;
-		trail = null;
+			if (chunk != null) {
+				if (chunk.getChunkType().equals("NP") && seList.size() > 1) setChunkRolesForSurfaceElementList(seList);
+				chunk.setSurfaceElementList(seList);
+			    chunkList.add(chunk);
+			}
+			chunk = new Chunk(seList, tags[i]);
+			seList = new ArrayList<SurfaceElement>();
+			w.setChunk(chunk);
+			seList.add(w);
+			chunkList.add(chunk);
+			chunk = null;
 	    }
 	    if (i == tokens.length - 1 && chunk != null) {
-		chunkList.add(chunk);
+	    	if (chunk.getChunkType().equals("NP") && seList.size() > 1) setChunkRolesForSurfaceElementList(seList);
+	    	chunk.setSurfaceElementList(seList);
+	    	chunkList.add(chunk);
 	    }
 	}
 	s.setWords(wordList);
 	s.setChunks(chunkList);
+    }
+    
+    public void setChunkRolesForSurfaceElementList(List<SurfaceElement> seList) {
+    	int size = seList.size();
+    	boolean headDetermined = false;
+    	Word w;
+    	String tag;
+    	for (int i = size - 1; i >= 0; i--) {
+    		w = (Word) seList.get(i);
+			tag = w.getPos();
+    		if(!headDetermined) {
+    			if(tag.contains("NN") || tag.contains("JJ") || tag.contains("VBG")) {
+    				w.setChunkRole('H');
+    				headDetermined = true;
+    			}
+    		}else {
+    			if(!tag.contains("DT")) w.setChunkRole('M');
+    		}
+    	}
     }
 
     /**
@@ -235,12 +282,8 @@ public class OpennlpUtils {
      * @throws IOException
      *             if any opennlp model file is not found
      */
-    public static List<Sentence> sentenceSplit(String text) throws IOException {
+    public List<Sentence> sentenceSplit(String text) throws IOException {
 	List<Sentence> sentList = new ArrayList<Sentence>();
-	InputStream modelIn = new FileInputStream(
-		System.getProperty("opennlp.en-sent.bin.path", "data/models/en-sent.bin"));
-	SentenceModel model = new SentenceModel(modelIn);
-	SentenceDetectorME sentenceDetector = new SentenceDetectorME(model);
 	String sentences[] = sentenceDetector.sentDetect(text);
 	opennlp.tools.util.Span[] sentenceSpans = sentenceDetector.sentPosDetect(text);
 	ChunkedSentence s;

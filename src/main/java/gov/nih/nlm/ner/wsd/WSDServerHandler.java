@@ -17,6 +17,7 @@ import org.json.JSONObject;
 import gov.nih.nlm.nls.wsd.algorithms.AEC.AECMethod;
 import gov.nih.nlm.nls.wsd.algorithms.MRD.CandidateCUI;
 
+
 /**
  * This class handles client requests for word sense disambiguation server
  * 
@@ -45,25 +46,30 @@ public class WSDServerHandler extends Thread {
 		try {
 			BufferedReader br = new BufferedReader(new InputStreamReader(bis));
 			PrintWriter bw = new PrintWriter(socket.getOutputStream(), true);
-			String jsonString = br.readLine();
-	    	JSONObject json = new JSONObject(jsonString);
-	    	List<CandidateCUI> cuis = new ArrayList<CandidateCUI>();
-	    	String text = (String) json.get("text");
-	    	String cuisString = (String) json.get("cuis");
-	    	JSONObject cuiJson = new JSONObject(cuisString);
-	    	System.out.println(cuiJson.toString());
-	    	Iterator<String> keys = cuiJson.keys();
-	    	while(keys.hasNext()) {
-	    		String key = keys.next();
-	    		System.out.println(key);
-	    		cuis.add(new CandidateCUI((String) cuiJson.get(key), key));
-	    	}
-	    	List<String> filteredNames =AECMethod.disambiguate(cuis, text);
-	    	json = new JSONObject();
-	    	for(String name: filteredNames) {
-	    		json.put(name, name);
-	    	}
-	    	bw.print(json.toString());
+			String input = br.readLine();
+			String[] strs = input.split("\t\t\t");
+			List<String> answers = new ArrayList<String>();
+			for(String str: strs) {
+		    	JSONObject json = new JSONObject(str);
+		    	List<CandidateCUI> cuis = new ArrayList<CandidateCUI>();
+		    	String text = (String) json.get("text");
+		    	String cuisString = (String) json.get("cuis");
+		    	String sl = (String) json.get("sl");
+		    	JSONObject cuiJson = new JSONObject(cuisString);
+		    	System.out.println(cuiJson.toString());
+		    	Iterator<String> keys = cuiJson.keys();
+		    	while(keys.hasNext()) {
+		    		String key = keys.next();
+		    		System.out.println(key);
+		    		cuis.add(new CandidateCUI((String) cuiJson.get(key), key));
+		    	}
+		    	List<String> filteredNames =AECMethod.disambiguate(cuis, text);
+		    	json = new JSONObject();
+		    	json.put("sl", sl);
+		    	json.put("names", String.join(";", filteredNames));
+		    	answers.add(json.toString());
+			}
+	    	bw.print(String.join("\t\t\t", answers));
 	    	bw.flush();
 		} catch (Exception e) {
 			e.printStackTrace();
