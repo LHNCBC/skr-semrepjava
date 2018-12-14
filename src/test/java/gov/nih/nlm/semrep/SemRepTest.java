@@ -43,8 +43,9 @@ public class SemRepTest
     public void testSemRep() throws IOException
     {
 		SemRep.initLogging();
-		Document doc = SemRep.lexicoSyntacticAnalysis("0", "Aspirin treats headache.");
-		SemRep.processForSemantics(doc);
+		Document doc = new Document("00000000","Aspirin treats headache.");
+		SemRep.lexicalSyntacticAnalysis(doc);
+		SemRep.semanticAnalysis(doc);
 		LinkedHashSet<SemanticItem> preds = Document.getSemanticItemsByClass(doc, SemanticItem.class);
         assertTrue( preds.size() != 0 );
     }

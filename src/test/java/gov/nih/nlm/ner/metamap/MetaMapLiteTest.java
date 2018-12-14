@@ -55,7 +55,8 @@ public class MetaMapLiteTest
     	Properties props = FileUtils.loadPropertiesFromFile("semrepjava.properties");
     	MetaMapLiteClient client = new MetaMapLiteClient(props);
 		Map<SpanList, LinkedHashSet<Ontology>> annotations = new HashMap<SpanList, LinkedHashSet<Ontology>>();
-		Document doc = SemRep.lexicoSyntacticAnalysis("0", "breast cancer");
+		Document doc = new Document("00000000","breast cancer");
+		SemRep.lexicalSyntacticAnalysis(doc);
 		client.annotate(doc, System.getProperties(), annotations);
     	for (SpanList s1 : annotations.keySet()) {
     	    Set<Ontology> onts = annotations.get(s1);

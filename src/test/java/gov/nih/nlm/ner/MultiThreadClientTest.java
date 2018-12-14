@@ -55,7 +55,8 @@ public class MultiThreadClientTest
     	Properties props = FileUtils.loadPropertiesFromFile("semrepjava.properties");
     	MultiThreadClient client = new MultiThreadClient(props);
 		Map<SpanList, LinkedHashSet<Ontology>> annotations = new HashMap<SpanList, LinkedHashSet<Ontology>>();
-		Document doc = SemRep.lexicoSyntacticAnalysis("0", "breast cancer and BRCA1");
+		Document doc = new Document("00000000","breast cancer and BRCA1");
+		SemRep.lexicalSyntacticAnalysis(doc);
 		client.annotate(doc, props, annotations);
     	Set<SpanList> set = annotations.keySet();
     	for (SpanList s1 : set) {
