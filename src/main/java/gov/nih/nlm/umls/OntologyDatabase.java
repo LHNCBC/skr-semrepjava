@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import com.sleepycat.je.Database;
 import com.sleepycat.je.DatabaseConfig;
@@ -16,13 +17,15 @@ import com.sleepycat.je.OperationStatus;
 
 public class OntologyDatabase
 {
+    private static Logger log = Logger.getLogger(OntologyDatabase.class.getName());
+    
     private Environment env;
     private static final String ONTOLOGY_DATABASE = "ontology_database";
     private Database ontologyDb;
     
     public OntologyDatabase(String homeDirectory, boolean query)
     {
-    	System.out.println("Opening environment in: " + homeDirectory);
+    	log.info("Opening BerkeleyDB instance in: " + homeDirectory);
 
         EnvironmentConfig envConfig = new EnvironmentConfig();
         if(query) {
@@ -41,6 +44,7 @@ public class OntologyDatabase
         try {
         	env = new Environment(new File(homeDirectory), envConfig);
         }catch(DatabaseException e) {
+        	log.severe("Unable to open SemRep relation ontology DB.");
         	e.printStackTrace();
         }
         DatabaseConfig dbConfig = new DatabaseConfig();
@@ -75,7 +79,7 @@ public class OntologyDatabase
     
     public void putDataIntoDatabase(String filename) throws IOException {
     	BufferedReader in = new BufferedReader(new FileReader(filename));
-        System.out.println("Opened file " + filename + " for reading.");
+        log.info("Opened file " + filename + " for reading.");
         String line = new String();
         byte[] bytes;
         DatabaseEntry entry;
