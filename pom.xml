@@ -79,11 +79,11 @@
       <artifactId>gnormplus</artifactId>
       <version>1.0.0</version>
     </dependency>
-    <dependency>
+<!--    <dependency>
       <groupId>gov.nih.nlm.nls</groupId>
       <artifactId>aec_mrd_wsd</artifactId>
       <version>1.0-SNAPSHOT</version>
-    </dependency>
+    </dependency> -->
   </dependencies>
 
 </project>

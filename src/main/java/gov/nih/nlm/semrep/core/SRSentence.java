@@ -7,35 +7,43 @@ import gov.nih.nlm.ling.core.Chunk;
 import gov.nih.nlm.ling.core.Sentence;
 import gov.nih.nlm.ling.core.Span;
 import gov.nih.nlm.ling.core.Word;
+import gov.nih.nlm.umls.lexicon.LexiconMatch;
 
 /**
- * This class extends bioscores sentence class to include chunk information
+ * This class extends {@link gov.nih.nlm.ling.core.Sentence} class to include other sentence-related 
+ * information relevant to SemRep, such as chunk information.
  * 
  * @author Zeshan Peng
  *
  */
-public class ChunkedSentence extends Sentence{
+public class SRSentence extends Sentence {
 
 	List<Chunk> chunks;
+	List<LexiconMatch> lexicalItems;
 	String subsection;
 	String sectionAbbreviation;
 	String sentenceIDInSection;
+	List<Processing> completedProcessing;
 	
-	public ChunkedSentence(String id, String text, Span span) {
+	public enum Processing {
+		SSPLIT, TOKEN, LEXREC, TAG, LEMMA, PARSE, DEPPARSE, CHUNK, NER
+	}; 
+	
+	public SRSentence(String id, String text, Span span) {
 		super(id, text, span);
 		this.subsection = "";
 		this.sectionAbbreviation = "";
 		this.sentenceIDInSection = "";
 	}
 	
-	public ChunkedSentence(String id, String text, Span span, String sectionAbbr) {
+	public SRSentence(String id, String text, Span span, String sectionAbbr) {
 		super(id, text, span);
 		this.sectionAbbreviation = sectionAbbr;
 		this.subsection = "";
 		this.sentenceIDInSection = "";
 	}
 	
-	public ChunkedSentence(String id, String text, Span span, List<Chunk> chunks, String sectionAbbr) {
+	public SRSentence(String id, String text, Span span, List<Chunk> chunks, String sectionAbbr) {
 		super(id,text,span);
 		this.chunks = chunks;
 		this.sectionAbbreviation = sectionAbbr;
@@ -50,7 +58,15 @@ public class ChunkedSentence extends Sentence{
 	public List<Chunk> getChunks() {
 		return this.chunks;
 	}
-	
+
+	public List<LexiconMatch> getLexicalItems() {
+		return lexicalItems;
+	}
+
+	public void setLexicalItems(List<LexiconMatch> lexicalItems) {
+		this.lexicalItems = lexicalItems;
+	}
+
 	public List<String> getTags() {
 		List<Word> wordList = this.getWords();
 		List<String> tagList = new ArrayList<String>();
@@ -60,6 +76,19 @@ public class ChunkedSentence extends Sentence{
 		return tagList;
 	}
 	
+	public List<Processing> getCompleted() {
+		return completedProcessing;
+	}
+
+	public void setCompleted(List<Processing> completedProcessing) {
+		this.completedProcessing = completedProcessing;
+	}
+	
+	public void addCompleted(Processing processing) {
+		if (completedProcessing == null) completedProcessing = new ArrayList<>();
+		completedProcessing.add(processing);
+	}
+
 	public void setSubsection(String subsection) {
 		this.subsection = subsection;
 	}
@@ -84,7 +113,7 @@ public class ChunkedSentence extends Sentence{
 		return this.sentenceIDInSection;
 	}
 	
-	public List<String> getRemainFieldsForTextOutput() {
+	public List<String> getRemainingFieldsForTextOutput() {
 		List<String> fields = new ArrayList<String>();
 		fields.add(Integer.toString(this.getSpan().getBegin()));
 		fields.add(Integer.toString(this.getSpan().getEnd()));
@@ -92,7 +121,13 @@ public class ChunkedSentence extends Sentence{
 		return fields;
 	}
 	
-	public String getIncludeInfo(String option) {
+	/**
+	 * Based on the input options, prints additional information, such as chunks or POS tags.
+	 * 
+	 * @param option	The option to print ("chunk" or "tag")
+	 * @return	a string representation of the additional information
+	 */
+	public String printAdditionalInfo(String option) {
 		StringBuilder sb = new StringBuilder();
 		if(option.equalsIgnoreCase("chunk")) {
 			List<Chunk> chunkList = this.getChunks();

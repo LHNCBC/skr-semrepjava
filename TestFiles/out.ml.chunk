@@ -1,0 +1,650 @@
+15996060||tx|S1|text|0|138|Sex hormone concentrations in patients with rheumatoid arthritis are not normalized during 12 weeks of anti-tumor necrosis factor therapy.
+[ Sex (NN, sex) hormone (NN, hormone) concentrations (NNS, concentration)  {NP} ]
+[ in (IN, in)  {PP} ]
+[ patients (NNS, patient)  {NP} ]
+[ with (IN, with)  {PP} ]
+[ rheumatoid (JJ, rheumatoid) arthritis (NN, arthritis)  {NP} ]
+[ are (VBP, be) not (RB, not) normalized (VBN, normalize)  {VP} ]
+[ during (IN, during)  {PP} ]
+[ 12 (CD, 12) weeks (NNS, week)  {NP} ]
+[ of (IN, of)  {PP} ]
+[ anti-tumor (JJ, anti-tumor) necrosis (NN, necrosis) factor (NN, factor) therapy (NN, therapy)  {NP} ]
+[ . (., .)  {.} ]
+15996060||tx|S1|entity|C0036884|Gonadal Steroid Hormones|horm,phsu|Sex hormone|833.3333333333334|0|11
+15996060||tx|S1|entity|C0086045|Mental concentration|menp|concentrations|833.3333333333334|12|26
+15996060||tx|S1|entity|C0030705|Patients|podg|patients|833.3333333333334|30|38
+15996060||tx|S1|entity|C0003873|Rheumatoid Arthritis|dsyn|rheumatoid arthritis|833.3333333333334|44|64
+15996060||tx|S1|entity|C1518422|Negation|ftcn|not|833.3333333333334|69|72
+15996060||tx|S1|entity|C0439230|week|tmco|weeks|833.3333333333334|94|99
+15996060||tx|S1|entity|C0027651|Neoplasms|neop|tumor|833.3333333333334|108|113
+15996060||tx|S1|entity|C0027540|Necrosis|ortf|necrosis|833.3333333333334|114|122
+15996060||tx|S1|entity|C1521761|Factor|ftcn|factor|833.3333333333334|123|129
+15996060||tx|S1|entity|C0087111|Therapeutic procedure|topp|therapy|833.3333333333334|130|137
+
+15996060||tx|S2|text|139|315|OBJECTIVE: Androgens such as dehydroepiandrosterone sulfate (DHEAS) and testosterone are markedly lower in postmenopausal women with rheumatoid arthritis (RA) than in controls.
+[ OBJECTIVE (NN, objective)  {NP} ]
+[ : (:, :)  {:} ]
+[ Androgens (NNS, androgen)  {NP} ]
+[ such (JJ, such) as (IN, as)  {PP} ]
+[ dehydroepiandrosterone (NN, dehydroepiandrosterone) sulfate (NN, sulfate) ( (-LRB-, () DHEAS (NN, dhea) ) (-RRB-, )) and (CC, and) testosterone (NN, testosterone)  {NP} ]
+[ are (VBP, be)  {VP} ]
+[ markedly (RB, markedly) lower (JJR, lower)  {ADVP} ]
+[ in (IN, in)  {PP} ]
+[ postmenopausal (JJ, postmenopausal) women (NNS, woman)  {NP} ]
+[ with (IN, with)  {PP} ]
+[ rheumatoid (JJ, rheumatoid) arthritis (NN, arthritis) ( (-LRB-, () RA (NN, ra) ) (-RRB-, )) than (IN, than)  {NP} ]
+[ in (IN, in)  {PP} ]
+[ controls (NNS, control)  {NP} ]
+[ . (., .)  {.} ]
+15996060||tx|S2|entity|C0018017|objective (goal)|inpr|OBJECTIVE|833.3333333333334|139|148
+15996060||tx|S2|entity|C0002844|Androgens|horm,phsu|Androgens|833.3333333333334|150|159
+15996060||tx|S2|entity|C0057277|Dehydroepiandrosterone Sulfate|bacs,orch,phsu|dehydroepiandrosterone sulfate|833.3333333333334|168|198
+15996060||tx|S2|entity|C0011185|prasterone|horm,orch,phsu|DHEAS|833.3333333333334|200|205
+15996060||tx|S2|entity|C1515981|And|idcn|and|833.3333333333334|207|210
+15996060||tx|S2|entity|C0039601|Testosterone|horm,orch,phsu|testosterone|833.3333333333334|211|223
+15996060||tx|S2|entity|C0522501|Massive|qlco|markedly|833.3333333333334|228|236
+15996060||tx|S2|entity|C1548802|Body Site Modifier - Lower|blor|lower|833.3333333333334|237|242
+15996060||tx|S2|entity|C0232970|Postmenopausal state|fndg|postmenopausal|833.3333333333334|246|260
+15996060||tx|S2|entity|C0043210|Woman|popg|women|833.3333333333334|261|266
+15996060||tx|S2|entity|C0003873|Rheumatoid Arthritis|dsyn|rheumatoid arthritis|833.3333333333334|272|292
+15996060||tx|S2|entity|C0003873|Rheumatoid Arthritis|dsyn|RA|833.3333333333334|294|296
+
+15996060||tx|S3|text|316|417|In contrast, compared to controls, serum levels of estrogens are normal or elevated in women with RA.
+[ In (IN, in)  {PP} ]
+[ contrast (NN, contrast)  {NP} ]
+[ , (,, ,)  {,} ]
+[ compared (VBN, compare)  {PP} ]
+[ to (TO, to)  {PP} ]
+[ controls (NNS, control)  {NP} ]
+[ , (,, ,)  {,} ]
+[ serum (NN, serum) levels (NNS, level)  {NP} ]
+[ of (IN, of)  {PP} ]
+[ estrogens (NNS, estrogen)  {NP} ]
+[ are (VBP, be)  {VP} ]
+[ normal (JJ, normal) or (CC, or) elevated (JJ, elevated)  {ADJP} ]
+[ in (IN, in)  {PP} ]
+[ women (NNS, woman)  {NP} ]
+[ with (IN, with)  {PP} ]
+[ RA (NN, ra)  {NP} ]
+[ . (., .)  {.} ]
+15996060||tx|S3|entity|C0009924|Contrast Media|irda|contrast|833.3333333333334|319|327
+15996060||tx|S3|entity|C0229671|Serum|bdsu|serum|833.3333333333334|351|356
+15996060||tx|S3|entity|C0441889|Levels (qualifier value)|qlco|levels|833.3333333333334|357|363
+15996060||tx|S3|entity|C0014939|Estrogens|horm,orch,phsu|estrogens|833.3333333333334|367|376
+15996060||tx|S3|entity|C0205307|Normal|qlco|normal|833.3333333333334|381|387
+15996060||tx|S3|entity|C0205250|High|qlco|elevated|833.3333333333334|391|399
+15996060||tx|S3|entity|C0043210|Woman|popg|women|833.3333333333334|403|408
+15996060||tx|S3|entity|C0003873|Rheumatoid Arthritis|dsyn|RA|833.3333333333334|414|416
+
+15996060||tx|S4|text|418|610|Since tumor necrosis factor (TNF) alters production of these hormones, we investigated changes of these hormones during anti-TNF antibody (anti-TNF) therapy with adalimumab in longstanding RA.
+[ Since (IN, since)  {SBAR} ]
+[ tumor (NN, tumor) necrosis (NN, necrosis) factor (NN, factor)  {NP} ]
+[ ( (-LRB-, ()  {VP} ]
+[ TNF (NN, tnf) ) (-RRB-, ))  {NP} ]
+[ alters (VBZ, alter)  {VP} ]
+[ production (NN, production)  {NP} ]
+[ of (IN, of)  {PP} ]
+[ these (DT, these) hormones (NNS, hormone)  {NP} ]
+[ , (,, ,)  {,} ]
+[ we (PRP, we)  {NP} ]
+[ investigated (VBD, investigate)  {VP} ]
+[ changes (NNS, change)  {NP} ]
+[ of (IN, of)  {PP} ]
+[ these (DT, these) hormones (NNS, hormone)  {NP} ]
+[ during (IN, during)  {PP} ]
+[ anti-TNF (JJ, anti-tnf) antibody (NN, antibody) ( (-LRB-, () anti-TNF (JJ, anti-tnf) ) (-RRB-, )) therapy (NN, therapy)  {NP} ]
+[ with (IN, with)  {PP} ]
+[ adalimumab (NN, adalimumab)  {NP} ]
+[ in (IN, in)  {PP} ]
+[ longstanding (JJ, longstanding) RA (NN, ra)  {NP} ]
+[ . (., .)  {.} ]
+15996060||tx|S4|entity|C1323304|tumor necrosis factor binding|moft|tumor necrosis factor|833.3333333333334|424|445
+15996060||tx|S4|entity|7124562|TNF|Gene|TNF|1000|447|450
+15996060||tx|S4|entity|C1448177|TNF protein, human|bacs,aapp|TNF|833.3333333333334|447|450
+15996060||tx|S4|entity|C0033268|production|ocac|production|833.3333333333334|459|469
+15996060||tx|S4|entity|C0039828|Theses|inpr|these|833.3333333333334|473|478
+15996060||tx|S4|entity|C0019932|Hormones|horm|hormones|833.3333333333334|479|487
+15996060||tx|S4|entity|C1292732|Investigates|ftcn|investigated|833.3333333333334|492|504
+15996060||tx|S4|entity|C0392747|Changing|ftcn|changes|833.3333333333334|505|512
+15996060||tx|S4|entity|C0039828|Theses|inpr|these|833.3333333333334|516|521
+15996060||tx|S4|entity|C0019932|Hormones|horm|hormones|833.3333333333334|522|530
+15996060||tx|S4|entity|C0347984|During|tmco|during|833.3333333333334|531|537
+15996060||tx|S4|entity|C1448177|TNF protein, human|bacs,aapp|TNF|833.3333333333334|543|546
+15996060||tx|S4|entity|C0003241|Antibodies|imft,aapp|antibody|833.3333333333334|547|555
+15996060||tx|S4|entity|C1448177|TNF protein, human|bacs,aapp|TNF|833.3333333333334|562|565
+15996060||tx|S4|entity|C0087111|Therapeutic procedure|topp|therapy|833.3333333333334|567|574
+15996060||tx|S4|entity|C1122087|adalimumab|imft,aapp,phsu|adalimumab|833.3333333333334|580|590
+15996060||tx|S4|entity|C0003873|Rheumatoid Arthritis|dsyn|RA|833.3333333333334|607|609
+
+15996060||tx|S5|text|611|922|METHODS: In this longitudinal anti-TNF therapy study in 13 patients with long-standing RA without prior prednisolone (7 infusions of anti-TNF: Week 0, 2, 4, 6, 8, 10, and 12), we measured serum concentrations of interleukin 6 (IL-6), androstenedione, DHEA, DHEAS, free testosterone, estrone, and 17ss-estradiol.
+[ METHODS (NNS, method)  {NP} ]
+[ : (:, :)  {:} ]
+[ In (IN, in)  {PP} ]
+[ this (DT, this) longitudinal (JJ, longitudinal) anti-TNF (JJ, anti-tnf) therapy (NN, therapy) study (NN, study)  {NP} ]
+[ in (IN, in)  {PP} ]
+[ 13 (CD, 13) patients (NNS, patient)  {NP} ]
+[ with (IN, with)  {PP} ]
+[ long-standing (JJ, long-standing) RA (NN, ra)  {NP} ]
+[ without (IN, without)  {PP} ]
+[ prior (JJ, prior) prednisolone (NN, prednisolone) ( (-LRB-, () 7 (CD, 7) infusions (NNS, infusion)  {NP} ]
+[ of (IN, of)  {PP} ]
+[ anti-TNF (JJ, anti-tnf)  {NP} ]
+[ : (:, :)  {:} ]
+[ Week (NN, week) 0 (CD, 0) , (,, ,) 2 (CD, 2) , (,, ,) 4 (CD, 4) , (,, ,) 6 (CD, 6) , (,, ,) 8 (CD, 8) , (,, ,) 10 (CD, 10)  {NP} ]
+[ , (,, ,)  {,} ]
+[ and (CC, and)  {CC} ]
+[ 12 (CD, 12) ) (-RRB-, ))  {NP} ]
+[ , (,, ,)  {,} ]
+[ we (PRP, we)  {NP} ]
+[ measured (VBD, measure)  {VP} ]
+[ serum (NN, serum) concentrations (NNS, concentration)  {NP} ]
+[ of (IN, of)  {PP} ]
+[ interleukin (NN, interleukin) 6 (CD, 6) ( (-LRB-, () IL-6 (NN, il-6) ) (-RRB-, )) , (,, ,) androstenedione (NN, androstenedione) , (,, ,) DHEA (NN, dhea) , (,, ,) DHEAS (NN, dhea) , (,, ,) free (JJ, free) testosterone (NN, testosterone)  {NP} ]
+[ , (,, ,)  {,} ]
+[ estrone (NN, estrone)  {NP} ]
+[ , (,, ,)  {,} ]
+[ and (CC, and)  {CC} ]
+[ 17ss-estradiol (NN, 17ss-estradiol)  {NP} ]
+[ . (., .)  {.} ]
+15996060||tx|S5|entity|C0025664|Methods aspects|ftcn|METHODS|833.3333333333334|611|618
+15996060||tx|S5|entity|C1080058|This (eukaryote)|euka|this|833.3333333333334|623|627
+15996060||tx|S5|entity|C0205127|Longitudinal|spco|longitudinal|833.3333333333334|628|640
+15996060||tx|S5|entity|C0279936|tumor necrosis factor therapy|topp|TNF therapy|833.3333333333334|646|657
+15996060||tx|S5|entity|C2603343|Study|resa|study|833.3333333333334|658|663
+15996060||tx|S5|entity|C0030705|Patients|podg|patients|833.3333333333334|670|678
+15996060||tx|S5|entity|C0332287|In addition to|ftcn|with|833.3333333333334|679|683
+15996060||tx|S5|entity|C0205166|Long|qlco|long|833.3333333333334|684|688
+15996060||tx|S5|entity|C0231472|Standing position|spco|standing|833.3333333333334|689|697
+15996060||tx|S5|entity|C0003873|Rheumatoid Arthritis|dsyn|RA|833.3333333333334|698|700
+15996060||tx|S5|entity|C0332288|Without|qlco|without|833.3333333333334|701|708
+15996060||tx|S5|entity|C0332152|Before|tmco|prior|833.3333333333334|709|714
+15996060||tx|S5|entity|C0032950|prednisolone|orch,phsu|prednisolone|833.3333333333334|715|727
+15996060||tx|S5|entity|C0574032|Infusion procedures|topp|infusions|833.3333333333334|731|740
+15996060||tx|S5|entity|C1448177|TNF protein, human|bacs,aapp|TNF|833.3333333333334|749|752
+15996060||tx|S5|entity|C0439230|week|tmco|Week|833.3333333333334|754|758
+15996060||tx|S5|entity|C1515981|And|idcn|and|833.3333333333334|778|781
+15996060||tx|S5|entity|C0444706|Measured|qlco|measured|833.3333333333334|790|798
+15996060||tx|S5|entity|C0229671|Serum|bdsu|serum|833.3333333333334|799|804
+15996060||tx|S5|entity|C0086045|Mental concentration|menp|concentrations|833.3333333333334|805|819
+15996060||tx|S5|entity|C0021760|Interleukin-6|imft,aapp|interleukin 6|666.6666666666666|823|836
+15996060||tx|S5|entity|C1698754|IL6 protein, human|bacs,aapp|IL-6|666.6666666666666|838|842
+15996060||tx|S5|entity|C0002860|Androstenedione|horm,orch,phsu|androstenedione|833.3333333333334|845|860
+15996060||tx|S5|entity|C0011185|prasterone|horm,orch,phsu|DHEA|833.3333333333334|862|866
+15996060||tx|S5|entity|C0011185|prasterone|horm,orch,phsu|DHEAS|833.3333333333334|868|873
+15996060||tx|S5|entity|C0443483|Free testosterone|horm,orch|free testosterone|833.3333333333334|875|892
+15996060||tx|S5|entity|C0014942|Estrone|horm,orch,phsu|estrone|833.3333333333334|894|901
+15996060||tx|S5|entity|C1515981|And|idcn|and|833.3333333333334|903|906
+15996060||tx|S5|entity|C0014912|Estradiol|horm,orch,phsu|estradiol|833.3333333333334|912|921
+
+15996060||tx|S6|text|923|1033|Levels of these hormones in patients were compared to serum levels of 31 age and sex matched healthy controls.
+[ Levels (NNS, level)  {NP} ]
+[ of (IN, of)  {PP} ]
+[ these (DT, these) hormones (NNS, hormone)  {NP} ]
+[ in (IN, in)  {PP} ]
+[ patients (NNS, patient)  {NP} ]
+[ were (VBD, be) compared (VBN, compare)  {VP} ]
+[ to (TO, to)  {PP} ]
+[ serum (NN, serum) levels (NNS, level)  {NP} ]
+[ of (IN, of)  {PP} ]
+[ 31 (CD, 31) age (NN, age) and (CC, and) sex (NN, sex)  {NP} ]
+[ matched (VBD, match)  {VP} ]
+[ healthy (JJ, healthy) controls (NNS, control)  {NP} ]
+[ . (., .)  {.} ]
+15996060||tx|S6|entity|C0441889|Levels (qualifier value)|qlco|Levels|833.3333333333334|923|929
+15996060||tx|S6|entity|C0039828|Theses|inpr|these|833.3333333333334|933|938
+15996060||tx|S6|entity|C0019932|Hormones|horm|hormones|833.3333333333334|939|947
+15996060||tx|S6|entity|C0030705|Patients|podg|patients|833.3333333333334|951|959
+15996060||tx|S6|entity|C0441889|Levels (qualifier value)|qlco|levels|833.3333333333334|983|989
+15996060||tx|S6|entity|C0001779|Age|orga|age|833.3333333333334|996|999
+15996060||tx|S6|entity|C1515981|And|idcn|and|833.3333333333334|1000|1003
+15996060||tx|S6|entity|C1522384|sex|orga|sex|833.3333333333334|1004|1007
+15996060||tx|S6|entity|C0150103|MATCHING|resa|matched|833.3333333333334|1008|1015
+15996060||tx|S6|entity|C3898900|Healthy|qlco|healthy|833.3333333333334|1016|1023
+
+15996060||tx|S7|text|1034|1200|RESULTS: Upon treatment with anti-TNF, there was an impressive decrease of clinical markers of inflammation, erythrocyte sedimentation rate, and serum levels of IL-6.
+[ RESULTS (NNS, result)  {NP} ]
+[ : (:, :)  {:} ]
+[ Upon (IN, upon)  {PP} ]
+[ treatment (NN, treatment)  {NP} ]
+[ with (IN, with)  {PP} ]
+[ anti-TNF (JJ, anti-tnf)  {NP} ]
+[ , (,, ,)  {,} ]
+[ there (EX, there)  {NP} ]
+[ was (VBD, be)  {VP} ]
+[ an (DT, a) impressive (JJ, impressive) decrease (NN, decrease)  {NP} ]
+[ of (IN, of)  {PP} ]
+[ clinical (JJ, clinical) markers (NNS, marker)  {NP} ]
+[ of (IN, of)  {PP} ]
+[ inflammation (NN, inflammation)  {NP} ]
+[ , (,, ,)  {,} ]
+[ erythrocyte (NN, erythrocyte) sedimentation (NN, sedimentation) rate (NN, rate)  {NP} ]
+[ , (,, ,)  {,} ]
+[ and (CC, and)  {CC} ]
+[ serum (NN, serum) levels (NNS, level)  {NP} ]
+[ of (IN, of)  {PP} ]
+[ IL-6 (NN, il-6)  {NP} ]
+[ . (., .)  {.} ]
+15996060||tx|S7|entity|C0087111|Therapeutic procedure|topp|treatment|833.3333333333334|1048|1057
+15996060||tx|S7|entity|C1448177|TNF protein, human|bacs,aapp|TNF|833.3333333333334|1068|1071
+15996060||tx|S7|entity|C0547047|Decrease|qnco|decrease|833.3333333333334|1097|1105
+15996060||tx|S7|entity|C0008963|Markers, Clinical|qlco|clinical markers|833.3333333333334|1109|1125
+15996060||tx|S7|entity|C0021368|Inflammation|patf|inflammation|833.3333333333334|1129|1141
+15996060||tx|S7|entity|C1619634|erythrocyte sedimentation rate result|lbtr|erythrocyte sedimentation rate|833.3333333333334|1143|1173
+15996060||tx|S7|entity|C1515981|And|idcn|and|833.3333333333334|1175|1178
+15996060||tx|S7|entity|C0229671|Serum|bdsu|serum|833.3333333333334|1179|1184
+15996060||tx|S7|entity|C0441889|Levels (qualifier value)|qlco|levels|833.3333333333334|1185|1191
+
+15996060||tx|S8|text|1201|1359|Serum levels of DHEAS and free testosterone were markedly lower at baseline in patients compared to controls, but this did not change during anti-TNF therapy.
+[ Serum (NN, serum) levels (NNS, level)  {NP} ]
+[ of (IN, of)  {PP} ]
+[ DHEAS (NNP, DHEAS)  {NP} ]
+[ and (CC, and)  {CC} ]
+[ free (JJ, free) testosterone (NN, testosterone)  {NP} ]
+[ were (VBD, be)  {VP} ]
+[ markedly (RB, markedly) lower (JJR, lower)  {ADJP} ]
+[ at (IN, at)  {PP} ]
+[ baseline (NN, baseline)  {NP} ]
+[ in (IN, in)  {PP} ]
+[ patients (NNS, patient)  {NP} ]
+[ compared (VBN, compare)  {VP} ]
+[ to (TO, to)  {PP} ]
+[ controls (NNS, control)  {NP} ]
+[ , (,, ,)  {,} ]
+[ but (CC, but)  {CC} ]
+[ this (DT, this)  {NP} ]
+[ did (VBD, do) not (RB, not) change (VB, change)  {VP} ]
+[ during (IN, during)  {PP} ]
+[ anti-TNF (JJ, anti-tnf) therapy (NN, therapy)  {NP} ]
+[ . (., .)  {.} ]
+15996060||tx|S8|entity|C0229671|Serum|bdsu|Serum|833.3333333333334|1201|1206
+15996060||tx|S8|entity|C0441889|Levels (qualifier value)|qlco|levels|833.3333333333334|1207|1213
+15996060||tx|S8|entity|C0011185|prasterone|horm,orch,phsu|DHEAS|833.3333333333334|1217|1222
+15996060||tx|S8|entity|C1515981|And|idcn|and|833.3333333333334|1223|1226
+15996060||tx|S8|entity|C0443483|Free testosterone|horm,orch|free testosterone|833.3333333333334|1227|1244
+15996060||tx|S8|entity|C0522501|Massive|qlco|markedly|833.3333333333334|1250|1258
+15996060||tx|S8|entity|C1548802|Body Site Modifier - Lower|blor|lower|833.3333333333334|1259|1264
+15996060||tx|S8|entity|C1442488|Baseline|qnco|baseline|833.3333333333334|1268|1276
+15996060||tx|S8|entity|C0030705|Patients|podg|patients|833.3333333333334|1280|1288
+15996060||tx|S8|entity|C0233535|Butting|mobd|but|833.3333333333334|1311|1314
+15996060||tx|S8|entity|C1080058|This (eukaryote)|euka|this|833.3333333333334|1315|1319
+15996060||tx|S8|entity|C1518422|Negation|ftcn|not|833.3333333333334|1324|1327
+15996060||tx|S8|entity|C1448177|TNF protein, human|bacs,aapp|TNF|833.3333333333334|1347|1350
+15996060||tx|S8|entity|C0087111|Therapeutic procedure|topp|therapy|833.3333333333334|1351|1358
+
+15996060||tx|S9|text|1360|1536|Serum levels of DHEA and 17ss-estradiol were significantly elevated in patients compared to controls, but similarly, anti-TNF therapy did not change initially increased levels.
+[ Serum (NN, serum) levels (NNS, level)  {NP} ]
+[ of (IN, of)  {PP} ]
+[ DHEA (NN, dhea) and (CC, and) 17ss-estradiol (NN, 17ss-estradiol)  {NP} ]
+[ were (VBD, be)  {VP} ]
+[ significantly (RB, significantly) elevated (JJ, elevated)  {ADJP} ]
+[ in (IN, in)  {PP} ]
+[ patients (NNS, patient)  {NP} ]
+[ compared (VBN, compare)  {VP} ]
+[ to (TO, to)  {PP} ]
+[ controls (NNS, control)  {NP} ]
+[ , (,, ,)  {,} ]
+[ but (CC, but)  {CC} ]
+[ similarly (RB, similarly)  {ADVP} ]
+[ , (,, ,)  {,} ]
+[ anti-TNF (JJ, anti-tnf) therapy (NN, therapy)  {NP} ]
+[ did (VBD, do) not (RB, not) change (VB, change)  {VP} ]
+[ initially (RB, initially) increased (VBN, increase) levels (NNS, level)  {NP} ]
+[ . (., .)  {.} ]
+15996060||tx|S9|entity|C0229671|Serum|bdsu|Serum|833.3333333333334|1360|1365
+15996060||tx|S9|entity|C0441889|Levels (qualifier value)|qlco|levels|833.3333333333334|1366|1372
+15996060||tx|S9|entity|C0011185|prasterone|horm,orch,phsu|DHEA|833.3333333333334|1376|1380
+15996060||tx|S9|entity|C1515981|And|idcn|and|833.3333333333334|1381|1384
+15996060||tx|S9|entity|C0014912|Estradiol|horm,orch,phsu|estradiol|833.3333333333334|1390|1399
+15996060||tx|S9|entity|C0030705|Patients|podg|patients|833.3333333333334|1431|1439
+15996060||tx|S9|entity|C0233535|Butting|mobd|but|833.3333333333334|1462|1465
+15996060||tx|S9|entity|C0279936|tumor necrosis factor therapy|topp|TNF therapy|833.3333333333334|1482|1493
+15996060||tx|S9|entity|C1518422|Negation|ftcn|not|833.3333333333334|1498|1501
+15996060||tx|S9|entity|C0205265|Initially|tmco|initially|833.3333333333334|1509|1518
+15996060||tx|S9|entity|C0442805|Increase|ftcn|increased|833.3333333333334|1519|1528
+15996060||tx|S9|entity|C0441889|Levels (qualifier value)|qlco|levels|833.3333333333334|1529|1535
+
+15996060||tx|S10|text|1537|1708|Molar ratios of hormones, which reflect hormone shifts via converting enzymes, showed typical alterations at baseline, but did not change markedly during anti-TNF therapy.
+[ Molar (JJ, molar) ratios (NNS, ratio)  {NP} ]
+[ of (IN, of)  {PP} ]
+[ hormones (NNS, hormone)  {NP} ]
+[ , (,, ,)  {,} ]
+[ which (WDT, which)  {NP} ]
+[ reflect (VBP, reflect)  {VP} ]
+[ hormone (NN, hormone) shifts (NNS, shift)  {NP} ]
+[ via (IN, via)  {PP} ]
+[ converting (VBG, convert) enzymes (NNS, enzyme)  {NP} ]
+[ , (,, ,)  {,} ]
+[ showed (VBD, show)  {VP} ]
+[ typical (JJ, typical) alterations (NNS, alteration)  {NP} ]
+[ at (IN, at)  {PP} ]
+[ baseline (NN, baseline)  {NP} ]
+[ , (,, ,)  {,} ]
+[ but (CC, but)  {CC} ]
+[ did (VBD, do) not (RB, not) change (VB, change)  {VP} ]
+[ markedly (RB, markedly)  {ADVP} ]
+[ during (IN, during)  {PP} ]
+[ anti-TNF (JJ, anti-tnf) therapy (NN, therapy)  {NP} ]
+[ . (., .)  {.} ]
+15996060||tx|S10|entity|C0026367|Molar tooth|bpoc|Molar|833.3333333333334|1537|1542
+15996060||tx|S10|entity|C0456603|Ratio|qnco|ratios|833.3333333333334|1543|1549
+15996060||tx|S10|entity|C0019932|Hormones|horm|hormones|833.3333333333334|1553|1561
+15996060||tx|S10|entity|C0019932|Hormones|horm|hormone|833.3333333333334|1577|1584
+15996060||tx|S10|entity|C0333051|shift displacement|ftcn|shifts|833.3333333333334|1585|1591
+15996060||tx|S10|entity|C0014442|Enzymes|enzy,aapp|enzymes|833.3333333333334|1607|1614
+15996060||tx|S10|entity|C3538928|Usual|qlco|typical|833.3333333333334|1623|1630
+15996060||tx|S10|entity|C1442488|Baseline|qnco|baseline|833.3333333333334|1646|1654
+15996060||tx|S10|entity|C0233535|Butting|mobd|but|833.3333333333334|1656|1659
+15996060||tx|S10|entity|C1518422|Negation|ftcn|not|833.3333333333334|1664|1667
+15996060||tx|S10|entity|C0522501|Massive|qlco|markedly|833.3333333333334|1675|1683
+15996060||tx|S10|entity|C1448177|TNF protein, human|bacs,aapp|TNF|833.3333333333334|1696|1699
+15996060||tx|S10|entity|C0087111|Therapeutic procedure|topp|therapy|833.3333333333334|1700|1707
+
+15996060||tx|S11|text|1709|1881|CONCLUSION: Longterm therapy with anti-TNF did not change altered serum levels of typical sex hormones in patients with RA, although baseline values were largely different.
+[ CONCLUSION (NN, conclusion)  {NP} ]
+[ : (:, :)  {:} ]
+[ Longterm (NN, longterm) therapy (NN, therapy)  {NP} ]
+[ with (IN, with)  {PP} ]
+[ anti-TNF (JJ, anti-tnf)  {NP} ]
+[ did (VBD, do) not (RB, not) change (VB, change)  {VP} ]
+[ altered (JJ, altered) serum (NN, serum) levels (NNS, level)  {NP} ]
+[ of (IN, of)  {PP} ]
+[ typical (JJ, typical) sex (NN, sex) hormones (NNS, hormone)  {NP} ]
+[ in (IN, in)  {PP} ]
+[ patients (NNS, patient)  {NP} ]
+[ with (IN, with)  {PP} ]
+[ RA (NN, ra)  {NP} ]
+[ , (,, ,)  {,} ]
+[ although (IN, although)  {SBAR} ]
+[ baseline (NN, baseline) values (NNS, value)  {NP} ]
+[ were (VBD, be)  {VP} ]
+[ largely (RB, largely) different (JJ, different)  {ADJP} ]
+[ . (., .)  {.} ]
+15996060||tx|S11|entity|C1707478|Conclusion|idcn|CONCLUSION|833.3333333333334|1709|1719
+15996060||tx|S11|entity|C0087111|Therapeutic procedure|topp|therapy|833.3333333333334|1730|1737
+15996060||tx|S11|entity|C1448177|TNF protein, human|bacs,aapp|TNF|833.3333333333334|1748|1751
+15996060||tx|S11|entity|C1518422|Negation|ftcn|not|833.3333333333334|1756|1759
+15996060||tx|S11|entity|C0392747|Changing|ftcn|altered|833.3333333333334|1767|1774
+15996060||tx|S11|entity|C0229671|Serum|bdsu|serum|833.3333333333334|1775|1780
+15996060||tx|S11|entity|C0441889|Levels (qualifier value)|qlco|levels|833.3333333333334|1781|1787
+15996060||tx|S11|entity|C3538928|Usual|qlco|typical|833.3333333333334|1791|1798
+15996060||tx|S11|entity|C0036884|Gonadal Steroid Hormones|horm,phsu|sex hormones|833.3333333333334|1799|1811
+15996060||tx|S11|entity|C0030705|Patients|podg|patients|833.3333333333334|1815|1823
+15996060||tx|S11|entity|C0003873|Rheumatoid Arthritis|dsyn|RA|833.3333333333334|1829|1831
+15996060||tx|S11|entity|C1442488|Baseline|qnco|baseline|833.3333333333334|1842|1850
+15996060||tx|S11|entity|C0042295|Values|qlco|values|833.3333333333334|1851|1857
+15996060||tx|S11|entity|C1705242|Different|qlco|different|833.3333333333334|1871|1880
+
+15996060||tx|S12|text|1882|2068|In patients with RA, this indicates that alterations of sex hormones and altered activity of respective converting enzymes are imprinted for a long-lasting period over at least 12 weeks.
+[ In (IN, in)  {PP} ]
+[ patients (NNS, patient)  {NP} ]
+[ with (IN, with)  {PP} ]
+[ RA (NN, ra)  {NP} ]
+[ , (,, ,)  {,} ]
+[ this (DT, this)  {NP} ]
+[ indicates (VBZ, indicate)  {VP} ]
+[ that (IN, that)  {SBAR} ]
+[ alterations (NNS, alteration)  {NP} ]
+[ of (IN, of)  {PP} ]
+[ sex (NN, sex) hormones (NNS, hormone)  {NP} ]
+[ and (CC, and)  {CC} ]
+[ altered (JJ, altered) activity (NN, activity)  {NP} ]
+[ of (IN, of)  {PP} ]
+[ respective (JJ, respective) converting (VBG, convert) enzymes (NNS, enzyme)  {NP} ]
+[ are (VBP, be) imprinted (VBN, imprint)  {VP} ]
+[ for (IN, for)  {PP} ]
+[ a (DT, a) long-lasting (JJ, long-lasting) period (NN, period)  {NP} ]
+[ over (IN, over)  {PP} ]
+[ at (IN, at) least (JJS, least) 12 (CD, 12) weeks (NNS, week)  {NP} ]
+[ . (., .)  {.} ]
+15996060||tx|S12|entity|C0030705|Patients|podg|patients|833.3333333333334|1885|1893
+15996060||tx|S12|entity|C0003873|Rheumatoid Arthritis|dsyn|RA|833.3333333333334|1899|1901
+15996060||tx|S12|entity|C1080058|This (eukaryote)|euka|this|833.3333333333334|1903|1907
+15996060||tx|S12|entity|C0036884|Gonadal Steroid Hormones|horm,phsu|sex hormones|833.3333333333334|1938|1950
+15996060||tx|S12|entity|C1515981|And|idcn|and|833.3333333333334|1951|1954
+15996060||tx|S12|entity|C0441655|Activities|acty|activity|833.3333333333334|1963|1971
+15996060||tx|S12|entity|C0014442|Enzymes|enzy,aapp|enzymes|833.3333333333334|1997|2004
+15996060||tx|S12|entity|C0205166|Long|qlco|long|833.3333333333334|2025|2029
+15996060||tx|S12|entity|C1948053|Period (temporal qualifier)|tmco|period|833.3333333333334|2038|2044
+15996060||tx|S12|entity|C0439230|week|tmco|weeks|833.3333333333334|2062|2067
+
+167592||tx|S1|text|0|117|Control of hepatic glycogen metabolism in the rhesus monkey: effect of glucose, insulin, and glucagon administration.
+[ Control (NN, control)  {NP} ]
+[ of (IN, of)  {PP} ]
+[ hepatic (JJ, hepatic) glycogen (NN, glycogen) metabolism (NN, metabolism)  {NP} ]
+[ in (IN, in)  {PP} ]
+[ the (DT, the) rhesus (NN, rhesus) monkey (NN, monkey)  {NP} ]
+[ : (:, :)  {:} ]
+[ effect (NN, effect)  {NP} ]
+[ of (IN, of)  {PP} ]
+[ glucose (NN, glucose)  {NP} ]
+[ , (,, ,)  {,} ]
+[ insulin (NN, insulin)  {NP} ]
+[ , (,, ,)  {,} ]
+[ and (CC, and)  {CC} ]
+[ glucagon (NN, glucagon) administration (NN, administration)  {NP} ]
+[ . (., .)  {.} ]
+167592||tx|S1|entity|C2587213|Control function|ftcn|Control|1000.0|0|7
+167592||tx|S1|entity|C0599784|glycogen metabolic process|moft|glycogen metabolism|833.3333333333334|19|38
+167592||tx|S1|entity|0294|rhesus monkey|Species|rhesus monkey|1000|46|59
+167592||tx|S1|entity|C0024400|Macaca mulatta|mamm|rhesus monkey|833.3333333333334|46|59
+167592||tx|S1|entity|C2348382|Effect, Appearance|qlco|effect|833.3333333333334|61|67
+167592||tx|S1|entity|C0017725|Glucose|bacs,orch,phsu|glucose|833.3333333333334|71|78
+167592||tx|S1|entity|C1533581|Recombinant Insulin|horm,aapp,phsu|insulin|833.3333333333334|80|87
+167592||tx|S1|entity|C1515981|And|idcn|and|833.3333333333334|89|92
+167592||tx|S1|entity|C0017687|Glucagon|horm,aapp,phsu|glucagon|833.3333333333334|93|101
+167592||tx|S1|entity|C0001554|Administration occupational activities|ocac|administration|833.3333333333334|102|116
+
+167592||tx|S2|text|118|308|The effects of intravenous glucose, insulin and glucagon admininistration on the hepatic glycogen synthase and glycogen phosphorylase systems were assessed in the anesthetized rhesus monkey.
+[ The (DT, the) effects (NNS, effect)  {NP} ]
+[ of (IN, of)  {PP} ]
+[ intravenous (JJ, intravenous) glucose (NN, glucose) , (,, ,) insulin (NN, insulin) and (CC, and) glucagon (NN, glucagon) admininistration (NN, admininistration)  {NP} ]
+[ on (IN, on)  {PP} ]
+[ the (DT, the) hepatic (JJ, hepatic) glycogen (NN, glycogen) synthase (NN, synthase) and (CC, and) glycogen (NN, glycogen) phosphorylase (NN, phosphorylase) systems (NNS, system)  {NP} ]
+[ were (VBD, be) assessed (VBN, assess)  {VP} ]
+[ in (IN, in)  {PP} ]
+[ the (DT, the) anesthetized (JJ, anesthetized) rhesus (NN, rhesus) monkey (NN, monkey)  {NP} ]
+[ . (., .)  {.} ]
+167592||tx|S2|entity|C1280500|Effect|qlco|effects|833.3333333333334|122|129
+167592||tx|S2|entity|C0348016|Intravenous|spco|intravenous|833.3333333333334|133|144
+167592||tx|S2|entity|C0017725|Glucose|bacs,orch,phsu|glucose|833.3333333333334|145|152
+167592||tx|S2|entity|C1533581|Recombinant Insulin|horm,aapp,phsu|insulin|833.3333333333334|154|161
+167592||tx|S2|entity|C1515981|And|idcn|and|833.3333333333334|162|165
+167592||tx|S2|entity|C0017687|Glucagon|horm,aapp,phsu|glucagon|833.3333333333334|166|174
+167592||tx|S2|entity|C0443502|Hepatic glycogen synthase|enzy,aapp|hepatic glycogen synthase|833.3333333333334|199|224
+167592||tx|S2|entity|C1515981|And|idcn|and|833.3333333333334|225|228
+167592||tx|S2|entity|C0917785|Glycogen Phosphorylase|enzy,aapp|glycogen phosphorylase|833.3333333333334|229|251
+167592||tx|S2|entity|C1516048|Assessed|acty|assessed|833.3333333333334|265|273
+167592||tx|S2|entity|C1720436|Under anesthesia|fndg|anesthetized|833.3333333333334|281|293
+167592||tx|S2|entity|C0024400|Macaca mulatta|mamm|rhesus monkey|833.3333333333334|294|307
+
+167592||tx|S3|text|309|452|Results were correlated with measurements of hepatic cyclic AMP (cAMP) concentrations and plasma glucose, insulin, and glucagon concentrations.
+[ Results (NNS, result)  {NP} ]
+[ were (VBD, be) correlated (VBN, correlate)  {VP} ]
+[ with (IN, with)  {PP} ]
+[ measurements (NNS, measurement)  {NP} ]
+[ of (IN, of)  {PP} ]
+[ hepatic (JJ, hepatic) cyclic (JJ, cyclic) AMP (NN, amp) ( (-LRB-, () cAMP (NN, camp) ) (-RRB-, )) concentrations (NNS, concentration) and (CC, and) plasma (NN, plasma) glucose (NN, glucose)  {NP} ]
+[ , (,, ,)  {,} ]
+[ insulin (NN, insulin)  {NP} ]
+[ , (,, ,)  {,} ]
+[ and (CC, and)  {CC} ]
+[ glucagon (NN, glucagon) concentrations (NNS, concentration)  {NP} ]
+[ . (., .)  {.} ]
+167592||tx|S3|entity|C0242485|Measurement|ftcn|measurements|833.3333333333334|338|350
+167592||tx|S3|entity|C0205054|Hepatic|blor|hepatic|833.3333333333334|354|361
+167592||tx|S3|entity|C0001455|Cyclic AMP|bacs,nnon,phsu|cyclic AMP|833.3333333333334|362|372
+167592||tx|S3|entity|C0001455|Cyclic AMP|bacs,nnon,phsu|cAMP|833.3333333333334|374|378
+167592||tx|S3|entity|C0086045|Mental concentration|menp|concentrations|833.3333333333334|380|394
+167592||tx|S3|entity|C1515981|And|idcn|and|833.3333333333334|395|398
+167592||tx|S3|entity|C0455280|Plasma glucose result|lbtr|plasma glucose|833.3333333333334|399|413
+167592||tx|S3|entity|C1533581|Recombinant Insulin|horm,aapp,phsu|insulin|833.3333333333334|415|422
+167592||tx|S3|entity|C1515981|And|idcn|and|833.3333333333334|424|427
+167592||tx|S3|entity|C0017687|Glucagon|horm,aapp,phsu|glucagon|833.3333333333334|428|436
+167592||tx|S3|entity|C0086045|Mental concentration|menp|concentrations|833.3333333333334|437|451
+
+167592||tx|S4|text|453|612|Both glucose and insulin administration promoted significant inactivation of phosphorylase by 1 min, which was followed by more gradual activation of synthase.
+[ Both (DT, both) glucose (NN, glucose) and (CC, and) insulin (NN, insulin) administration (NN, administration)  {NP} ]
+[ promoted (VBD, promote)  {VP} ]
+[ significant (JJ, significant) inactivation (NN, inactivation)  {NP} ]
+[ of (IN, of)  {PP} ]
+[ phosphorylase (NN, phosphorylase)  {NP} ]
+[ by (IN, by)  {PP} ]
+[ 1 (CD, 1) min (NN, min)  {NP} ]
+[ , (,, ,)  {,} ]
+[ which (WDT, which)  {NP} ]
+[ was (VBD, be) followed (VBN, follow)  {VP} ]
+[ by (IN, by)  {PP} ]
+[ more (JJR, more) gradual (JJ, gradual) activation (NN, activation)  {NP} ]
+[ of (IN, of)  {PP} ]
+[ synthase (NN, synthase)  {NP} ]
+[ . (., .)  {.} ]
+167592||tx|S4|entity|C0238767|Bilateral|spco|Both|833.3333333333334|453|457
+167592||tx|S4|entity|C0017725|Glucose|bacs,orch,phsu|glucose|833.3333333333334|458|465
+167592||tx|S4|entity|C1515981|And|idcn|and|833.3333333333334|466|469
+167592||tx|S4|entity|C0199782|Administration of insulin|topp|insulin administration|833.3333333333334|470|492
+167592||tx|S4|entity|C0750502|Significant|idcn|significant|833.3333333333334|502|513
+167592||tx|S4|entity|C0544461|inactivation|ftcn|inactivation|833.3333333333334|514|526
+167592||tx|S4|entity|C0017916|Phosphorylases|enzy,aapp|phosphorylase|833.3333333333334|530|543
+167592||tx|S4|entity|C0205172|More|qnco|more|833.3333333333334|576|580
+167592||tx|S4|entity|C0439833|Gradual|qlco|gradual|833.3333333333334|581|588
+167592||tx|S4|entity|C1879547|Activation action|acty|activation|833.3333333333334|589|599
+167592||tx|S4|entity|C0132555|Nitric Oxide Synthase|enzy,aapp|synthase|833.3333333333334|603|611
+
+167592||tx|S5|text|613|684|Neither glucose nor insulin caused significant changes in hepatic cAMP.
+[ Neither (DT, neither) glucose (NN, glucose) nor (CC, nor) insulin (NN, insulin)  {NP} ]
+[ caused (VBD, cause)  {VP} ]
+[ significant (JJ, significant) changes (NNS, change)  {NP} ]
+[ in (IN, in)  {PP} ]
+[ hepatic (JJ, hepatic) cAMP (NN, camp)  {NP} ]
+[ . (., .)  {.} ]
+167592||tx|S5|entity|C3274651|Neither Case or Control Status|qlco|Neither|833.3333333333334|613|620
+167592||tx|S5|entity|C0017725|Glucose|bacs,orch,phsu|glucose|833.3333333333334|621|628
+167592||tx|S5|entity|C0028609|Nucleolus Organizer Region|celc|nor|833.3333333333334|629|632
+167592||tx|S5|entity|C1533581|Recombinant Insulin|horm,aapp,phsu|insulin|833.3333333333334|633|640
+167592||tx|S5|entity|C0750502|Significant|idcn|significant|833.3333333333334|648|659
+167592||tx|S5|entity|C0443172|Changed status|qnco|changes|833.3333333333334|660|667
+167592||tx|S5|entity|C0205054|Hepatic|blor|hepatic|833.3333333333334|671|678
+167592||tx|S5|entity|C0001455|Cyclic AMP|bacs,nnon,phsu|cAMP|833.3333333333334|679|683
+
+167592||tx|S6|text|685|922|Marked hyperglucagonemia resulting from insulin-induced hypoglycemia did not cause increases IN in hepatic cAMP, suggesting that the elevated insulin levels possibly inhibited glucagon action on the hepatic adenylate cyclase-cAMP system.
+[ Marked (JJ, marked) hyperglucagonemia (NN, hyperglucagonemia)  {NP} ]
+[ resulting (VBG, result)  {VP} ]
+[ from (IN, from)  {PP} ]
+[ insulin-induced (JJ, insulin-induced) hypoglycemia (NN, hypoglycemia)  {NP} ]
+[ did (VBD, do) not (RB, not) cause (VB, cause)  {VP} ]
+[ increases (NNS, increase)  {NP} ]
+[ IN (IN, in)  {PP} ]
+[ in (IN, in)  {PP} ]
+[ hepatic (JJ, hepatic) cAMP (NN, camp)  {NP} ]
+[ , (,, ,)  {,} ]
+[ suggesting (VBG, suggest)  {VP} ]
+[ that (IN, that)  {SBAR} ]
+[ the (DT, the) elevated (JJ, elevated) insulin (NN, insulin) levels (NNS, level)  {NP} ]
+[ possibly (RB, possibly)  {ADVP} ]
+[ inhibited (VBD, inhibit)  {VP} ]
+[ glucagon (NN, glucagon) action (NN, action)  {NP} ]
+[ on (IN, on)  {PP} ]
+[ the (DT, the) hepatic (JJ, hepatic) adenylate (NN, adenylate) cyclase-cAMP (NN, cyclase-camp) system (NN, system)  {NP} ]
+[ . (., .)  {.} ]
+167592||tx|S6|entity|C1706089|Marked|qlco|Marked|833.3333333333334|685|691
+167592||tx|S6|entity|C0342218|Excessive glucagon secretion|fndg|hyperglucagonemia|833.3333333333334|692|709
+167592||tx|S6|entity|C1533581|Recombinant Insulin|horm,aapp,phsu|insulin|833.3333333333334|725|732
+167592||tx|S6|entity|C0205263|Induce (action)|ftcn|induced|833.3333333333334|733|740
+167592||tx|S6|entity|C0020615|Hypoglycemia|dsyn|hypoglycemia|833.3333333333334|741|753
+167592||tx|S6|entity|C1518422|Negation|ftcn|not|833.3333333333334|758|761
+167592||tx|S6|entity|C0205217|Increased|qnco|increases|833.3333333333334|768|777
+167592||tx|S6|entity|C0205054|Hepatic|blor|hepatic|833.3333333333334|784|791
+167592||tx|S6|entity|C0001455|Cyclic AMP|bacs,nnon,phsu|cAMP|833.3333333333334|792|796
+167592||tx|S6|entity|C4014870|Elevated insulin|fndg|elevated insulin|833.3333333333334|818|834
+167592||tx|S6|entity|C2362652|Possible diagnosis|qlco|possibly|833.3333333333334|842|850
+167592||tx|S6|entity|C0311403|inhibited|qlco|inhibited|833.3333333333334|851|860
+167592||tx|S6|entity|C0017687|Glucagon|horm,aapp,phsu|glucagon|833.3333333333334|861|869
+167592||tx|S6|entity|C0441472|Clinical action|ftcn|action|833.3333333333334|870|876
+167592||tx|S6|entity|C0205054|Hepatic|blor|hepatic|833.3333333333334|884|891
+167592||tx|S6|entity|C1382029|Adenylyl Cyclase 9|enzy,aapp|adenylate cyclase|833.3333333333334|892|909
+167592||tx|S6|entity|C0001455|Cyclic AMP|bacs,nnon,phsu|cAMP|833.3333333333334|910|914
+167592||tx|S6|entity|C1704459|Device Component System|medd|system|833.3333333333334|915|921
+
+167592||tx|S7|text|923|1131|Glucagon administration caused large increases in hepatic cAMP and activation of phosphorylase within 1 min, followed by more gradual inactivation of synthase when it had been previously activated by glucose.
+[ Glucagon (NNP, Glucagon) administration (NN, administration)  {NP} ]
+[ caused (VBD, cause)  {VP} ]
+[ large (JJ, large) increases (NNS, increase)  {NP} ]
+[ in (IN, in)  {PP} ]
+[ hepatic (JJ, hepatic) cAMP (NN, camp) and (CC, and) activation (NN, activation)  {NP} ]
+[ of (IN, of)  {PP} ]
+[ phosphorylase (NN, phosphorylase)  {NP} ]
+[ within (IN, within)  {PP} ]
+[ 1 (CD, 1) min (NN, min)  {NP} ]
+[ , (,, ,)  {,} ]
+[ followed (VBN, follow)  {VP} ]
+[ by (IN, by)  {PP} ]
+[ more (JJR, more) gradual (JJ, gradual) inactivation (NN, inactivation)  {NP} ]
+[ of (IN, of)  {PP} ]
+[ synthase (NN, synthase)  {NP} ]
+[ when (WRB, when)  {ADVP} ]
+[ it (PRP, it)  {NP} ]
+[ had (VBD, have) been (VBN, be) previously (RB, previously) activated (VBN, activate)  {VP} ]
+[ by (IN, by)  {PP} ]
+[ glucose (NN, glucose)  {NP} ]
+[ . (., .)  {.} ]
+167592||tx|S7|entity|C0017687|Glucagon|horm,aapp,phsu|Glucagon|833.3333333333334|923|931
+167592||tx|S7|entity|C0001554|Administration occupational activities|ocac|administration|833.3333333333334|932|946
+167592||tx|S7|entity|C0549177|Large|qnco|large|833.3333333333334|954|959
+167592||tx|S7|entity|C0205217|Increased|qnco|increases|833.3333333333334|960|969
+167592||tx|S7|entity|C0205054|Hepatic|blor|hepatic|833.3333333333334|973|980
+167592||tx|S7|entity|C0001455|Cyclic AMP|bacs,nnon,phsu|cAMP|833.3333333333334|981|985
+167592||tx|S7|entity|C1515981|And|idcn|and|833.3333333333334|986|989
+167592||tx|S7|entity|C1879547|Activation action|acty|activation|833.3333333333334|990|1000
+167592||tx|S7|entity|C0017916|Phosphorylases|enzy,aapp|phosphorylase|833.3333333333334|1004|1017
+167592||tx|S7|entity|C0205172|More|qnco|more|833.3333333333334|1044|1048
+167592||tx|S7|entity|C0439833|Gradual|qlco|gradual|833.3333333333334|1049|1056
+167592||tx|S7|entity|C0544461|inactivation|ftcn|inactivation|833.3333333333334|1057|1069
+167592||tx|S7|entity|C0132555|Nitric Oxide Synthase|enzy,aapp|synthase|833.3333333333334|1073|1081
+167592||tx|S7|entity|C0017725|Glucose|bacs,orch,phsu|glucose|833.3333333333334|1123|1130
+
+167592||tx|S8|text|1132|1407|Concomitant glucose infusion, with resulting increased plasma insulin concentrations, markedly diminished the duration of hepatic cAMP elevations following glucagon adminstration, again suggesting an insulin inhibition of glucagon action on the hepatic adenylate-cAMP system.
+[ Concomitant (JJ, concomitant) glucose (NN, glucose) infusion (NN, infusion)  {NP} ]
+[ , (,, ,)  {,} ]
+[ with (IN, with)  {PP} ]
+[ resulting (VBG, result)  {VP} ]
+[ increased (VBN, increase) plasma (NN, plasma) insulin (NN, insulin) concentrations (NNS, concentration)  {NP} ]
+[ , (,, ,)  {,} ]
+[ markedly (RB, markedly)  {ADVP} ]
+[ diminished (VBD, diminish)  {VP} ]
+[ the (DT, the) duration (NN, duration)  {NP} ]
+[ of (IN, of)  {PP} ]
+[ hepatic (JJ, hepatic) cAMP (NN, camp) elevations (NNS, elevation)  {NP} ]
+[ following (VBG, follow)  {VP} ]
+[ glucagon (NN, glucagon) adminstration (NN, adminstration)  {NP} ]
+[ , (,, ,)  {,} ]
+[ again (RB, again)  {ADVP} ]
+[ suggesting (VBG, suggest)  {VP} ]
+[ an (DT, a) insulin (NN, insulin) inhibition (NN, inhibition)  {NP} ]
+[ of (IN, of)  {PP} ]
+[ glucagon (NN, glucagon) action (NN, action)  {NP} ]
+[ on (IN, on)  {PP} ]
+[ the (DT, the) hepatic (JJ, hepatic) adenylate-cAMP (NN, adenylate-camp) system (NN, system)  {NP} ]
+[ . (., .)  {.} ]
+167592||tx|S8|entity|C0521115|Simultaneous|tmco|Concomitant|833.3333333333334|1132|1143
+167592||tx|S8|entity|C0017725|Glucose|bacs,orch,phsu|glucose|833.3333333333334|1144|1151
+167592||tx|S8|entity|C1827465|Infusion route|ftcn|infusion|833.3333333333334|1152|1160
+167592||tx|S8|entity|C0205217|Increased|qnco|increased|833.3333333333334|1177|1186
+167592||tx|S8|entity|C0857690|plasma insulin|lbpr|plasma insulin|833.3333333333334|1187|1201
+167592||tx|S8|entity|C0086045|Mental concentration|menp|concentrations|833.3333333333334|1202|1216
+167592||tx|S8|entity|C0522501|Massive|qlco|markedly|833.3333333333334|1218|1226
+167592||tx|S8|entity|C0205216|Decreased|qnco|diminished|833.3333333333334|1227|1237
+167592||tx|S8|entity|C0449238|Duration (temporal concept)|tmco|duration|833.3333333333334|1242|1250
+167592||tx|S8|entity|C0205054|Hepatic|blor|hepatic|833.3333333333334|1254|1261
+167592||tx|S8|entity|C0001455|Cyclic AMP|bacs,nnon,phsu|cAMP|833.3333333333334|1262|1266
+167592||tx|S8|entity|C0702240|Elevation|spco|elevations|833.3333333333334|1267|1277
+167592||tx|S8|entity|C0332282|Following|tmco|following|833.3333333333334|1278|1287
+167592||tx|S8|entity|C0017687|Glucagon|horm,aapp,phsu|glucagon|833.3333333333334|1288|1296
+167592||tx|S8|entity|C1533581|Recombinant Insulin|horm,aapp,phsu|insulin|833.3333333333334|1332|1339
+167592||tx|S8|entity|C0021469|Metabolic Inhibition|moft|inhibition|833.3333333333334|1340|1350
+167592||tx|S8|entity|C0017687|Glucagon|horm,aapp,phsu|glucagon|833.3333333333334|1354|1362
+167592||tx|S8|entity|C0441472|Clinical action|ftcn|action|833.3333333333334|1363|1369
+167592||tx|S8|entity|C0205054|Hepatic|blor|hepatic|833.3333333333334|1377|1384
+167592||tx|S8|entity|C0597765|Adenylate|bacs,nnon|adenylate|833.3333333333334|1385|1394
+167592||tx|S8|entity|C0001455|Cyclic AMP|bacs,nnon,phsu|cAMP|833.3333333333334|1395|1399
+167592||tx|S8|entity|C1704459|Device Component System|medd|system|833.3333333333334|1400|1406
+

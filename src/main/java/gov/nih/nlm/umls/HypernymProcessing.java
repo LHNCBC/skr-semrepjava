@@ -3,6 +3,7 @@ package gov.nih.nlm.umls;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.logging.Logger;
 
 import com.sleepycat.je.DatabaseException;
 
@@ -14,16 +15,23 @@ import gov.nih.nlm.ling.sem.Entity;
 import gov.nih.nlm.ling.sem.SemanticItem;
 import gov.nih.nlm.ner.metamap.ScoredUMLSConcept;
 
+/**
+ * Class for hypernymy resolution.
+ * 
+ * @author Zeshan Peng
+ *
+ */
 public class HypernymProcessing {
+    private static Logger log = Logger.getLogger(HypernymProcessing.class.getName());
 	
 	String hierarchyDB = "hierarchyDB";
 	HierarchyDatabase hdb;
 	
-	public HypernymProcessing() {
+	public HypernymProcessing(String dbDir) {
 		try {
-			hdb = new HierarchyDatabase(hierarchyDB, true);		
+			hdb = new HierarchyDatabase(dbDir, true);		
 		} catch (DatabaseException e) {
-			System.out.println("Unable to open hierarchy database.");
+			log.severe("Unable to open the UMLS concept hierarchy DB.");
 		}
 	}
 	
