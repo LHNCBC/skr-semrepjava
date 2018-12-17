@@ -52,7 +52,8 @@ public class WSDTest extends TestCase {
     	Properties props = FileUtils.loadPropertiesFromFile("semrepjava.properties");
     	MetaMapLiteClient client = new MetaMapLiteClient(props);
 		Map<SpanList, LinkedHashSet<Ontology>> annotations = new HashMap<SpanList, LinkedHashSet<Ontology>>();
-		Document doc = SemRep.lexicoSyntacticAnalysis("0", "cold");
+		Document doc = new Document("00000000","cold");
+		SemRep.lexicalSyntacticAnalysis(doc);
 		client.annotate(doc, System.getProperties(), annotations);
 		SpanList sp = new SpanList(0,4);
 		log.info("Disambiguation result: " + doc.getText() + " " + sp.toString() + "\t" + annotations.get(sp).iterator().next());

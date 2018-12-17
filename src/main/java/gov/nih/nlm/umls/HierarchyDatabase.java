@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import com.sleepycat.je.Database;
 import com.sleepycat.je.DatabaseConfig;
@@ -15,15 +16,25 @@ import com.sleepycat.je.EnvironmentConfig;
 import com.sleepycat.je.LockMode;
 import com.sleepycat.je.OperationStatus;
 
+import gov.nih.nlm.umls.lexicon.LexiconWrapper;
+
+/**
+ * Class that provides access to UMLS hierarchical relation file.
+ * 
+ * @author Zeshan Peng
+ *
+ */
 public class HierarchyDatabase
 {
+    private static Logger log = Logger.getLogger(HierarchyDatabase.class.getName());
+    
     private Environment env;
     private static final String HIERARCHY_DATABASE = "hierarchy_database";
     private Database hierarchyDb;
     
     public HierarchyDatabase(String homeDirectory, boolean query)
     {
-    	System.out.println("Opening environment in: " + homeDirectory);
+    	log.info("Opening BerkeleyDB instance in: " + homeDirectory);
 
         EnvironmentConfig envConfig = new EnvironmentConfig();
         if(query) {
@@ -42,6 +53,7 @@ public class HierarchyDatabase
         try {
         	env = new Environment(new File(homeDirectory), envConfig);
         }catch(DatabaseException e) {
+        	log.severe("Unable to open UMLS concept hierarchy DB.");
         	e.printStackTrace();
         }
         DatabaseConfig dbConfig = new DatabaseConfig();
@@ -76,7 +88,7 @@ public class HierarchyDatabase
     
     public void putDataIntoDatabase(String filename) throws IOException {
     	BufferedReader in = new BufferedReader(new FileReader(filename));
-        System.out.println("Opened file " + filename + " for reading.");
+       log.info("Opened file " + filename + " for reading.");
         String line = new String();
         byte[] bytes;
         DatabaseEntry entry;

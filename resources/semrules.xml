@@ -1,0 +1,37 @@
+<SRIndicators>
+  <SRIndicator string="treat" type="l" gapType="none" verified="true">
+    <!-- word_corresponds_to_semnet_relation_GEN(treat,verb,with,treated_by) -->
+    <Lexeme lemma="treat" pos="VB"/>
+    <SemInfo category="treats" priorScalarValue="0.0" embeddingTypes="" inverse="true" scopeType="default" probability="0.0" negated="false" cue="with"/>
+  </SRIndicator>
+  <SRIndicator string="in" type="l" gapType="none" verified="true">
+    <!-- word_corresponds_to_semnet_relation_GEN(in,prep,_,has_location). -->
+    <Lexeme lemma="in" pos="IN"/>
+    <SemInfo category="diagnoses" priorScalarValue="0.0" embeddingTypes="" scopeType="default" probability="0.0" negated="false" cue=""/>
+    <SemInfo category="process_of" priorScalarValue="0.0" embeddingTypes="" scopeType="default" probability="0.0" negated="false" cue=""/>
+    <SemInfo category="associated_with" priorScalarValue="0.0" embeddingTypes="" scopeType="default" probability="0.0" negated="false" cue=""/>
+    <SemInfo category="coexists_with" priorScalarValue="0.0" embeddingTypes="" scopeType="default" probability="0.0" negated="false" cue=""/>
+    <SemInfo category="treats" priorScalarValue="0.0" embeddingTypes="" scopeType="default" probability="0.0" negated="false" cue=""/>
+    <SemInfo category="location_of" priorScalarValue="0.0" embeddingTypes="" inverse="true" scopeType="default" probability="0.0" negated="false" cue=""/>
+  </SRIndicator>
+  <SRIndicator string="reduced risk" type="l" gapType="none" verified="true">
+    <!-- phrase_corresponds_to_semnet_relation_GEN(risk,[reduced],noun,[adj],_,prevents). -->
+    <Lexeme lemma="reduced" pos="JJ"/>
+    <Lexeme lemma="risk" pos="NN"/>
+    <SemInfo category="prevents" priorScalarValue="0.0" embeddingTypes="" scopeType="default" probability="0.0" negated="false" cue=""/>
+  </SRIndicator>
+  <SRIndicator string="reduce;risk" type="l" gapType="sentence" gapLength="1" verified="true">
+    <!-- multiphrase_corresponds_to_semnet_relation_GEN(reduce,[risk], verb,[noun], for,prevents) -->
+    <GappedLexeme>
+      <Part>
+        <Lexeme lemma="reduce" pos="VB"/>
+      </Part>
+      <Part primary="true">
+        <Lexeme lemma="risk" pos="NN"/>
+      </Part>
+    </GappedLexeme>
+    <SemInfo category="prevents" priorScalarValue="0.0" embeddingTypes="" scopeType="default" probability="0.0" negated="false" cue="for"/>
+  </SRIndicator>
+</SRIndicators>
+
+

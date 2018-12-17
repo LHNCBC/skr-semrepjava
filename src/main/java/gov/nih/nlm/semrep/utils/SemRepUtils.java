@@ -93,11 +93,5 @@ public class SemRepUtils {
 	}
 	return sb.toString();
     }
-    
-    public static void createOntologyDatabase(String homeDirectory, String input_file) throws IOException {
-    	OntologyDatabase ontDB = new OntologyDatabase(homeDirectory, false);
-    	ontDB.putDataIntoDatabase(input_file);
-    	ontDB.close();
-    }
 
 }
