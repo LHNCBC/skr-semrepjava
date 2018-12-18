@@ -49,9 +49,9 @@ import gov.nih.nlm.ner.LargestSpanFilter;
 import gov.nih.nlm.ner.MultiThreadClient;
 import gov.nih.nlm.ner.gnormplus.GNormPlusConcept;
 import gov.nih.nlm.ner.metamap.ScoredUMLSConcept;
-import gov.nih.nlm.semrep.core.SRSentence;
 import gov.nih.nlm.semrep.core.MedlineDocument;
 import gov.nih.nlm.semrep.core.SRIndicator;
+import gov.nih.nlm.semrep.core.SRSentence;
 import gov.nih.nlm.semrep.core.TokenInfo;
 import gov.nih.nlm.semrep.preprocess.CoreNLPProcessing;
 import gov.nih.nlm.semrep.preprocess.OpenNLPProcessing;
@@ -291,7 +291,7 @@ public class SemRep
 		List<Argument> args;
 		for (Sentence cs: doc.getSentences()) {
 			for(Chunk chunk: ((SRSentence)cs).getChunks()) {
-				if(hpClient == null) hpClient = new HypernymProcessing(System.getProperty("hierarchy.home"));
+				if(hpClient == null) hpClient = new HypernymProcessing(System.getProperties());
 				args = hpClient.intraNP(chunk);
 				if(args != null) sif.newImplicitRelation(doc, "ISA", args);
 			}

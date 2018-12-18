@@ -2,7 +2,6 @@ package gov.nih.nlm.umls;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -15,8 +14,6 @@ import com.sleepycat.je.Environment;
 import com.sleepycat.je.EnvironmentConfig;
 import com.sleepycat.je.LockMode;
 import com.sleepycat.je.OperationStatus;
-
-import gov.nih.nlm.umls.lexicon.LexiconWrapper;
 
 /**
  * Class that provides access to UMLS hierarchical relation file.
