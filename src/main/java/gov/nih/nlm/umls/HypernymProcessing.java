@@ -1,11 +1,11 @@
 package gov.nih.nlm.umls;
 
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Properties;
 import java.util.logging.Logger;
-
-import com.sleepycat.je.DatabaseException;
 
 import gov.nih.nlm.ling.core.Chunk;
 import gov.nih.nlm.ling.core.Document;
@@ -14,27 +14,33 @@ import gov.nih.nlm.ling.sem.Argument;
 import gov.nih.nlm.ling.sem.Entity;
 import gov.nih.nlm.ling.sem.SemanticItem;
 import gov.nih.nlm.ner.metamap.ScoredUMLSConcept;
+import gov.nih.nlm.semrep.utils.SemRepUtils;
 
-/**
- * Class for hypernymy resolution.
- * 
- * @author Zeshan Peng
- *
- */
 public class HypernymProcessing {
-    private static Logger log = Logger.getLogger(HypernymProcessing.class.getName());
 	
-	String hierarchyDB = "hierarchyDB";
-	HierarchyDatabase hdb;
+	private static Logger log = Logger.getLogger(HypernymProcessing.class.getName());	
+	private int hierarchyDBServerPort;
+	private String hierarchyDBServerName;
 	
-	public HypernymProcessing(String dbDir) {
-		try {
-			hdb = new HierarchyDatabase(dbDir, true);		
-		} catch (DatabaseException e) {
-			log.severe("Unable to open the UMLS concept hierarchy DB.");
-		}
+	public HypernymProcessing(Properties props) {
+		this.hierarchyDBServerPort = Integer.parseInt(props.getProperty("hierarchy.server.port", "9876"));
+		this.hierarchyDBServerName = props.getProperty("hierarchy.server.name", "indsrv2");
 	}
 	
+	public boolean find(String input) {
+		Socket s = 	SemRepUtils.getSocket(hierarchyDBServerName, hierarchyDBServerPort);
+		if (s == null) return false;
+		long mmbeg = System.currentTimeMillis();
+		String answer = SemRepUtils.queryServer(s, input);
+		if (answer != null && !answer.equalsIgnoreCase("null")) {
+			if(answer.contains("true")) return true;
+			if(answer.contains("false")) return false;
+		}
+		SemRepUtils.closeSocket(s);
+		long mmend = System.currentTimeMillis();
+		log.info("Completed processing hierarchy database lookup with " + input + " ..." +(mmend-mmbeg) + " msec.");
+		return false;
+	}
 	
 	public List<Argument> intraNP(Chunk chunk) {
 		if(!chunk.getChunkType().equalsIgnoreCase("NP"))
@@ -93,14 +99,14 @@ public class HypernymProcessing {
 		if (firstCUI.equals("C1457887") || secondCUI.equals("C1457887")) return null;
 		if (firstCUI.equals(secondCUI)) return null;
 		if(!semGroupMatch(firstConcept.getSemGroups(), secondConcept.getSemGroups())) return null;
-		if(hdb.contains(firstCUI+secondCUI)) {
+		if(find(firstCUI+secondCUI)) {
 			subject = new Argument("subject", firstEntity);
 			object = new Argument("object", secondEntity);
 			args.add(subject);
 			args.add(object);
 			return args;
 		}
-		if(hdb.contains(secondCUI+firstCUI)) {
+		if(find(secondCUI+firstCUI)) {
 			subject = new Argument("subject", secondEntity);
 			object = new Argument("object", firstEntity);
 			args.add(subject);
