@@ -35,7 +35,7 @@ import gov.nih.nlm.ling.sem.Ontology;
 public class GNormPlusJNIServer extends GNormPlusStringWrapper {
     private static Logger log = Logger.getLogger(GNormPlusJNIServer.class.getName());
 
-    private PrefixTree PT_Species = null;
+    /*- private PrefixTree PT_Species = null;
     private PrefixTree PT_Cell = null;
     private PrefixTree PT_CTDGene = null;
     private PrefixTree PT_Gene = null;
@@ -56,7 +56,7 @@ public class GNormPlusJNIServer extends GNormPlusStringWrapper {
     private HashMap<String, String> PmidLF2Abb_hash = null;
     private HashMap<String, String> Pmid2ChromosomeGene_hash = null;
     private HashMap<String, String> SimConceptMention2Type_hash = null;
-    private HashMap<String, String> SP_Virus2Human_hash = null;
+    private HashMap<String, String> SP_Virus2Human_hash = null; */
 
     private static Properties properties = null;
     private static GNormPlusJNIServer gNormPlus = null;
@@ -236,6 +236,7 @@ public class GNormPlusJNIServer extends GNormPlusStringWrapper {
 	    GeneScoring_hash.put(l[0], l[1] + "\t" + l[2] + "\t" + l[3] + "\t" + l[4] + "\t" + l[5] + "\t" + l[6]);
 	}
 	br.close();
+	log.info("Loading GeneScoring_hash ---");
 
 	/** GeneScoring.DF */
 	FileName = folder + "/GeneScoring.DF.txt";
@@ -250,6 +251,7 @@ public class GNormPlusJNIServer extends GNormPlusStringWrapper {
 	    GeneScoringDF_hash.put(l[0], Math.log10(Sum / Double.parseDouble(l[1])));
 	}
 	br.close();
+	log.info("Loading GeneScoring_DFhash ---");
 
 	/** Suffix Translation */
 	HashMap<String, String> tmp = new HashMap<>();
@@ -532,7 +534,7 @@ public class GNormPlusJNIServer extends GNormPlusStringWrapper {
 	/*
 	 * GN
 	 */
-	GNString GNobj = new GNString();
+	GNString GNobj = new GNString(gNormPlus);
 	GNobj.PreProcessing4GN(BioCDocobj, gNormPlus);
 	GNobj.ChromosomeRecognition(BioCDocobj, gNormPlus);
 	if (properties.containsKey("GeneIDMatch") && properties.get("GeneIDMatch").equals("True")) {
@@ -670,19 +672,25 @@ public class GNormPlusJNIServer extends GNormPlusStringWrapper {
 	    int start = Integer.parseInt(anno[0]);
 	    int last = Integer.parseInt(anno[1]);
 	    String mention = anno[2];
-	    String type = anno[3];
-	    // String id = anno[4];
 
-	    SpanList sp = new SpanList(start, last);
-	    LinkedHashSet<Ontology> concs = new LinkedHashSet<>();
-	    if (annotations.containsKey(sp)) {
-		concs = annotations.get(sp);
+	    String type = anno[3];
+	    /*
+	     * 12/14/2018 Extract Gene only and remove Species and other types
+	     */
+	    if (type.equals("Gene")) {
+		// String id = anno[4];
+
+		SpanList sp = new SpanList(start, last);
+		LinkedHashSet<Ontology> concs = new LinkedHashSet<>();
+		if (annotations.containsKey(sp)) {
+		    concs = annotations.get(sp);
+		}
+		LinkedHashSet<String> semtypes = new LinkedHashSet<>();
+		semtypes.add(type);
+		Concept conc = new Concept("GNP" + ++id, mention, semtypes, type);
+		concs.add(conc);
+		annotations.put(sp, concs);
 	    }
-	    LinkedHashSet<String> semtypes = new LinkedHashSet<>();
-	    semtypes.add(type);
-	    Concept conc = new Concept("GNP" + ++id, mention, semtypes, type);
-	    concs.add(conc);
-	    annotations.put(sp, concs);
 	    // }
 	}
 	// }
@@ -708,7 +716,14 @@ public class GNormPlusJNIServer extends GNormPlusStringWrapper {
 	StringBuffer outsb = new StringBuffer();
 	for (int k = 0; k < Annotation.size(); k++) // k : Annotations
 	{
-	    outsb = outsb.append(Annotation.get(k) + "\n");
+	    String anno[] = Annotation.get(k).split("\t");
+	    String type = anno[3];
+	    /*
+	     * 12/14/2018 Extract Gene only and remove Species and other types
+	     */
+	    if (type.equals("Gene")) {
+		outsb = outsb.append(Annotation.get(k) + "\n");
+	    }
 
 	}
 	return outsb.toString();
