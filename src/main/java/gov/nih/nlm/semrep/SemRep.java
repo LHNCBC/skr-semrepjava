@@ -196,7 +196,8 @@ public class SemRep {
 	List<LexiconMatch> lexmatches = new ArrayList<>();
 	try {
 	    if (lexicon == null)
-		lexicon = LexiconWrapper.getInstance("lexAccess.properties");
+		// lexicon = LexiconWrapper.getInstance("lexAccess.properties");
+		lexicon = LexiconWrapper.getInstance(); // lexAccess.properties are combined to semrepjava.properties and removed
 	    lexmatches = lexicon.findLexiconMatches(tokenInfo);
 	} catch (SQLException sqle) {
 	    log.warning("Unable to identify lexical items for the sentence ... Skipping.");
@@ -752,7 +753,8 @@ public class SemRep {
      */
     public static void init() {
 	initLogging();
-	lexicon = LexiconWrapper.getInstance("lexAccess.properties");
+	// lexicon = LexiconWrapper.getInstance("lexAccess.properties");
+	lexicon = LexiconWrapper.getInstance(); // lexAccess.properties is combined to semrepjava.properties
 	nerAnnotator = new MultiThreadClient(System.getProperties());
 	try {
 	    indAnnotator = new IndicatorAnnotator(
