@@ -420,7 +420,7 @@ public class CoreNLPServer {
 		Socket socket = serverSocket.accept();
 		BufferedInputStream bis = new BufferedInputStream(socket.getInputStream());
 		BufferedOutputStream bos = new BufferedOutputStream(socket.getOutputStream());
-		Thread t = new SocketHandler(socket, bis, bos, cnp);
+		Thread t = new CoreNLPSocketHandler(socket, bis, bos, pipeline);
 		t.start();
 
 	    }
