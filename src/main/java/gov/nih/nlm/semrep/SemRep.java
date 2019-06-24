@@ -371,7 +371,7 @@ public class SemRep {
 	for (Sentence cs : doc.getSentences()) {
 	    for (Chunk chunk : ((SRSentence) cs).getChunks()) {
 		if (hpClient == null)
-		    hpClient = new HypernymProcessing(System.getProperty("hierarchy.home"));
+		    hpClient = new HypernymProcessing(System.getProperties());
 		args = hpClient.intraNP(chunk);
 		if (args != null)
 		    sif.newImplicitRelation(doc, "ISA", args);
