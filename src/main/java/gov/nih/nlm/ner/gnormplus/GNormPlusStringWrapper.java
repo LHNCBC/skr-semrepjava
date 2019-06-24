@@ -28,33 +28,34 @@ import gov.nih.nlm.ling.util.FileUtils;
  * <p>
  * 
  * @author Halil Kilicoglu
+ * @author Dongwook Shin
  *
  */
 public class GNormPlusStringWrapper {
     private static Logger log = Logger.getLogger(GNormPlusStringWrapper.class.getName());
 
-    private PrefixTree PT_Species = null;
-    private PrefixTree PT_Cell = null;
-    private PrefixTree PT_CTDGene = null;
-    private PrefixTree PT_Gene = null;
-    private PrefixTree PT_GeneChromosome = null;
-    private HashMap<String, String> ent_hash = null;
-    private HashMap<String, String> GenusID_hash = null;
-    private HashMap<String, String> StrainID_hash = null;
-    private HashMap<String, String> PrefixID_hash = null;
-    private HashMap<String, Double> TaxFreq_hash = null;
-    private HashMap<String, String> GeneScoring_hash = null;
-    private HashMap<String, Double> GeneScoringDF_hash = null;
-    private HashMap<String, String> GeneIDs_hash = null;
+    PrefixTree PT_Species = null;
+    PrefixTree PT_Cell = null;
+    PrefixTree PT_CTDGene = null;
+    PrefixTree PT_Gene = null;
+    PrefixTree PT_GeneChromosome = null;
+    HashMap<String, String> ent_hash = null;
+    HashMap<String, String> GenusID_hash = null;
+    HashMap<String, String> StrainID_hash = null;
+    HashMap<String, String> PrefixID_hash = null;
+    HashMap<String, Double> TaxFreq_hash = null;
+    HashMap<String, String> GeneScoring_hash = null;
+    HashMap<String, Double> GeneScoringDF_hash = null;
+    HashMap<String, String> GeneIDs_hash = null;
     ArrayList<String> SuffixTranslationMap = null;
-    private HashMap<String, String> Pmid2Abb_hash = null;
-    private HashMap<String, String> PmidAbb2LF_lc_hash = null;
-    private HashMap<String, String> PmidLF2Abb_lc_hash = null;
-    private HashMap<String, String> PmidAbb2LF_hash = null;
-    private HashMap<String, String> PmidLF2Abb_hash = null;
-    private HashMap<String, String> Pmid2ChromosomeGene_hash = null;
-    private HashMap<String, String> SimConceptMention2Type_hash = null;
-    private HashMap<String, String> SP_Virus2Human_hash = null;
+    HashMap<String, String> Pmid2Abb_hash = null;
+    HashMap<String, String> PmidAbb2LF_lc_hash = null;
+    HashMap<String, String> PmidLF2Abb_lc_hash = null;
+    HashMap<String, String> PmidAbb2LF_hash = null;
+    HashMap<String, String> PmidLF2Abb_hash = null;
+    HashMap<String, String> Pmid2ChromosomeGene_hash = null;
+    HashMap<String, String> SimConceptMention2Type_hash = null;
+    HashMap<String, String> SP_Virus2Human_hash = null;
 
     private static Properties properties = null;
     private static GNormPlusStringWrapper gNormPlus = null;
@@ -509,7 +510,7 @@ public class GNormPlusStringWrapper {
 	/*
 	 * GN
 	 */
-	GNString GNobj = new GNString();
+	GNString GNobj = new GNString(gNormPlus);
 	GNobj.PreProcessing4GN(BioCDocobj, gNormPlus);
 	GNobj.ChromosomeRecognition(BioCDocobj, gNormPlus);
 	if (properties.containsKey("GeneIDMatch") && properties.get("GeneIDMatch").equals("True")) {

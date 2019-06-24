@@ -11,6 +11,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,10 +19,20 @@ import javax.xml.stream.XMLStreamException;
 
 // import GNormPluslib.GNormPlus;
 
-import GNormPluslib.GNormPlus;
+// import GNormPluslib.GNormPlus;
 
 public class GNString {
+    private static Logger log = Logger.getLogger(GNString.class.getName());
     public static HashMap<String, String> MatchedTokens_hash = new HashMap<>();
+    public static GNormPlusStringWrapper gNormPlus;
+
+    public GNString(GNormPlusStringWrapper gNormPlus) {
+	this.gNormPlus = gNormPlus;
+	if (gNormPlus.getGeneScoring_hash() == null)
+	    log.info("geneScoringHash is null inside GNString ...");
+	else
+	    log.info("geneScoringHash is not null inside GNString...");
+    }
 
     private double ScoringFunction(String geneid, HashMap<String, String> Mention_hash, String LF) {
 	/*
@@ -46,8 +57,12 @@ public class GNString {
 	} else {
 	    geneid = "Gene:" + geneid;
 	}
+	if (gNormPlus == null)
+	    log.info("$$$ GNormPlusStringWrapper is null");
+	if (gNormPlus.GeneScoring_hash == null)
+	    log.info("$$$ GNormPlusStringWrapper.GeneScoring_hash is null");
 
-	if (GNormPlus.GeneScoring_hash.containsKey(geneid)) {
+	if (gNormPlus.GeneScoring_hash.containsKey(geneid)) {
 	    HashMap<String, Double> TF = new HashMap<>(); // token
 							  // i in
 							  // gene
@@ -57,7 +72,7 @@ public class GNString {
 	    /*
 	     * Tokens in Query (Gene id lexicon)
 	     */
-	    String l[] = GNormPlus.GeneScoring_hash.get(geneid).split("\t"); // Gene:2664293
+	    String l[] = gNormPlus.GeneScoring_hash.get(geneid).split("\t"); // Gene:2664293
 									     // cmk-1,cytidylate-1,kinase-1,mssa-1
 									     // 0.4096
 									     // 4
@@ -105,7 +120,7 @@ public class GNString {
 		}
 
 		double TFij = TF.get(Tkn) / AllTknNum;
-		double IDFi = GNormPlus.GeneScoringDF_hash.get(Tkn);
+		double IDFi = gNormPlus.GeneScoringDF_hash.get(Tkn);
 		score = score + TFij * IDFi * (1 / (1 - TFij));
 	    }
 	    // score = Cj * (1/Norm) *score;

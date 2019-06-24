@@ -4,12 +4,15 @@ import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.List;
 import java.util.logging.Logger;
 
-import gov.nih.nlm.umls.OntologyDatabase;
+import edu.stanford.nlp.util.CoreMap;
+import gov.nih.nlm.semrep.preprocess.SentenceAnnsSO;
 
 /**
  * A class that contains methods broadly useful in SemRep.
@@ -92,6 +95,46 @@ public class SemRepUtils {
 	    ioe.printStackTrace();
 	}
 	return sb.toString();
+    }
+
+    /**
+     * Queries a server with the given socket and input string. It will return an
+     * empty string if a socket problem is encountered.
+     * 
+     * @param socket
+     *            the socket connected with the the server
+     * @param input
+     *            string to be processed by the server process
+     * @return string returned by server process
+     */
+    public static List<CoreMap> stanfordQueryServer(Socket socket, String input) {
+	List<CoreMap> sentenceAnns = null;
+	try {
+	    // write text to the socket
+	    //  DataInputStream bis = new DataInputStream(socket.getInputStream());
+	    // BufferedReader br = new BufferedReader(new InputStreamReader(bis));
+	    ObjectInputStream istream = new ObjectInputStream(socket.getInputStream());
+	    PrintWriter bw = new PrintWriter(socket.getOutputStream(), true);
+	    bw.println(input);
+	    bw.flush();
+	    /*- String line = null;
+	    // do {
+	    line = br.readLine();
+	    sb.append(line);
+	    // } while (line != null && line.isEmpty() == false);
+	     * 
+	     */
+	    SentenceAnnsSO serializable = (SentenceAnnsSO) istream.readObject();
+	    sentenceAnns = serializable.getSentenceAnns();
+	    istream.close();
+	    bw.close();
+	} catch (IOException ioe) {
+	    log.warning("Socket I/O error: " + socket.getInetAddress().getHostName() + ":" + socket.getPort());
+	    ioe.printStackTrace();
+	} catch (Exception e) {
+	    e.printStackTrace();
+	}
+	return sentenceAnns;
     }
 
 }

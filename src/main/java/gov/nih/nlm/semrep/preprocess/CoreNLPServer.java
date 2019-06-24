@@ -1,10 +1,13 @@
 package gov.nih.nlm.semrep.preprocess;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,8 +48,6 @@ import gov.nih.nlm.ling.core.SynDependency;
 import gov.nih.nlm.ling.core.Word;
 import gov.nih.nlm.ling.core.WordLexeme;
 import gov.nih.nlm.ling.util.FileUtils;
-import gov.nih.nlm.semrep.core.SRSentence;
-import gov.nih.nlm.semrep.utils.SemRepUtils;
 
 /**
  * A class that provides access to Stanford CoreNLP functionality.
@@ -64,22 +65,25 @@ import gov.nih.nlm.semrep.utils.SemRepUtils;
  * @author Halil Kilicoglu
  *
  */
-public class CoreNLPProcessing {
-    private static Logger log = Logger.getLogger(CoreNLPProcessing.class.getName());
+public class CoreNLPServer {
+    private static Logger log = Logger.getLogger(CoreNLPServer.class.getName());
 
-    private static CoreNLPProcessing coreNLP = null;
+    private static CoreNLPServer coreNLP = null;
     private static StanfordCoreNLP pipeline = null;
     private static TreebankLanguagePack tlp = new PennTreebankLanguagePack();
+    static Properties semrepprops = null;
 
-    private CoreNLPProcessing(Properties props) {
+    private CoreNLPServer(Properties props) {
 	pipeline = new StanfordCoreNLP(props);
     }
 
-    private CoreNLPProcessing() {
+    private CoreNLPServer() throws IOException {
 	Properties props = new Properties();
 	props.put("annotators", "tokenize,ssplit,pos,lemma,parse");
+	//props.put("annotators", "tokenize,ssplit,pos,lemma");
 	//		props.put("tokenize.options", "normalizeParentheses=false,normalizeOtherBrackets=false");
 	pipeline = new StanfordCoreNLP(props);
+	semrepprops = FileUtils.loadPropertiesFromFile("./semrepjava.properties");
     }
 
     /**
@@ -88,10 +92,10 @@ public class CoreNLPProcessing {
      * 
      * @return a CoreNLP instance
      */
-    public static CoreNLPProcessing getInstance() {
+    public static CoreNLPServer getInstance() throws IOException {
 	if (pipeline == null) {
 	    log.info("Initializing a Stanford Core NLP instance with default annotators...");
-	    coreNLP = new CoreNLPProcessing();
+	    coreNLP = new CoreNLPServer();
 	}
 	return coreNLP;
     }
@@ -103,10 +107,10 @@ public class CoreNLPProcessing {
      *            the properties
      * @return a CoreNLP instance
      */
-    public static CoreNLPProcessing getInstance(Properties props) {
+    public static CoreNLPServer getInstance(Properties props) {
 	if (pipeline == null) {
 	    log.info("Initializing a Stanford Core NLP instance...");
-	    coreNLP = new CoreNLPProcessing(props);
+	    coreNLP = new CoreNLPServer(props);
 	}
 	return coreNLP;
     }
@@ -136,11 +140,8 @@ public class CoreNLPProcessing {
 	log.log(Level.INFO, "Processing file with CoreNLP: {0}.", new Object[] { file.getAbsolutePath() });
 	String text = FileUtils.stringFromFileWithBytes(inFile, "UTF-8");
 	Document doc = new Document(inFile, text);
-	// coreNLP(doc);
-	// 
-	coreNLPUsingServer(doc);
+	coreNLP(doc);
 	FileUtils.write(doc.toXml().toXML(), new File(outFile));
-
     }
 
     /**
@@ -154,97 +155,37 @@ public class CoreNLPProcessing {
      *            the document to process
      */
     public static void coreNLP(Document document) {
-	if (document == null || document.getText() == null) {
-	    log.warning("Document is null or has no text. Skipping coreNLP..");
-	    return;
+	try {
+	    if (document == null || document.getText() == null) {
+		log.warning("Document is null or has no text. Skipping coreNLP..");
+		return;
+	    }
+	    Annotation annotation = new Annotation(document.getText());
+	    pipeline.annotate(annotation);
+	    List<CoreMap> sentenceAnns = annotation.get(SentencesAnnotation.class);
+	    if (sentenceAnns == null || sentenceAnns.size() == 0) {
+		log.warning("No sentence annotations were generated for the document. Skipping coreNLP..");
+		return;
+	    }
+	    List<Sentence> sentences = new ArrayList<>();
+	    int si = 0;
+	    for (CoreMap sentAnn : sentenceAnns) {
+		List<Word> words = getSentenceWords(sentAnn, 0);
+		Sentence sentence = getSentence(sentAnn, ++si);
+		sentence.setWords(words);
+		for (Word w : words)
+		    w.setSentence(sentence);
+		sentence.setTree(getSentenceTree(sentAnn));
+		List<SynDependency> depList = getSentenceDependencies(sentAnn, words);
+		sentence.setDependencyList(depList);
+		sentence.setSurfaceElements(new ArrayList<SurfaceElement>(words));
+		sentence.setEmbeddings(new ArrayList<>(depList));
+		sentences.add(sentence);
+	    }
+	    document.setSentences(sentences);
+	} catch (Exception e) {
+	    e.printStackTrace();
 	}
-	Annotation annotation = new Annotation(document.getText());
-	pipeline.annotate(annotation);
-	List<CoreMap> sentenceAnns = annotation.get(SentencesAnnotation.class);
-	if (sentenceAnns == null || sentenceAnns.size() == 0) {
-	    log.warning("No sentence annotations were generated for the document. Skipping coreNLP..");
-	    return;
-	}
-	List<Sentence> sentences = new ArrayList<>();
-	int si = 0;
-	for (CoreMap sentAnn : sentenceAnns) {
-	    List<Word> words = getSentenceWords(sentAnn, 0);
-	    SRSentence sentence = getSentence(sentAnn, ++si);
-	    sentence.setWords(words);
-	    for (Word w : words)
-		w.setSentence(sentence);
-	    sentence.setSurfaceElements(new ArrayList<SurfaceElement>(words));
-	    sentence.setTree(getSentenceTree(sentAnn));
-	    List<SynDependency> depList = getSentenceDependencies(sentAnn, words);
-	    sentence.setDependencyList(depList);
-	    sentence.setEmbeddings(new ArrayList<>(depList));
-	    sentences.add(sentence);
-	    sentence.setDocument(document);
-	}
-	document.setSentences(sentences);
-    }
-
-    public static void coreNLPUsingServer(String inFile, String outFile) throws IOException {
-	File file = new File(inFile);
-	log.log(Level.INFO, "Processing file with CoreNLP: {0}.", new Object[] { file.getAbsolutePath() });
-	String text = FileUtils.stringFromFileWithBytes(inFile, "UTF-8");
-	Document doc = new Document(inFile, text);
-	// coreNLP(doc);
-	// 
-	coreNLPUsingServer(doc);
-	FileUtils.write(doc.toXml().toXML(), new File(outFile));
-
-    }
-
-    /**
-     * Runs the Core NLP pipeline on a <code>Document</code> and populates its
-     * content.
-     * <p>
-     * It's assumed that the document's {@code Document#getText()} does not return
-     * null.
-     * 
-     * @param document
-     *            the document to process
-     */
-    public static void coreNLPUsingServer(Document document) {
-	if (document == null || document.getText() == null) {
-	    log.warning("Document is null or has no text. Skipping coreNLP..");
-	    return;
-	}
-	int stnServerPort = Integer.parseInt(System.getProperty("stanfordcorenlp.server.port"));
-	String stnServerName = System.getProperty("stanfordcorenlp.server.name");
-	Socket s = SemRepUtils.getSocket(stnServerName, stnServerPort);
-	if (s == null)
-	    return;
-	long beg = System.currentTimeMillis();
-	log.finest("Processing document " + document.getId() + " with Stanford parser..");
-	String inputText = document.getText();
-	List<CoreMap> sentenceAnns = SemRepUtils.stanfordQueryServer(s, inputText);
-	if (sentenceAnns == null || sentenceAnns.size() == 0) {
-	    log.warning("No sentence annotations were generated for the document. Skipping coreNLP..");
-	    return;
-	}
-	List<Sentence> sentences = new ArrayList<>();
-	int si = 0;
-	for (CoreMap sentAnn : sentenceAnns) {
-	    List<Word> words = getSentenceWords(sentAnn, 0);
-	    SRSentence sentence = getSentence(sentAnn, ++si);
-	    sentence.setWords(words);
-	    for (Word w : words)
-		w.setSentence(sentence);
-	    sentence.setSurfaceElements(new ArrayList<SurfaceElement>(words));
-	    sentence.setTree(getSentenceTree(sentAnn));
-	    List<SynDependency> depList = getSentenceDependencies(sentAnn, words);
-	    sentence.setDependencyList(depList);
-	    sentence.setEmbeddings(new ArrayList<>(depList));
-	    sentences.add(sentence);
-	    sentence.setDocument(document);
-	}
-	document.setSentences(sentences);
-
-	long end = System.currentTimeMillis();
-	SemRepUtils.closeSocket(s);
-
     }
 
     /**
@@ -259,13 +200,16 @@ public class CoreNLPProcessing {
      *            whether to process the input text as a single sentence
      * @return the core NLP annotation
      */
-    public static Annotation coreNLP(String text, boolean singleSentence) {
+    public static String coreNLP(String text, boolean singleSentence) {
 	if (singleSentence)
 	    pipeline.getProperties().setProperty("ssplit.isOneSentence", "true");
 	pipeline = new StanfordCoreNLP(pipeline.getProperties());
-	Annotation annotation = new Annotation(text);
-	pipeline.annotate(annotation);
-	return annotation;
+	Document doc = new Document(new String("1"), text);
+	coreNLP(doc);
+	// Annotation annotation = new Annotation(text);
+	// pipeline.annotate(annotation);
+	// System.out.println("annotation result : " + annotation.toString());
+	return doc.toXml().toXML();
     }
 
     /**
@@ -331,12 +275,12 @@ public class CoreNLPProcessing {
      *            the sentence index
      * @return a <code>Sentence</code> object with span and text information
      */
-    public static SRSentence getSentence(CoreMap sentenceAnnotation, int index) {
+    public static Sentence getSentence(CoreMap sentenceAnnotation, int index) {
 	int sBegin = sentenceAnnotation.get(CharacterOffsetBeginAnnotation.class);
 	int sEnd = sentenceAnnotation.get(CharacterOffsetEndAnnotation.class);
 	Span ssp = new Span(sBegin, sEnd);
 	String st = sentenceAnnotation.get(TextAnnotation.class);
-	SRSentence sentence = new SRSentence("S" + index, st, ssp);
+	Sentence sentence = new Sentence("S" + index, st, ssp);
 	return sentence;
     }
 
@@ -462,32 +406,27 @@ public class CoreNLPProcessing {
 
     public static void main(String[] args) throws IOException {
 	System.setProperty("java.util.logging.config.file", "logging.properties");
-	String in = args[0];
-	String out = args[1];
-	String repr = args[2];
-	File inFile = new File(in);
-	File outFile = new File(out);
-	System.setProperties(gov.nih.nlm.semrep.SemRep.getProps(args));
-	boolean reprocess = Boolean.parseBoolean(repr);
-	if (inFile.isDirectory()) {
-	    if (outFile.exists() == false) {
-		outFile.mkdir();
+	if (semrepprops == null)
+	    System.out.println("semrepprops is null");
+	// int port = Integer.parseInt(semrepprops.getProperty("stanfordcorenlp.server.port", "22392"));
+	int port = 22392;
+	ServerSocket serverSocket = new ServerSocket(port);
+	String line;
+	// System.out.println("Client connected");
+	CoreNLPServer cnp = CoreNLPServer.getInstance();
+
+	try {
+	    while (true) {
+		Socket socket = serverSocket.accept();
+		BufferedInputStream bis = new BufferedInputStream(socket.getInputStream());
+		BufferedOutputStream bos = new BufferedOutputStream(socket.getOutputStream());
+		Thread t = new CoreNLPSocketHandler(socket, bis, bos, pipeline);
+		t.start();
+
 	    }
-	    List<String> files = FileUtils.listFiles(in, false, "txt");
-	    int fileNum = 0;
-	    for (String f : files) {
-		String id = f.substring(f.lastIndexOf(File.separator) + 1).replace(".txt", "");
-		log.log(Level.INFO, "Processing {0}: {1}.", new Object[] { id, ++fileNum });
-		String outfile = outFile.getAbsolutePath() + File.separator + id + ".xml";
-		if (!reprocess && new File(outfile).exists()) {
-		    log.log(Level.INFO, "Output XML file exists: {0}. Skipping..", outfile);
-		}
-		// CoreNLPProcessing.getInstance().coreNLP(f, outfile);
-		coreNLPUsingServer(f, outfile);
-	    }
-	} else {
-	    if (reprocess || outFile.exists() == false)
-		CoreNLPProcessing.getInstance().coreNLP(in, out);
+	} catch (Exception e) {
+	    e.printStackTrace();
 	}
+
     }
 }
