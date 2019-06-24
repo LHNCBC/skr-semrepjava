@@ -94,7 +94,8 @@ public class SemRep {
     public static void lexicalSyntacticAnalysis(Document doc) throws IOException {
 	String option = System.getProperty("user.preprocess", "corenlp");
 	if (option.equals("corenlp"))
-	    coreNLPAnalysis(doc);
+	    // coreNLPAnalysis(doc);
+	    coreNLPAnalysisUsingServer(doc);
 	else if (option.equals("opennlp"))
 	    openNLPAnalysis(doc);
 	else {
@@ -160,9 +161,59 @@ public class SemRep {
      *             when openNLP chunking model cannot be loaded
      */
     public static void coreNLPAnalysis(Document doc) throws IOException {
+
 	if (coreNLP == null)
 	    coreNLP = CoreNLPProcessing.getInstance(System.getProperties());
 	CoreNLPProcessing.coreNLP(doc);
+
+	// Document doc = CoreNLPProcessing.coreNLPUsingServer(orgdoc);
+	List<Sentence> listSent = doc.getSentences();
+	for (Sentence sent : doc.getSentences()) {
+	    SRSentence csent = (SRSentence) sent;
+	    int beg = csent.getSpan().getBegin();
+	    csent.setSectionAbbreviation("tx");
+	    csent.setSentenceIDInSection(sent.getId());
+	    csent.addCompleted(SRSentence.Processing.SSPLIT);
+	    csent.addCompleted(SRSentence.Processing.TOKEN);
+	    csent.addCompleted(SRSentence.Processing.TAG);
+	    csent.addCompleted(SRSentence.Processing.LEMMA);
+	    List<Word> words = csent.getWords();
+	    List<TokenInfo> tokenInfos = new ArrayList<>();
+	    for (Word w : words) {
+		tokenInfos.add(new TokenInfo(w.getText(), w.getSpan().getBegin() - beg, w.getSpan().getEnd() - beg,
+			w.getPos(), w.getLemma()));
+	    }
+	    if (openNLPClient == null)
+		openNLPClient = new OpenNLPProcessing(true);
+	    openNLPClient.chunk(csent, tokenInfos);
+	    csent.addCompleted(SRSentence.Processing.CHUNK);
+	    List<LexiconMatch> lexmatches = getLexicalItems(tokenInfos);
+	    List<LexiconMatch> updatedLexMatches = lexicon.filterLexMatchesByPOS(lexmatches);
+	    csent.setLexicalItems(updatedLexMatches);
+	    csent.addCompleted(SRSentence.Processing.LEXREC);
+	}
+	for (Sentence sent : doc.getSentences()) {
+	    harmonizeWithLexMatches((SRSentence) sent);
+	}
+    }
+
+    /**
+     * Preprocesses a document using Core NLP Server functionality (except chunking,
+     * which uses openNLP). It also incorporates UMLS Specialist Lexicon records.
+     * 
+     * @param document
+     *            Document to process
+     * @throws IOException
+     *             when openNLP chunking model cannot be loaded
+     */
+    public static void coreNLPAnalysisUsingServer(Document doc) throws IOException {
+
+	if (coreNLP == null)
+	    coreNLP = CoreNLPProcessing.getInstance(System.getProperties());
+	CoreNLPProcessing.coreNLPUsingServer(doc);
+
+	// Document doc = CoreNLPProcessing.coreNLPUsingServer(orgdoc);
+	List<Sentence> listSent = doc.getSentences();
 	for (Sentence sent : doc.getSentences()) {
 	    SRSentence csent = (SRSentence) sent;
 	    int beg = csent.getSpan().getBegin();
