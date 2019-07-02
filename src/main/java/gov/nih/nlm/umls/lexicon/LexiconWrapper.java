@@ -97,18 +97,18 @@ public class LexiconWrapper {
      */
     public static LexiconWrapper getInstance() {
 	if (lexWrapper == null) {
-	    lexWrapper = new LexiconWrapper();
+		lexWrapper = new LexiconWrapper("semrepjava.properties");
 	}
 	return lexWrapper;
     }
 
     // private LexiconWrapper(String configFile) {
-    private LexiconWrapper() {
+    private LexiconWrapper(String configFile) {
 	log.info("Initializing a Lexicon instance...");
-	// lexAccessApi = new LexAccessApi(configFile);
-	Properties properties = new Properties(System.getProperties());
-	Hashtable<java.lang.String, java.lang.String> hashProp = (Hashtable) properties;
-	lexAccessApi = new LexAccessApi(hashProp);
+	lexAccessApi = new LexAccessApi(configFile);
+//	Properties properties = System.getProperties();
+//	Hashtable<java.lang.String, java.lang.String> hashProp = (Hashtable) System.getProperties();
+//	lexAccessApi = new LexAccessApi(hashProp);
     }
 
     /**
