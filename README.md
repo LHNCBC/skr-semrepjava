@@ -1,3 +1,8 @@
+> [!WARNING]
+> This repository has been archived and is no longer maintained.  
+> The code is provided for historical reference and may contain unpatched or unknown vulnerabilities.  
+> It should not be used in production systems.
+
 # SemRepJava
 
 Semantic Knowledge Representation project in Lister Hill Center for National Institute of Health.
@@ -42,4 +47,3 @@ sh bin/semrepjava.sh --inputformat=singlefile --inputtextformat=plaintext --inpu
 e.g. to test with medline:
 
 sh bin/semrepjava.sh --inputformat=singlefile --inputtextformat=medline --inputpath=TestFiles/test.ml --outputpath=TestFiles/out.ml --outputFormat=human-readable --includes=chunk
-
